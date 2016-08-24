@@ -619,6 +619,38 @@ class TicketsAjaxAPI extends AjaxController {
         return $resp;
 
     }
+    
+    function merge ($ticket_id) {
+        $forms = DynamicFormEntry::forTicket($ticket_id);
+        $info = array('action' => '#tickets/'.Format::htmlchars($ticket_id).'/merge');
+        include(STAFFINC_DIR . 'templates/merge-ticket.tmpl.php');
+    }
+    
+    function mergeTicket($ticket_id) {
+        global $thisstaff;
+        
+        $number = isset($_POST['ticket_number']) ? trim($_POST['ticket_number']) : false;
+        $number = trim($number, '#');
+        
+        if (!$thisstaff)
+            Http::response(403, "Login required");
+        elseif (!($ticket = Ticket::lookup($ticket_id)))
+            Http::response(404, "No such ticket");
+        elseif (!$number || empty($number) || !($ticket_2 = Ticket::lookupByNumber($number)))
+            Http::response(404, "No such ticket number ". $number);
+        elseif (!$ticket->checkStaffAccess($thisstaff) || !$ticket_2->checkStaffAccess($thisstaff))
+            Http::response(403, "Access Denied");
+        elseif ($ticket->getStatusId() != 1 || $ticket_2->getStatusId() != 1)
+            Http::response(403, "Access Denied. Only merge OPEN tickets.");
+            
+        $res = $ticket->merge($ticket_2);
+        
+        if ($res)
+            Http::response(201, 'Successfully merged');
+        
+        else
+            Http::response(500, 'Merge ticket error: '.$res);
+    }
 
     function manageForms($ticket_id) {
         $forms = DynamicFormEntry::forTicket($ticket_id);
