@@ -46,9 +46,12 @@ if (!$page_id || !($page = Page::lookup($page_id)))
 if (!$page->isActive() || $page->getType() != 'other')
     Http::response(404, __('Page Not Found'));
 
-require(CLIENTINC_DIR.'header.inc.php');
+require(CLIENTINC_DIR.'header.inc.php'); ?>
+<div class="cover"> 
+    <div class="container"> <div class="row"> <div class="col-md-12"> 
+<?php print $page->getBodyWithImages(); ?>
+    </div></div></div>
+</div>
 
-print $page->getBodyWithImages();
-
-require(CLIENTINC_DIR.'footer.inc.php');
+<?php require(CLIENTINC_DIR.'footer.inc.php');
 ?>

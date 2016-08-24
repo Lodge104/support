@@ -1780,8 +1780,8 @@ class TextboxWidget extends Widget {
         if (isset($config['disabled']))
             $disabled = 'disabled="disabled"';
         ?>
-        <span style="display:inline-block">
-        <input type="<?php echo static::$input_type; ?>"
+        <span>
+        <input class="form-control" type="<?php echo static::$input_type; ?>"
             id="<?php echo $this->id; ?>"
             <?php echo implode(' ', array_filter(array(
                 $size, $maxlength, $classes, $autocomplete, $disabled)))
@@ -1862,12 +1862,12 @@ class PhoneNumberWidget extends Widget {
         $config = $this->field->getConfiguration();
         list($phone, $ext) = explode("X", $this->value);
         ?>
-        <input id="<?php echo $this->id; ?>" type="text" name="<?php echo $this->name; ?>" value="<?php
+        <input class="form-control" id="<?php echo $this->id; ?>" type="text" name="<?php echo $this->name; ?>" value="<?php
         echo Format::htmlchars($phone); ?>"/><?php
         // Allow display of extension field even if disabled if the phone
         // number being edited has an extension
         if ($ext || $config['ext']) { ?> <?php echo __('Ext'); ?>:
-            <input type="text" name="<?php
+            <input class="form-control" type="text" name="<?php
             echo $this->name; ?>-ext" value="<?php echo Format::htmlchars($ext);
                 ?>" size="5"/>
         <?php }
@@ -1939,7 +1939,8 @@ class ChoicesWidget extends Widget {
             id="<?php echo $this->id; ?>"
             data-prompt="<?php echo $prompt; ?>"
             <?php if ($config['multiselect'])
-                echo ' multiple="multiple" class="multiselect"'; ?>>
+                echo ' multiple="multiple" class="multiselect"';
+                else echo'class="form-control"'; ?>>
             <?php if (!$have_def && !$config['multiselect']) { ?>
             <option value="<?php echo $def_key; ?>">&mdash; <?php
                 echo $def_val; ?> &mdash;</option>
@@ -1957,8 +1958,7 @@ class ChoicesWidget extends Widget {
          ?>
         <script type="text/javascript">
         $(function() {
-            $("#<?php echo $this->id; ?>")
-            .multiselect({'noneSelectedText':'<?php echo $prompt; ?>'});
+            $("#<?php echo $this->id; ?>").multiselect();
         });
         </script>
        <?php

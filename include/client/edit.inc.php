@@ -3,11 +3,13 @@
 if(!defined('OSTCLIENTINC') || !$thisclient || !$ticket || !$ticket->checkUserAccess($thisclient)) die('Access Denied!');
 
 ?>
-
-<h1>
-    <?php echo sprintf(__('Editing Ticket #%s'), $ticket->getNumber()); ?>
-</h1>
-
+<div class="cover"> 
+    <div class="container"> <div class="row"> <div class="col-md-12"> 
+        <div class="page-title">   
+        <h1>
+            <?php echo sprintf(__('Editing Ticket #%s'), $ticket->getNumber()); ?>
+        </h1>
+        </div>
 <form action="tickets.php" method="post">
     <?php echo csrf_token(); ?>
     <input type="hidden" name="a" value="edit"/>
@@ -21,10 +23,12 @@ if(!defined('OSTCLIENTINC') || !$thisclient || !$ticket || !$ticket->checkUserAc
     </tbody>
 </table>
 <hr>
-<p style="text-align: center;">
-    <input type="submit" value="Update"/>
-    <input type="reset" value="Reset"/>
-    <input type="button" value="Cancel" onclick="javascript:
+<p>
+    <input class="btn btn-primary"  type="submit" value="Update"/>
+    <input class="btn btn-primary"  type="reset" value="Reset"/>
+    <input class="btn btn-danger" type="button" value="Cancel" onclick="javascript:
         window.location.href='index.php';"/>
 </p>
 </form>
+</div></div></div>
+</div>
