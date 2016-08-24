@@ -30,6 +30,9 @@ class Cron {
         require_once(INCLUDE_DIR.'class.lock.php');
         Ticket::checkOverdue(); //Make stale tickets overdue
         TicketLock::cleanup(); //Remove expired locks
+        if ($cfg->isLimeSurveyEnabled()) {
+                Ticket::surveyClosed(); //Survey closed tickets
+            }
     }
 
     function PurgeLogs() {
