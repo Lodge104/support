@@ -640,7 +640,7 @@ class TicketsAjaxAPI extends AjaxController {
             Http::response(404, "No such ticket number ". $number);
         elseif (!$ticket->checkStaffAccess($thisstaff) || !$ticket_2->checkStaffAccess($thisstaff))
             Http::response(403, "Access Denied");
-        elseif ($ticket->getStatusId() != 1 || $ticket_2->getStatusId() != 1)
+        elseif ($ticket->getState() != 'open' || $ticket_2->getState() != 'open')
             Http::response(403, "Access Denied. Only merge OPEN tickets.");
             
         $res = $ticket->merge($ticket_2);
