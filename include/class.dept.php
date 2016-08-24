@@ -274,6 +274,39 @@ class Dept {
     function autoRespONNewTicket() {
         return ($this->ht['ticket_auto_response']);
     }
+    
+    function deptSurveyClosedTicket() {
+//        return ($this->ht['survey_closed_tickets']);
+         return ($this->config->get('survey_closed_tickets', 0));
+     }
+ 
+     function deptSurveyID() {
+         return ($this->config->get('lime_survey_id'));
+     }
+ 
+     function deptSurveyTicketGID() {
+         return ($this->config->get('lime_survey_ticket_gid'));
+     }
+ 
+     function deptSurveyTicketQID() {
+         return ($this->config->get('lime_survey_ticket_qid'));
+     }
+ 
+     function deptSurveyStaffGID() {
+         return ($this->config->get('lime_survey_staff_gid'));
+     }
+ 
+     function deptSurveyStaffQID() {
+         return ($this->config->get('lime_survey_staff_qid'));
+     }
+ 
+     function deptSurveyTicketSecret() {
+         return (($this->config->get('lime_survey_id')) . 'X' . ($this->config->get('lime_survey_ticket_gid')) . 'X' . ($this->config->get('lime_survey_ticket_qid')));
+     }
+ 
+     function deptSurveyStaffSecret() {
+         return (($this->config->get('lime_survey_id')) . 'X' . ($this->config->get('lime_survey_staff_gid')) . 'X' . ($this->config->get('lime_survey_staff_qid')));
+     }
 
     function autoRespONNewMessage() {
         return ($this->ht['message_auto_response']);
@@ -332,6 +365,12 @@ class Dept {
 
         // Misc. config settings
         $this->config->set('assign_members_only', $vars['assign_members_only']);
+        $this->config->set('survey_closed_tickets', $vars['survey_closed_tickets']);
+        $this->config->set('lime_survey_id', $vars['lime_survey_id']);
+        $this->config->set('lime_survey_ticket_gid', $vars['lime_survey_ticket_gid']);
+        $this->config->set('lime_survey_ticket_qid', $vars['lime_survey_ticket_qid']);
+        $this->config->set('lime_survey_staff_gid', $vars['lime_survey_staff_gid']);
+        $this->config->set('lime_survey_staff_qid', $vars['lime_survey_staff_qid']);
 
         return true;
     }
