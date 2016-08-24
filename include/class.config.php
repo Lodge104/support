@@ -987,6 +987,8 @@ class OsticketConfig extends Config {
             'show_related_tickets'=>isset($vars['show_related_tickets'])?1:0,
             'hide_staff_name'=>isset($vars['hide_staff_name'])?1:0,
             'enable_html_thread'=>isset($vars['enable_html_thread'])?1:0,
+            'enable_lime_surveys'=>isset($vars['enable_lime_surveys'])?1:0,
+            'lime_survey_url'=>$vars['lime_survey_url'],
             'allow_client_updates'=>isset($vars['allow_client_updates'])?1:0,
             'max_file_size'=>$vars['max_file_size'],
         ));
