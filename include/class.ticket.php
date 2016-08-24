@@ -3073,6 +3073,30 @@ class Ticket {
 
         }
    }
+   
+   function merge($ticket_2) {
+       global $thisstaff;
+       
+       $id = $this->getId();
+       $number = $this->getNumber();
+       $user_id = $this->getUserId();
+       $number_2 = $ticket_2->getNumber();
+       $id_2 = $ticket_2->getId();
+       
+       $sql = sprintf(
+           "UPDATE %s SET ticket_id = %d, user_id = %d WHERE ticket_id = %d",
+           TICKET_THREAD_TABLE,
+           db_input($id, false),
+           db_input($user_id, false),
+           db_input($id_2, false)
+        );
+        
+        $error = [];
+        
+        return db_query($sql)
+            && $ticket_2->setStatus(7, 'Merged into ' . $number)
+            && $this->postNote(['note' => 'Merged with ' . $number_2], $error, $thisstaff);
+   }
 
 }
 ?>
