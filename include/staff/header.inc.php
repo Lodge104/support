@@ -8,6 +8,12 @@ if (($lang = Internationalization::getCurrentLanguage())
         && (@$info['direction'] == 'rtl'))
     echo 'dir="rtl" class="rtl"';
 ?>>
+<!-- START MOD05 add Favicon  -->
+<head profile=\"http://www.w3.org/2005/10/profile\">
+<link rel=\"icon\" 
+      type=\"image/gif\" 
+      href=\"https://www.support.lodge104.net/favicon.gif\">
+<!-- END MOD05 Changes -->
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
