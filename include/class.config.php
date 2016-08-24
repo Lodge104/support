@@ -151,6 +151,7 @@ class OsticketConfig extends Config {
         'allow_pw_reset' =>     true,
         'pw_reset_window' =>    30,
         'enable_html_thread' => true,
+        'enable_lime_surveys' => false,
         'allow_attachments' =>  true,
         'name_format' =>        'full', # First Last
         'auto_claim_tickets'=>  true,
@@ -322,6 +323,14 @@ class OsticketConfig extends Config {
     function isHtmlThreadEnabled() {
         return $this->get('enable_html_thread');
     }
+    
+    function isLimeSurveyEnabled() {
+         return $this->get('enable_lime_surveys');
+     }
+ 
+     function getLimeSurveyURL() {
+         return $this->get('lime_survey_url');
+     }
 
     function allowClientUpdates() {
         return $this->get('allow_client_updates');
