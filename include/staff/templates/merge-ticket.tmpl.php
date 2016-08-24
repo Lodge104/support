@@ -21,5 +21,7 @@
         <span class="buttons pull-right"><
             <input type="submit" value="<?php echo __('Save Changes'); ?>">
         </span>
+        
+        <span style="display: none;" class="merge_ticket_hacking_span"></span>
     </p>
 </form>
