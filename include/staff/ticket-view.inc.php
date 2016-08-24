@@ -146,6 +146,11 @@ if($ticket->isOverdue())
                     $.dialog($(this).attr('href').substr(1), 201);
                     return false"
                     ><i class="icon-paste"></i> <?php echo __('Manage Forms'); ?></a></li>
+                <li><a href="#ajax.php/tickets/<?php echo $ticket->getId();
+                    ?>/merge" onclick="javascript:
+                    $.dialog($(this).attr('href').substr(1), 201);
+                    return false"
+                    ><i class="icon-copy"></i> <?php echo __('Merge Ticket'); ?></a></li>
 
 <?php           if($thisstaff->canBanEmails()) {
                      if(!$emailBanned) {?>
