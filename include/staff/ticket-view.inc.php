@@ -630,14 +630,16 @@ print $response_form->getField('attachments')->render();
                                 array('states' => $states)) as $s) {
                         if (!$s->isEnabled()) continue;
                         $selected = ($statusId == $s->getId());
-                        echo sprintf('<option value="%d" %s>%s%s</option>',
+                        if (strtolower($s->getName()) != 'surveyed') {
+                            echo sprintf('<option value="%d" %s>%s%s</option>',
                                 $s->getId(),
                                 $selected
-                                 ? 'selected="selected"' : '',
+                                ? 'selected="selected"' : '',
                                 __($s->getName()),
                                 $selected
                                 ? (' ('.__('current').')') : ''
                                 );
+                        }
                     }
                     ?>
                     </select>
