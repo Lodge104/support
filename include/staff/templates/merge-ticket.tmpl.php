@@ -13,5 +13,13 @@
     </div>
     <hr>
     <p class="full-wdith">
-        <span class="buttons pull-left"></span>
+        <span class="buttons pull-left">
+            <input type="reset" value="<?php echo __('Reset'); ?>">
+            <input type="button" name="cancel" class="<?php
+            echo $user ? 'cancel' : 'close' ?>" valuse-"<?php echo __('Cancel'); ?>">
+        </span>
+        <span class="buttons pull-right"><
+            <input type="submit" value="<?php echo __('Save Changes'); ?>">
+        </span>
     </p>
+</form>
