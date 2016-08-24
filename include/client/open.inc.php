@@ -12,6 +12,10 @@ $info=($_POST && $errors)?Format::htmlchars($_POST):$info;
 $form = null;
 if (!$info['topicId'])
     $info['topicId'] = $cfg->getDefaultTopicId();
+    
+    if(isset($_REQUEST["tid"])){
+    $info['topicId']=$_REQUEST["tid"];
+    }
 
 if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
     $form = $topic->getForm();
