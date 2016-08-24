@@ -582,7 +582,9 @@ $.dialog = function (url, codes, cb, options) {
                             return;
                         var done = $.Event('dialog:close');
                         $popup.trigger(done, [resp, status, xhr]);
-                        window.location=window.location;
+                        
+                        if ($form.find('.merge_ticket_hacking_span').length)
+                           window.location=window.location;
                     } else {
                         $('div.body', $popup).html(resp);
                         $popup.effect('shake');
