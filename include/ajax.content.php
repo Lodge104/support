@@ -101,7 +101,16 @@ class ContentAjaxAPI extends AjaxController {
                     <tr><td colspan="2" style="padding:5px 0 5px 0;"><em><b>'.__('Thread Entry expansions').'</b></em></td></tr>
                     <tr><td>.poster</td><td>'.__('Poster').'</td></tr>
                     <tr><td>.create_date</td><td>'.__('Date created').'</td></tr>
-                </table>
+                 </table>';
+             global $cfg;
+             if ($cfg->isLimeSurveyEnabled()) {
+         $content= $content . '
+                 <table width="100%" border="0" cellspacing=1 cellpadding=1>
+                     <tr><td colspan="2" style="padding:5px 0 5px 0;"><em><b>'.__('Survey Variables').'</b></em></td></tr>
+                     <tr><td nowrap>%{SurveyURL}</td><td>'.__('Survey URL Link').'</td></tr>
+                 </table>';
+             }
+         $content= $content . '
             </td>
         </tr>
     </table>
