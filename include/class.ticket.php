@@ -54,6 +54,21 @@ class Ticket {
 
     var $thread; //Thread obj.
 
+    // Ticket Sources
+    static protected $sources =  array(
+            'Phone' =>
+            /* @trans */ 'Phone',
+            'Email' =>
+            /* @trans */ 'Email',
+
+            'Web' =>
+            /* @trans */ 'Web',
+            'API' =>
+            /* @trans */ 'API',
+            'Other' =>
+            /* @trans */ 'Other',
+            );
+
     function Ticket($id) {
         $this->id = 0;
         $this->load($id);
@@ -215,6 +230,16 @@ class Ticket {
             return true;
 
         return false;
+    }
+
+    static function getSources() {
+        static $translated = false;
+        if (!$translated) {
+            foreach (static::$sources as $k=>$v)
+                static::$sources[$k] = __($v);
+        }
+
+        return static::$sources;
     }
 
     //Getters
@@ -773,7 +798,13 @@ class Ticket {
     }
 
     function setSLAId($slaId) {
-        if ($slaId == $this->getSLAId()) return true;
+        if ($slaId == $this->getSLAId())
+            return true;
+
+        $sla = null;
+        if ($slaId && !($sla = Sla::lookup($slaId)))
+            return false;
+
         return db_query(
              'UPDATE '.TICKET_TABLE.' SET sla_id='.db_input($slaId)
             .' WHERE ticket_id='.db_input($this->getId()))
@@ -888,7 +919,7 @@ class Ticket {
                     $thisstaff ?: 'SYSTEM');
 
             $alert = false;
-            if ($comments) {
+            if (($comments = ThreadBody::clean($comments))) {
                 $note .= sprintf('<hr>%s', $comments);
                 // Send out alerts if comments are included
                 $alert = true;
@@ -1014,14 +1045,19 @@ class Ticket {
                 $sentlist[]=$cfg->getAdminEmail();
             }
 
-            //Only alerts dept members if the ticket is NOT assigned.
-            if($cfg->alertDeptMembersONNewTicket() && !$this->isAssigned()) {
-                if(($members=$dept->getMembersForAlerts()))
-                    $recipients=array_merge($recipients, $members);
+            // Only alerts dept members if the ticket is NOT assigned.
+            $manager = $dept->getManager();
+            if ($cfg->alertDeptMembersONNewTicket() && !$this->isAssigned()
+                && ($members = $dept->getMembersForAlerts())
+            ) {
+                foreach ($members as $M)
+                    if ($M != $manager)
+                        $recipients[] = $M;
             }
 
-            if($cfg->alertDeptManagerONNewTicket() && $dept && ($manager=$dept->getManager()))
-                $recipients[]= $manager;
+            if ($cfg->alertDeptManagerONNewTicket() && $manager) {
+                $recipients[] = $manager;
+            }
 
             // Account manager
             if ($cfg->alertAcctManagerONNewMessage()
@@ -1567,8 +1603,9 @@ class Ticket {
         $dept = $this->getDept();
 
         // Set SLA of the new department
-        if(!$this->getSLAId() || $this->getSLA()->isTransient())
-            $this->selectSLAId();
+        if (!$this->getSLAId() || $this->getSLA()->isTransient())
+            if (($slaId=$this->getDept()->getSLAId()))
+                $this->selectSLAId($slaId);
 
         // Make sure the new department allows assignment to the
         // currently assigned agent (if any)
@@ -1807,19 +1844,20 @@ class Ticket {
             }
         }
 
-        if(!$alerts) return $message; //Our work is done...
-
         // Do not auto-respond to bounces and other auto-replies
         $autorespond = isset($vars['flags'])
-            ? !$vars['flags']['bounce'] && !$vars['flags']['auto-reply']
-            : true;
-        if ($autorespond && $message->isAutoReply())
+                ? !$vars['flags']['bounce'] && !$vars['flags']['auto-reply']
+                : true;
+        if ($autorespond && $message->isBounceOrAutoReply())
             $autorespond = false;
 
-        $this->onMessage($message, $autorespond); //must be called b4 sending alerts to staff.
+        $this->onMessage($message, ($autorespond && $alerts)); //must be called b4 sending alerts to staff.
 
-        if ($autorespond && $cfg && $cfg->notifyCollabsONNewMessage())
+        if ($autorespond && $alerts && $cfg && $cfg->notifyCollabsONNewMessage())
             $this->notifyCollaborators($message, array('signature' => ''));
+
+        if (!($alerts && $autorespond))
+            return $message; //Our work is done...
 
         $dept = $this->getDept();
 
@@ -2177,6 +2215,8 @@ class Ticket {
         if(!$cfg || !$thisstaff || !$thisstaff->canEditTickets())
             return false;
 
+        $vars['note'] = ThreadBody::clean($vars['note']);
+
         $fields=array();
         $fields['topicId']  = array('type'=>'int',      'required'=>1, 'error'=>__('Help topic selection is required'));
         $fields['slaId']    = array('type'=>'int',      'required'=>0, 'error'=>__('Select a valid SLA'));
@@ -2198,6 +2238,11 @@ class Ticket {
             elseif(strtotime($vars['duedate'].' '.$vars['time'])<=time())
                 $errors['duedate']=__('Due date must be in the future');
         }
+
+        if (isset($vars['source']) // Check ticket source if provided
+                && !array_key_exists($vars['source'], Ticket::getSources()))
+            $errors['source'] = sprintf( __('Invalid source given - %s'),
+                    Format::htmlchars($vars['source']));
 
         // Validate dynamic meta-data
         $forms = DynamicFormEntry::forTicket($this->getId());
@@ -2900,8 +2945,11 @@ class Ticket {
 
         if(!$thisstaff || !$thisstaff->canCreateTickets()) return false;
 
-        if($vars['source'] && !in_array(strtolower($vars['source']),array('email','phone','other')))
-            $errors['source']=sprintf(__('Invalid source given - %s'),Format::htmlchars($vars['source']));
+        if (isset($vars['source']) // Check ticket source if provided
+                && !array_key_exists($vars['source'], Ticket::getSources()))
+            $errors['source'] = sprintf( __('Invalid source given - %s'),
+                    Format::htmlchars($vars['source']));
+
 
         if (!$vars['uid']) {
             //Special validation required here
@@ -2915,6 +2963,8 @@ class Ticket {
         if (!$thisstaff->canAssignTickets())
             unset($vars['assignId']);
 
+        $vars['response'] = ThreadBody::clean($vars['response']);
+        $vars['note'] = ThreadBody::clean($vars['note']);
         $create_vars = $vars;
         $tform = TicketForm::objects()->one()->getForm($create_vars);
         $create_vars['cannedattachments']

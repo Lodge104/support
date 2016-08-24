@@ -71,14 +71,10 @@ if($ticket
         && (
             (($topic = $ticket->getTopic()) && ($page = $topic->getPage()))
             || ($page = $cfg->getThankYouPage())
-        )) { ?>
-<div class="cover"> 
-    <div class="container"> <div class="row"> <div class="col-md-12"> 
-        <?php     // Thank the user and promise speedy resolution!
-        echo Format::viewableImages($ticket->replaceVars($page->getBody())); ?>
-    </div></div></div>
-</div>
-<?php }
+        )) {
+    // Thank the user and promise speedy resolution!
+    echo Format::viewableImages($ticket->replaceVars($page->getBody()));
+}
 else {
     require(CLIENTINC_DIR.'open.inc.php');
 }

@@ -302,8 +302,8 @@ define('I18N_DIR', INCLUDE_DIR.'i18n/');
 /*############## Do NOT monkey with anything else beyond this point UNLESS you really know what you are doing ##############*/
 
 #Current version && schema signature (Changes from version to version)
-define('THIS_VERSION', 'v1.9.12'); // Set by installer
-define('GIT_VERSION', '19292ad'); // Set by installer
+define('THIS_VERSION', 'v1.9.14'); // Set by installer
+define('GIT_VERSION', '8b927a0'); // Set by installer
 define('MAJOR_VERSION', '1.9');
 //Path separator
 if(!defined('PATH_SEPARATOR')){
