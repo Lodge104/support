@@ -562,8 +562,10 @@ $.dialog = function (url, codes, cb, options) {
         $(document).on('submit.dialog', '.dialog#popup form', function(e) {
             e.preventDefault();
             var $form = $(this);
+            $('#msg_error').html('').hide();
             $('div#popup-loading', $popup).show()
                 .find('h1').css({'margin-top':function() { return $popup.height()/3-$(this).height()/3}});
+            
             $.ajax({
                 type:  $form.attr('method'),
                 url: 'ajax.php/'+$form.attr('action').substr(1),
@@ -580,11 +582,17 @@ $.dialog = function (url, codes, cb, options) {
                             return;
                         var done = $.Event('dialog:close');
                         $popup.trigger(done, [resp, status, xhr]);
+                        window.location=window.location;
                     } else {
                         $('div.body', $popup).html(resp);
                         $popup.effect('shake');
                         $('#msg_notice, #msg_error', $popup).delay(5000).slideUp();
                     }
+                },
+                error: function(resp, status, xhr) {
+                   $('#msg_error').html(resp.responseText).show();
+                   $popup.effect('shake');
+                   $('div#popup-loading', $popup).hide();
                 }
             })
             .done(function() {
