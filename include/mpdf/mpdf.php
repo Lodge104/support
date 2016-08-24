@@ -1454,7 +1454,7 @@ function StartProgressBarOutput($mode=1) {
 	<head>
 	<title>mPDF File Progress</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link rel="stylesheet" type="text/css" href="'._MPDF_URI.'progbar.css?19292ad" />
+	<link rel="stylesheet" type="text/css" href="'._MPDF_URI.'progbar.css?8b927a0" />
 		</head>
 	<body>
 	<div class="main">

@@ -4,8 +4,8 @@ $info=($_POST && $errors)?Format::input($_POST):@Format::htmlchars($org->getInfo
 if (!$info['title'])
     $info['title'] = Format::htmlchars($org->getName());
 ?>
-<script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery.multiselect.min.js?19292ad"></script>
-<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/jquery.multiselect.css?19292ad"/>
+<script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery.multiselect.min.js?8b927a0"></script>
+<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/jquery.multiselect.css?8b927a0"/>
 <h3><?php echo $info['title']; ?></h3>
 <b><a class="close" href="#"><i class="icon-remove-circle"></i></a></b>
 <hr/>
