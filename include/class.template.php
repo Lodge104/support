@@ -31,6 +31,10 @@ class EmailTemplateGroup {
             'group'=>'ticket.user',
             'name'=>/* @trans */ 'New Ticket Auto-response',
             'desc'=>/* @trans */ 'Autoresponse sent to user, if enabled, on new ticket.'),
+        'ticket.autosurvey'=>array(
+            'group'=>'ticket.user',
+            'name'=>/* @trans */ 'Surveyed Ticket Auto-reply',
+            'desc'=>/* @trans */ 'Auto survey request sent to user, if enabled, on tickets that are surveyed automatically by the system.'),    
         'ticket.autoreply'=>array(
             'group'=>'ticket.user',
             'name'=>/* @trans */ 'New Ticket Auto-reply',
@@ -218,6 +222,10 @@ class EmailTemplateGroup {
 
     function getAutoReplyMsgTemplate() {
         return $this->getMsgTemplate('ticket.autoreply');
+    }
+    
+    function getSurveyMsgTemplate() {
+        return $this->getMsgTemplate('ticket.autosurvey');
     }
 
     function getReplyMsgTemplate() {
