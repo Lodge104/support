@@ -34,6 +34,10 @@ Occoneechee Council - BSA<br>
                     <li> <a href="twitter.com/lodge104"> <i class="icon-twitter"></i> </a> </li>
                     <li> <a href="instagram.com/lodge104"> <i class="icon-instagram"></i> </a> </li>                        
                     <li> <a href="youtube.com/oalodge104"> <i class="icon-youtube"></i> </a> </li>
+<<<<<<< HEAD
+=======
+                    <li> <a href="snapchat.com/add/lodge104"> <i class="icon-snapchat"></i> </a> </li>
+>>>>>>> master
                 </ul>
             </div>            
 
