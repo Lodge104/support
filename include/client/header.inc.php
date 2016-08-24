@@ -4,14 +4,6 @@ $title=($cfg && is_object($cfg) && $cfg->getTitle())
 $signin_url = ROOT_PATH . "login.php"
     . ($thisclient ? "?e=".urlencode($thisclient->getEmail()) : "");
 $signout_url = ROOT_PATH . "logout.php?auth=".$ost->getLinkToken();
-
-<!-- START MOD05 add Favicon  -->
-<head profile=\"http://www.w3.org/2005/10/profile\">
-<link rel=\"icon\" 
-      type=\"image/gif\" 
-      href=\"https://www.support.lodge104.net/favicon.gif\">
-<!-- END MOD05 Changes -->
-
 header("Content-Type: text/html; charset=UTF-8");
 ?>
 <!DOCTYPE html>
