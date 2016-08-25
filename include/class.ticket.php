@@ -3081,8 +3081,8 @@ class Ticket {
             $sql  = 'SELECT ticket.ticket_id FROM ' .TICKET_TABLE .' ticket '
                    .'INNER JOIN '. TICKET_STATUS_TABLE. ' status '
                    .'ON (status.id=ticket.status_id AND (status.name = "closed")) '
-                   .'AND ((TIME_TO_SEC(TIMEDIFF(NOW(),ticket.updated))>=1*60) '
-                   .'AND (TIME_TO_SEC(TIMEDIFF(NOW(),ticket.updated))<=60*60)) '
+                   .'AND ((TIME_TO_SEC(TIMEDIFF(NOW(),ticket.updated))>=0*60) '
+                   .'AND (TIME_TO_SEC(TIMEDIFF(NOW(),ticket.updated))<=1*60)) '
                    .'LIMIT 50'; //Survey upto 50 Closed Tickets at a time
 
             if(($res=db_query($sql)) && db_num_rows($res)) {
@@ -3097,7 +3097,7 @@ class Ticket {
     function emailClosed() {
           global $thisstaff, $cfg;
   
-          $dept      = $this->getDept();
+          $dept = $this->getDept();
       if ($thisstaff && $vars ['signature'] == 'mine') {
         $signature = $thisstaff->getSignature();
       }elseif ($vars ['signature'] == 'dept' && $dept && $dept->isPublic() ) {
@@ -3120,12 +3120,12 @@ class Ticket {
           }
            
     } 
-    // Function to send the Email Survey template to the cuustomer if enabled and allowed per department and globally
+    // Function to send the Email Survey template to the customer if enabled and allowed per department and globally
     // This has been built to work with Lime Survey
     function emailSurveySend() {
         global $thisstaff, $cfg;
 
-        $dept      = $this->getDept ();
+        $dept = $this->getDept ();
       if ($thisstaff && $vars ['signature'] == 'mine') {
         $signature = $thisstaff->getSignature();
       }elseif ($vars ['signature'] == 'dept' && $dept && $dept->isPublic() ) {
