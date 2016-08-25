@@ -151,7 +151,7 @@ class OsticketConfig extends Config {
         'allow_pw_reset' =>     true,
         'pw_reset_window' =>    30,
         'enable_html_thread' => true,
-        'enable_lime_surveys' => false,
+        'enable_lime_surveys' => true,
         'allow_attachments' =>  true,
         'name_format' =>        'full', # First Last
         'auto_claim_tickets'=>  true,
