@@ -1,237 +1,292 @@
 <?php
 if(!defined('OSTCLIENTINC') || !is_object($thisclient) || !$thisclient->isValid()) die('Access Denied');
 
-$qs = array();
-$status=null;
-if(isset($_REQUEST['status'])) { //Query string status has nothing to do with the real status used below.
-    $qs += array('status' => $_REQUEST['status']);
-    //Status we are actually going to use on the query...making sure it is clean!
-    $status=strtolower($_REQUEST['status']);
-    switch(strtolower($_REQUEST['status'])) {
-     case 'open':
-		$results_type=__('Open Tickets');
-     case 'closed':
-		$results_type=__('Closed Tickets');
-        break;
-     case 'resolved':
-        $results_type=__('Resolved Tickets');
-        break;
-     default:
-        $status=''; //ignore
-    }
-} elseif($thisclient->getNumOpenTickets()) {
-    $status='open'; //Defaulting to open
-	$results_type=__('Open Tickets');
+$settings = &$_SESSION['client:Q'];
+
+// Unpack search, filter, and sort requests
+if (isset($_REQUEST['clear']))
+    $settings = array();
+if (isset($_REQUEST['keywords'])) {
+    $settings['keywords'] = $_REQUEST['keywords'];
+}
+if (isset($_REQUEST['topic_id'])) {
+    $settings['topic_id'] = $_REQUEST['topic_id'];
+}
+if (isset($_REQUEST['status'])) {
+    $settings['status'] = $_REQUEST['status'];
 }
 
-$sortOptions=array('id'=>'`number`', 'subject'=>'cdata.subject',
-                    'status'=>'status.name', 'dept'=>'dept_name','date'=>'ticket.created');
-$orderWays=array('DESC'=>'DESC','ASC'=>'ASC');
+$org_tickets = $thisclient->canSeeOrgTickets();
+if ($settings['keywords']) {
+    // Don't show stat counts for searches
+    $openTickets = $closedTickets = -1;
+}
+elseif ($settings['topic_id']) {
+    $openTickets = $thisclient->getNumTopicTicketsInState($settings['topic_id'],
+        'open', $org_tickets);
+    $closedTickets = $thisclient->getNumTopicTicketsInState($settings['topic_id'],
+        'closed', $org_tickets);
+}
+else {
+    $openTickets = $thisclient->getNumOpenTickets($org_tickets);
+    $closedTickets = $thisclient->getNumClosedTickets($org_tickets);
+}
+
+$tickets = Ticket::objects();
+
+$qs = array();
+$status=null;
+
+$sortOptions=array('id'=>'number', 'subject'=>'cdata__subject',
+                    'status'=>'status__name', 'dept'=>'dept__name','date'=>'created');
+$orderWays=array('DESC'=>'-','ASC'=>'');
 //Sorting options...
 $order_by=$order=null;
 $sort=($_REQUEST['sort'] && $sortOptions[strtolower($_REQUEST['sort'])])?strtolower($_REQUEST['sort']):'date';
 if($sort && $sortOptions[$sort])
     $order_by =$sortOptions[$sort];
 
-$order_by=$order_by?$order_by:'ticket_created';
-if($_REQUEST['order'] && $orderWays[strtoupper($_REQUEST['order'])])
-    $order=$orderWays[strtoupper($_REQUEST['order'])];
-
-$order=$order?$order:'ASC';
-if($order_by && strpos($order_by,','))
-    $order_by=str_replace(','," $order,",$order_by);
+$order_by=$order_by ?: $sortOptions['date'];
+if ($_REQUEST['order'] && $orderWays[strtoupper($_REQUEST['order'])])
+    $order = $orderWays[strtoupper($_REQUEST['order'])];
+else
+    $order = $orderWays['DESC'];
 
 $x=$sort.'_sort';
-$$x=' class="'.strtolower($order).'" ';
+$$x=' class="'.strtolower($_REQUEST['order'] ?: 'desc').'" ';
 
-$qselect='SELECT ticket.ticket_id,ticket.`number`,ticket.dept_id,isanswered, '
-    .'dept.ispublic, cdata.subject,'
-    .'dept_name, status.name as status, status.state, ticket.source, ticket.created ';
-
-$qfrom='FROM '.TICKET_TABLE.' ticket '
-      .' LEFT JOIN '.TICKET_STATUS_TABLE.' status
-            ON (status.id = ticket.status_id) '
-      .' LEFT JOIN '.TABLE_PREFIX.'ticket__cdata cdata ON (cdata.ticket_id = ticket.ticket_id)'
-      .' LEFT JOIN '.DEPT_TABLE.' dept ON (ticket.dept_id=dept.dept_id) '
-      .' LEFT JOIN '.TICKET_COLLABORATOR_TABLE.' collab
-        ON (collab.ticket_id = ticket.ticket_id
-                AND collab.user_id ='.$thisclient->getId().' )';
-
-$qwhere = sprintf(' WHERE ( ticket.user_id=%d OR collab.user_id=%d )',
-            $thisclient->getId(), $thisclient->getId());
-
-$states = array(
-        'open' => 'open',
-        'closed' => 'closed');
-if($status && isset($states[$status])){
-    $qwhere.=' AND status.state='.db_input($states[$status]);
+$basic_filter = Ticket::objects();
+if ($settings['topic_id']) {
+    $basic_filter = $basic_filter->filter(array('topic_id' => $settings['topic_id']));
 }
 
-$search=($_REQUEST['a']=='search' && $_REQUEST['q']);
-if($search) {
-    $qs += array('a' => $_REQUEST['a'], 'q' => $_REQUEST['q']);
-    $queryterm=db_real_escape($_REQUEST['q'],false); //escape the term ONLY...no quotes.
-    if(is_numeric($_REQUEST['q'])) {
-        $qwhere.=" AND ticket.`number` LIKE '$queryterm%'";
-    } else {//Deep search!
-        $qwhere.=' AND ( '
-                ." cdata.subject LIKE '%$queryterm%'"
-                ." OR thread.body LIKE '%$queryterm%'"
-                .' ) ';
-        $deep_search=true;
-        //Joins needed for search
-        $qfrom.=' LEFT JOIN '.TICKET_THREAD_TABLE.' thread ON ('
-               .'ticket.ticket_id=thread.ticket_id AND thread.thread_type IN ("M","R"))';
+if ($settings['status'])
+    $status = strtolower($settings['status']);
+    switch ($status) {
+    default:
+        $status = 'open';
+    case 'open':
+    case 'closed':
+		$results_type = ($status == 'closed') ? __('Closed Tickets') : __('Open Tickets');
+        $basic_filter->filter(array('status__state' => $status));
+        break;
+}
+
+// Add visibility constraints — use a union query to use multiple indexes,
+// use UNION without "ALL" (false as second parameter to union()) to imply
+// unique values
+$visibility = $basic_filter->copy()
+    ->values_flat('ticket_id')
+    ->filter(array('user_id' => $thisclient->getId()))
+    ->union($basic_filter->copy()
+        ->values_flat('ticket_id')
+        ->filter(array('thread__collaborators__user_id' => $thisclient->getId()))
+    , false);
+
+if ($thisclient->canSeeOrgTickets()) {
+    $visibility = $visibility->union(
+        $basic_filter->copy()->values_flat('ticket_id')
+            ->filter(array('user__org_id' => $thisclient->getOrgId()))
+    , false);
+}
+
+// Perform basic search
+if ($settings['keywords']) {
+    $q = trim($settings['keywords']);
+    if (is_numeric($q)) {
+        $tickets->filter(array('number__startswith'=>$q));
+    } elseif (strlen($q) > 2) { //Deep search!
+        // Use the search engine to perform the search
+        $tickets = $ost->searcher->find($q, $tickets);
     }
 }
 
+$tickets->distinct('ticket_id');
+
 TicketForm::ensureDynamicDataView();
 
-$total=db_count('SELECT count(DISTINCT ticket.ticket_id) '.$qfrom.' '.$qwhere);
+$total=$visibility->count();
 $page=($_GET['p'] && is_numeric($_GET['p']))?$_GET['p']:1;
 $pageNav=new Pagenate($total, $page, PAGE_LIMIT);
 $qstr = '&amp;'. Http::build_query($qs);
 $qs += array('sort' => $_REQUEST['sort'], 'order' => $_REQUEST['order']);
 $pageNav->setURL('tickets.php', $qs);
+$tickets->filter(array('ticket_id__in' => $visibility));
+$pageNav->paginate($tickets);
 
-//more stuff...
-$qselect.=' ,count(attach_id) as attachments ';
-$qfrom.=' LEFT JOIN '.TICKET_ATTACHMENT_TABLE.' attach ON  ticket.ticket_id=attach.ticket_id ';
-$qgroup=' GROUP BY ticket.ticket_id';
-
-$query="$qselect $qfrom $qwhere $qgroup ORDER BY $order_by $order LIMIT ".$pageNav->getStart().",".$pageNav->getLimit();
-//echo $query;
-$res = db_query($query);
-$showing=($res && db_num_rows($res))?$pageNav->showing():"";
+$showing =$total ? $pageNav->showing() : "";
 if(!$results_type)
 {
-	$results_type=ucfirst($status).' Tickets';
+	$results_type=ucfirst($status).' '.__('Tickets');
 }
 $showing.=($status)?(' '.$results_type):' '.__('All Tickets');
 if($search)
     $showing=__('Search Results').": $showing";
 
-$negorder=$order=='DESC'?'ASC':'DESC'; //Negate the sorting
+$negorder=$order=='-'?'ASC':'DESC'; //Negate the sorting
+
+$tickets->order_by($order.$order_by);
+$tickets->values(
+    'ticket_id', 'number', 'created', 'isanswered', 'source', 'status_id',
+    'status__state', 'status__name', 'cdata__subject', 'dept_id',
+    'dept__name', 'dept__ispublic', 'user__default_email__address'
+);
 
 ?>
 
-<div class="cover"> 
-    <div class="container"> <div class="row"> 
+<div class="row">
+	<div class="col-md-12">
+		<div class="well">
+			<form action="tickets.php" method="get" id="ticketSearchForm">
+			    <input type="hidden" name="a"  value="search">
+			    <div class="row">
+				    <div class="col-md-4">
+					    <div class="form-group">
+						    <label><?php echo __('Search');?></label>
+						    <input type="text" name="keywords" size="30" value="<?php echo Format::htmlchars($settings['keywords']); ?>" class="form-control">
+						</div>
+				    </div>
+				    <!-- col -->
+				    <div class="col-md-4">
+					    <div class="form-group">
+						    <label><?php echo __('Help Topic'); ?></label>
+						    <select name="topic_id" class="nowarn form-control" onchange="javascript: this.form.submit(); ">
+						        <option value="">&mdash; <?php echo __('All Help Topics');?> &mdash;</option>
+						<?php
+						foreach (Topic::getHelpTopics(true) as $id=>$name) {
+						        $count = $thisclient->getNumTopicTickets($id, $org_tickets);
+						        if ($count == 0)
+						            continue;
+						?>
+						        <option value="<?php echo $id; ?>"i
+						            <?php if ($settings['topic_id'] == $id) echo 'selected="selected"'; ?>
+						            ><?php echo sprintf('%s (%d)', Format::htmlchars($name),
+						                $thisclient->getNumTopicTickets($id)); ?></option>
+						<?php } ?>
+						    </select>
+						</div>
+				    </div>
+				    <!-- col -->
+				    <div class="col-md-4">
+					    <div class="form-group">
+						    <label>
+						    <?php if ($settings['keywords'] || $settings['topic_id'] || $_REQUEST['sort']) { ?>
+								<a href="?clear" class="text-danger"><i class="fa fa-close"></i> <?php echo __('Clear all filters and sorting'); ?></a>
+							<?php } else { ?>
+								&nbsp;
+							<?php } ?>
+						    </label>
+						    <button type="submit" class="btn btn-success btn-block"><?php echo __('Search');?></button>
+						</div>
+				    </div>
+				    <!-- col -->
+			    </div>
+			    <!-- row -->
+			</form>
+		</div>
+		<!-- well -->
+	</div>
+	<!-- col -->
+</div>
+<!-- row -->
 
-    <div class="col-md-12"> 
-        <div class="page-title">   
-            <h1><?php echo __('Tickets');?></h1>
-        </div>
-    </div>
+<hr>
 
-<div class="col-md-4">
-    <form action="tickets.php" method="get" id="ticketSearchForm">
-        
-            <input type="hidden" name="a"  value="search">
-            <div class="form-group">
-                <input class="form-control" type="text" name="q" size="20" value="<?php echo Format::htmlchars($_REQUEST['q']); ?>">
-            </div>
-            
-            <div class="form-group">
-            <select class="form-control" name="status">
-                <option value="">&mdash; <?php echo __('Any Status');?> &mdash;</option>
-                <option value="open"
-                    <?php echo ($status=='open') ? 'selected="selected"' : '';?>>
-                    <?php echo _P('ticket-status', 'Open');?> (<?php echo $thisclient->getNumOpenTickets(); ?>)</option>
-                <?php
-                if($thisclient->getNumClosedTickets()) {
-                    ?>
-                <option value="closed"
-                    <?php echo ($status=='closed') ? 'selected="selected"' : '';?>>
-                    <?php echo __('Closed');?> (<?php echo $thisclient->getNumClosedTickets(); ?>)</option>
-                <?php
-                } ?>
-            </select>
-            </div>
 
-            <div class="row">
-                <div class="col-xs-6">
-                    <input class="btn btn-primary" type="submit" value="<?php echo __('Go');?>">
-                </div>
-
-                <div class="col-xs-6">
-                    <a class="refresh btn" href="<?php echo Format::htmlchars($_SERVER['REQUEST_URI']); ?>"><i class="icon-refresh"></i> <?php echo __('Refresh'); ?></a>
-                </div>
-            </div>
+<ul class="nav nav-pills pull-right">
+	
+	<?php if ($openTickets) { ?>
     
-    </form>
-</div>
+    	<li class="<?php if ($status == 'open') echo 'active'; ?>"><a class="state pull-right" href="?<?php echo Http::build_query(array('a' => 'search', 'status' => 'open')); ?>" title=""><i class="fa fa-folder-open"></i> <?php echo _P('ticket-status', 'Open'); if ($openTickets > 0) echo sprintf(' (%d)', $openTickets); ?></a></li>
+    	
+    <?php } ?>
+    
+    <?php if ($closedTickets) {?>
+    
+    	<li class="<?php if ($status == 'closed') echo 'active'; ?>"><a class="state pull-right" href="?<?php echo Http::build_query(array('a' => 'search', 'status' => 'closed')); ?>" title=""><i class="fa fa-folder"></i> <?php echo __('Closed'); if ($closedTickets > 0) echo sprintf(' (%d)', $closedTickets); ?></a></li>
 
-<div class="col-md-8">
+    <?php } ?>
+</ul>
+	
+
+<h3><?php echo __('Tickets'); ?>
+    <span class="text-info">
+    	<a href="<?php echo Format::htmlchars($_SERVER['REQUEST_URI']); ?>"><i class="fa fa-refresh"></i></a>
+    </span>  
+</h3>
+
+
 <div class="table-responsive">
-    <table class="table table-bordered" id="ticketTable" width="100%" border="0" cellspacing="0" cellpadding="0">
-        <caption><?php echo $showing; ?></caption>
-        <thead>
-            <tr>
-                 <th width="80">
-                    <a href="tickets.php?sort=ID&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Ticket ID"><?php echo __('Ticket #');?></a>
-                </th>
-                <th width="120">
-                    <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Date"><?php echo __('Create Date');?></a>
-                </th>
-                <th width="75">
-                    <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Status"><?php echo __('Status');?></a>
-                </th>
-                <th width="380">
-                    <a href="tickets.php?sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Subject"><?php echo __('Subject');?></a>
-                </th>
-                <th width="150">
-                    <a href="tickets.php?sort=dept&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Department"><?php echo __('Department');?></a>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php
-         $subject_field = TicketForm::objects()->one()->getField('subject');
-         if($res && ($num=db_num_rows($res))) {
-            $defaultDept=Dept::getDefaultDeptName(); //Default public dept.
-            while ($row = db_fetch_array($res)) {
-                $dept= $row['ispublic']? $row['dept_name'] : $defaultDept;
-                $subject = Format::truncate($subject_field->display(
-                    $subject_field->to_php($row['subject']) ?: $row['subject']
-                ), 40);
-                if($row['attachments'])
-                    $subject.='  &nbsp;&nbsp;<span class="Icon file"></span>';
-
-                $ticketNumber=$row['number'];
-                if($row['isanswered'] && !strcasecmp($row['state'], 'open')) {
-                    $subject="<b>$subject</b>";
-                    $ticketNumber="<b>$ticketNumber</b>";
-                }
-                ?>
-                <tr id="<?php echo $row['ticket_id']; ?>">
-                    <td>
-                    <a class="Icon <?php echo strtolower($row['source']); ?>Ticket" title="<?php echo $row['email']; ?>"
-                        href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $ticketNumber; ?></a>
-                    </td>
-                    <td>&nbsp;<?php echo Format::db_date($row['created']); ?></td>
-                    <td>&nbsp;<?php echo $row['status']; ?></td>
-                    <td>
-                        <a href="tickets.php?id=<?php echo $row['ticket_id']; ?>"><?php echo $subject; ?></a>
-                    </td>
-                    <td>&nbsp;<?php echo Format::truncate($dept,30); ?></td>
-                </tr>
-            <?php
-            }
-
-         } else {
-             echo '<tr><td colspan="6">'.__('Your query did not match any records').'</td></tr>';
-         }
-        ?>
-        </tbody>
-    </table>
-    </div>
-    <?php
-    if($res && $num>0) {
-        echo '<div>&nbsp;'.__('Page').':'.$pageNav->getPageLinks().'&nbsp;</div>';
-    }
-    ?>
+	<table id="ticketTable" class="table table-bordered table-striped">
+	    <caption><?php echo $showing; ?></caption>
+	    <thead>
+	        <tr>
+	            <th nowrap>
+	                <a href="tickets.php?sort=ID&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Ticket ID"><?php echo __('Ticket #');?></a>
+	            </th>
+	            <th>
+	                <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Date"><?php echo __('Create Date');?></a>
+	            </th>
+	            <th>
+	                <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Status"><?php echo __('Status');?></a>
+	            </th>
+	            <th>
+	                <a href="tickets.php?sort=subj&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Subject"><?php echo __('Subject');?></a>
+	            </th>
+	            <th>
+	                <a href="tickets.php?sort=dept&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Department"><?php echo __('Department');?></a>
+	            </th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	    <?php
+	     $subject_field = TicketForm::objects()->one()->getField('subject');
+	     $defaultDept=Dept::getDefaultDeptName(); //Default public dept.
+	     if ($tickets->exists(true)) {
+	         foreach ($tickets as $T) {
+	            $dept = $T['dept__ispublic']
+	                ? Dept::getLocalById($T['dept_id'], 'name', $T['dept__name'])
+	                : $defaultDept;
+	            $subject = $subject_field->display(
+	                $subject_field->to_php($T['cdata__subject']) ?: $T['cdata__subject']
+	            );
+	            $status = TicketStatus::getLocalById($T['status_id'], 'value', $T['status__name']);
+	            if (false) // XXX: Reimplement attachment count support
+	                $subject.='  &nbsp;&nbsp;<i class="fa fa-question-circle"></i>';
+	
+	            $ticketNumber=$T['number'];
+	            if($T['isanswered'] && !strcasecmp($T['status__state'], 'open')) {
+	                $subject="<b>$subject</b>";
+	                $ticketNumber="<b>$ticketNumber</b>";
+	            }
+	            ?>
+	            <tr id="<?php echo $T['ticket_id']; ?>">
+	                <td>
+	                <a class="Icon <?php echo strtolower($T['source']); ?>Ticket" title="<?php echo $T['user__default_email__address']; ?>"
+	                    href="tickets.php?id=<?php echo $T['ticket_id']; ?>"><?php echo $ticketNumber; ?></a>
+	                </td>
+	                <td><?php echo Format::date($T['created']); ?></td>
+	                <td><?php echo $status; ?></td>
+	                <td>
+	                    <div style="max-height: 1.2em; max-width: 320px;" class="link truncate" href="tickets.php?id=<?php echo $T['ticket_id']; ?>"><?php echo $subject; ?></div>
+	                </td>
+	                <td><span class="truncate"><?php echo $dept; ?></span></td>
+	            </tr>
+	        <?php
+	        }
+	
+	     } else {
+	         echo '<tr><td colspan="5">'.__('Your query did not match any records').'</td></tr>';
+	     }
+	    ?>
+	    </tbody>
+	</table>
+	
 </div>
-
-    </div></div>
-</div>
+<!-- table-responsive -->
+	
+<?php
+if ($total) {
+    echo '<div class="pagination">&nbsp;'.__('Page').':'.$pageNav->getPageLinks().'&nbsp;</div>';
+}
+?>

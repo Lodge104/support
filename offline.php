@@ -24,15 +24,9 @@ require(CLIENTINC_DIR.'header.inc.php');
 ?>
 <div id="landing_page">
 <?php
-if(($page=$cfg->getOfflinePage())) { ?>
-
-<div class="cover"> 
-    <div class="container"><div class="row"><div class="col-md-12"> 
-        <?php echo $page->getBody(); ?>
-    </div></div></div>
-</div>
-
-<?php } else {
+if(($page=$cfg->getOfflinePage())) {
+    echo $page->getBody();
+} else {
     echo '<h1>'.__('Support Ticket System Offline').'</h1>';
 }
 ?>

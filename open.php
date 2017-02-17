@@ -50,14 +50,19 @@ if ($_POST) {
             @header('Location: tickets.php?id='.$ticket->getId());
         }
     }else{
-        $errors['err']=$errors['err']?$errors['err']:__('Unable to create a ticket. Please correct errors below and try again!');
+        $errors['err'] = $errors['err'] ?: sprintf('%s %s',
+            __('Unable to create a ticket.'),
+            __('Correct any errors below and try again.'));
     }
 }
 
 //page
 $nav->setActiveNav('new');
 if ($cfg->isClientLoginRequired()) {
-    if (!$thisclient) {
+    if ($cfg->getClientRegistrationMode() == 'disabled') {
+        Http::redirect('view.php');
+    }
+    elseif (!$thisclient) {
         require_once 'secure.inc.php';
     }
     elseif ($thisclient->isGuest()) {
@@ -67,18 +72,19 @@ if ($cfg->isClientLoginRequired()) {
 }
 
 require(CLIENTINC_DIR.'header.inc.php');
-if($ticket
-        && (
-            (($topic = $ticket->getTopic()) && ($page = $topic->getPage()))
-            || ($page = $cfg->getThankYouPage())
-        )) { ?>
-<div class="cover"> 
-    <div class="container"> <div class="row"> <div class="col-md-12"> 
-        <?php     // Thank the user and promise speedy resolution!
-        echo Format::viewableImages($ticket->replaceVars($page->getBody())); ?>
-    </div></div></div>
-</div>
-<?php }
+if ($ticket
+    && (
+        (($topic = $ticket->getTopic()) && ($page = $topic->getPage()))
+        || ($page = $cfg->getThankYouPage())
+    )
+) {
+    // Thank the user and promise speedy resolution!
+    echo Format::viewableImages(
+        $ticket->replaceVars(
+            $page->getLocalBody()
+        )
+    );
+}
 else {
     require(CLIENTINC_DIR.'open.inc.php');
 }

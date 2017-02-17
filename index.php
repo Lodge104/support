@@ -14,87 +14,135 @@
     vim: expandtab sw=4 ts=4 sts=4:
 **********************************************************************/
 require('client.inc.php');
+require_once INCLUDE_DIR . 'class.page.php';
 $section = 'home';
 require(CLIENTINC_DIR.'header.inc.php');
 ?>
+<div class="landing-page">
+	
+	<div class="row">
+		
+		<?php
+		$faqs = FAQ::getFeatured()->select_related('category')->limit(5);
+		if ($faqs->all()) { ?>
+		
+			<div class="col-md-8">
+			
+		<?php } else { ?>
+		
+			<div class="col-xs-12">
+				
+		<?php } ?>
+		
+			<div class="row text-center">	
+				<div class="col-xs-12">
+				    <?php
+				    if($cfg && ($page = $cfg->getLandingPage()))
+				        echo $page->getBodyWithImages();
+				    else
+				        echo  '<h1>'.__('Welcome to the Support Centre').'</h1>';
+				    ?>
+				</div>
+				<!-- /.col -->	 
+				<?php
+				$BUTTONS = isset($BUTTONS) ? $BUTTONS : true;
+				?>
+				<?php if ($BUTTONS) { ?>   
+				    <div class="col-xs-12">
+					    <?php if ($cfg->getClientRegistrationMode() != 'disabled' || !$cfg->isClientLoginRequired()) { ?>
+						    <a href="open.php" class="block-box">
+							    <i data-icon=">" class="icon"></i>
+							    <?php echo __('Open a New Ticket');?>
+						    </a>
+						<?php } ?>
+					    <a href="<?php if(is_object($thisclient)){ echo 'tickets.php';} else {echo 'view.php';}?>" class="block-box">
+						    <i data-icon="~" class="icon"></i>
+						    <?php echo __('Check Ticket Status');?>
+					    </a>
+				    </div>
+				    <!-- /.col -->	
+			    <?php } ?>	    
+			</div>
+			<!-- /.row -->
+		
+		</div><!-- /col -->
+			
+		<?php if ($faqs->all()) { ?>
+	
+			<div class="col-md-4">
+				<?php include CLIENTINC_DIR.'templates/sidebar.tmpl.php'; ?>
+			</div>
+			<!-- /col -->
+			
+		<?php } ?>
+		
+		
+	</div>
+	<!-- /.row -->
 
-<div id="landing_page">
+    
 
-<div class="container"><div class="row">
-
-    <div class="col-md-12">
-        <div class="welcome-page">
-            <div class="wptext">
-            <?php
-            if($cfg && ($page = $cfg->getLandingPage()))
-                echo $page->getBodyWithImages();
-            else
-                echo  '<h1>'.__('Welcome to the Support Center').'</h1>';
-            ?>
-              </div>
-            <?php
-            if($cfg && $cfg->isKnowledgebaseEnabled()){
-                //FIXME: provide ability to feature or select random FAQs ??
-            ?>
-          
-
-            <form action="kb/index.php" method="get" id="kb-search" class="form-inline">
-                <input type="hidden" name="a" value="search">
-                <div class="form-group">
-                    <input placeholder="Search Knowledgebase" class="form-control" id="query" type="text" size="20" name="q" value="<?php echo Format::htmlchars($_REQUEST['q']); ?>">
-                </div>
-                <input class="btn" id="searchSubmit" type="submit" value="<?php echo __('Search');?>">
-            </form>
-
-            <?php } ?>
-
-        </div>
-    </div>
-
-</div></div>
-
-
-<div class="home-box">
-    <div class="container"><div class="row">
-        <div class="col-sm-6">
-            <div id="new_ticket">
-                <i class="icon-file-text"></i> 
-                <h3><?php echo __('Open a New Ticket');?></h3>
-                <div><?php echo __('Please provide as much detail as possible so we can best assist you. To update a previously submitted ticket, please login.');?></div>
-                <a href="open.php" class="btn"><?php echo __('Open a New Ticket');?></a>
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div id="check_status" class="pull-right">
-                <i class="icon-ticket"></i>
-                <h3> <?php echo __('Check Ticket Status');?></h3>
-                <div><?php echo __('We provide archives and history of all your current and past support requests complete with responses.');?></div>
-                <a href="<?php if(is_object($thisclient)){ echo 'tickets.php';} else {echo 'view.php';}?>" class="btn"><?php echo __('Check Ticket Status');?></a>
-            </div>            
-        </div>
-    </div></div>
+	<?php
+	if($cfg && $cfg->isKnowledgebaseEnabled()){
+	?>
+	<section class="kb well space-top-2x padding-bottom-2x">
+		<div class="row text-center">
+			<div class="col-md-8 col-md-offset-2">
+				<h5><?php echo __('Search our knowledge base'); ?></h5>
+			</div>
+			<!-- /.col -->
+		</div>
+		<!-- /.row -->
+		<div class="row text-center">
+			<div class="col-md-8 col-md-offset-2">
+    
+				<form action="kb/faq.php" method="get" id="kb-search">
+					<input type="hidden" name="a" value="search"/>
+	                <div class="row">
+		                <div class="col-md-8">
+			                <input type="text" class="form-control space-bottom" placeholder="<?php echo __('Search our knowledge base'); ?>" name="q">
+		                </div>
+		                <!-- /.col -->
+		                <div class="col-md-4">
+			                <button class="btn btn-success btn-block" type="submit" id="searchSubmit"><?php echo __('Search');?></button>
+		                </div>
+		                <!-- /.col -->	                
+	                </div>
+	                <!-- /.row -->
+	            </form>
+			</div>
+			<!-- /.col -->
+		</div>
+		<!-- /.row -->
+	</section>
+	<hr>
+	<section>
+		<?php
+		$cats = Category::getFeatured();
+		if ($cats->all()) { ?>
+		<h3 class="text-center"><?php echo __('Featured Knowledge Base Articles'); ?></h3>
+		<?php
+		}?>
+		<ul class="list-group">
+		<?php foreach ($cats as $C) { ?>
+        <li class="list-group-item">
+            <h4><i class="fa fa-folder-o"></i> <?php echo $C->getName(); ?></h4>
+            <ul class="list-group">
+			<?php foreach ($C->getTopArticles() as $F) { ?>
+				<li class="list-group-item"><a href="<?php echo ROOT_PATH;
+                ?>kb/faq.php?id=<?php echo $F->getId(); ?>"><?php
+                echo $F->getQuestion(); ?></a>
+				<div class="list-group-item-text"><?php echo $F->getTeaser(); ?></div>
+				</li>
+			<?php } ?>
+			</ul>
+		</li>
+		<?php }?>
+	</section>
+	
+    <?php
+	} ?>
 </div>
-
-<div class="clear"></div>
-
-</div>
-
-<?php
-if($cfg && $cfg->isKnowledgebaseEnabled()) { ?>
-
-<div class="faqbanner"> 
-    <div class="container"> <div class="row"> 
-        <div class="col-md-12">
-            <p><?php echo sprintf(
-            __('Be sure to browse our %s before opening a ticket'),
-            sprintf('<a href="kb/index.php">%s</a>',
-                __('Frequently Asked Questions (FAQs)')
-            )); ?></p>
-        </div>
-    </div></div>
-</div>
-
-<?php } ?>
-
-<div class="clear"></div>
+<!-- /.landing-page -->
+	
 <?php require(CLIENTINC_DIR.'footer.inc.php'); ?>
