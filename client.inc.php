@@ -26,8 +26,7 @@ if(!defined('INCLUDE_DIR')) die('Fatal error');
 define('CLIENTINC_DIR',INCLUDE_DIR.'client/');
 define('OSTCLIENTINC',TRUE);
 
-//define('ASSETS_PATH',ROOT_PATH.'assets/default/');
-define('ASSETS_PATH',ROOT_PATH.'assets/kendo/');
+define('ASSETS_PATH',ROOT_PATH.'assets/default/');
 
 //Check the status of the HelpDesk.
 if (!in_array(strtolower(basename($_SERVER['SCRIPT_NAME'])), array('logo.php','file.php'))
@@ -49,8 +48,7 @@ $nav=null;
 $thisclient = UserAuthenticationBackend::getUser();
 
 if (isset($_GET['lang']) && $_GET['lang']) {
-    if (Internationalization::getLanguageInfo($_GET['lang']))
-        $_SESSION['client:lang'] = $_GET['lang'];
+    Internationalization::setCurrentLanguage($_GET['lang']);
 }
 
 // Bootstrap gettext translations as early as possible, but after attempting
@@ -78,6 +76,7 @@ $ost->addExtraHeader('<meta name="csrf_token" content="'.$ost->getCSRFToken().'"
 /* Client specific defaults */
 define('PAGE_LIMIT', DEFAULT_PAGE_LIMIT);
 
+require(INCLUDE_DIR.'class.nav.php');
 $nav = new UserNav($thisclient, 'home');
 
 $exempt = in_array(basename($_SERVER['SCRIPT_NAME']), array('logout.php', 'ajax.php', 'logs.php', 'upgrade.php'));

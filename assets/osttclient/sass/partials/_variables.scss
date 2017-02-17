@@ -1,0 +1,19 @@
+// Colours
+
+$theme_main:#17B3E1;
+$info:#3498DB;
+$success:#2ECC71;
+$warning:#F1C40F;
+$danger:#E74C3C;
+$primary:#1ABC9C;
+
+$font-size-base: 16px;
+$line-height-base: 1.5;
+$line-height-computed: ceil(($font-size-base * $line-height-base));
+
+// Media queries
+$desktop: "screen and (max-width: 1200px)";
+$tablet-land: "screen and (max-width: 991px)";
+$tablet-port: "screen and (max-width: 768px)";
+$mobile-land: "screen and (max-width: 480px)";
+$mobile-port: "screen and (max-width: 360px)";

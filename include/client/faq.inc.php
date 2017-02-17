@@ -4,39 +4,75 @@ if(!defined('OSTCLIENTINC') || !$faq  || !$faq->isPublished()) die('Access Denie
 $category=$faq->getCategory();
 
 ?>
-<div class="cover"> 
-    <div class="container"> <div class="row"> <div class="col-md-12"> 
-    <div class="page-title">  
+
+<div class="page-title">  
 	<h1><?php echo __('Frequently Asked Questions');?></h1>
-	</div>
+</div>
 
 <ol class="breadcrumb bordered">
   <li><a href="index.php"><?php echo __('All Categories');?></a></li>
   <li><a href="faq.php?cid=<?php echo $category->getId(); ?>"><?php echo $category->getName(); ?></a></li>
 </ol>
-<div class="faq-entry"> 
+
+<div class="row"> 
+	<div class="col-md-8"> 
+
 		<div class="faq-title">
-			<h2><?php echo $faq->getQuestion() ?></h2>
+			<h2><?php echo $faq->getLocalQuestion() ?></h2>
 		</div>
-
-		<div class="clear"></div>
-		<div class="threadbody">
-		<?php echo Format::safe_html($faq->getAnswerWithImages()); ?>
+		
+		<div class="well well-lg">
+			<?php echo $faq->getLocalAnswerWithImages(); ?>
 		</div>
 		<hr>
-		<p>
-		<?php
-		if($faq->getNumAttachments()) { ?>
-		 <div><span class="faded"><b><?php echo __('Attachments');?>:</b></span>  <?php echo $faq->getAttachmentsLinks(); ?></div>
-		<?php
-		} ?>
 
-		<div class="article-meta"><span class="faded"><b><?php echo __('Help Topics');?>:</b></span>
-		    <?php echo ($topics=$faq->getHelpTopics())?implode(', ',$topics):' '; ?>
-		</div>
-		</p>
-</div>
+		<p><b><?php echo __('Help Topics');?>:</b> <?php echo ($topics=$faq->getHelpTopics())?implode(', ',$topics):' '; ?></p>
+
 		<hr>
-		<div class="faded">&nbsp;<?php echo __('Last updated').' '.Format::db_daydatetime($category->getUpdateDate()); ?></div>
-    </div></div></div>
+		<p><small><?php echo sprintf(__('Last Updated %s'), Format::relativeTime(Misc::db2gmtime($category->getUpdateDate()))); ?></small></p>
+	</div>
+	<!-- /.col -->
+	<div class="col-md-4">
+		
+		<form method="get" action="faq.php">
+	        <input type="hidden" name="a" value="search"/>
+	        <div class="input-group">
+	        	<input type="text" name="q" class="form-control" placeholder="<?php echo __('Search our knowledge base'); ?>"/>
+	            <span class="input-group-btn">
+	            <button class="btn btn-default" type="submit">Go!</button>
+	            </span>
+	        </div>
+        </form>
+		
+		<hr>
+		
+		<?php if ($attachments = $faq->getLocalAttachments()->all()) { ?>
+			
+			<h4><?php echo __('Attachments');?></h4>
+			<ul class="list-group">
+				<?php foreach ($attachments as $att) { ?>
+				    <li class="list-item">
+				    <a href="<?php echo $att->file->getDownloadUrl(); ?>" class="no-pjax">
+				        <i class="fa fa-file-o"></i>
+				        <?php echo Format::htmlchars($att->getFilename()); ?>
+				    </a>
+				    </li>
+				<?php } ?>
+			</ul>
+		
+		<?php }
+		if ($faq->getHelpTopics()->count()) { ?>
+		<section>
+		    <h4><?php echo __('Help Topics'); ?></h4>
+		    <ul class="list-group">
+		<?php foreach ($faq->getHelpTopics() as $T) { ?>
+		    <li class="list-group-item"><?php echo $T->topic->getFullName(); ?></li>
+		<?php } ?>
+		    </ul>
+		</section>
+		<?php } ?>
+		
+	</div>
+	<!-- /col -->
 </div>
+<!-- /.row -->

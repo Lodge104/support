@@ -109,7 +109,7 @@
             // Upload failed. TODO: Add a button to the UI to retry on
             // HTTP 500
             return e.remove();
-          e.find('[name="'+that.options.name+'"]').val(json.id);
+          e.find('[name="'+that.options.name+'"]').val(''+json.id+','+file.name);
           e.data('fileId', json.id);
           e.find('.progress-bar')
             .width('100%')
@@ -153,7 +153,7 @@
       filenode
           .append($('<div class="filetype"></div>').addClass())
           .append($('<img class="preview" />'))
-          .append($('<span class="filename ltr"></div>')
+          .append($('<span class="filename ltr filedropfile"></div>')
             .append($('<span class="filesize"></span>').text(
               this.fileSize(parseInt(file.size))
             ))
@@ -171,9 +171,8 @@
             .hide())
           .append($('<input type="hidden"/>').attr('name', this.options.name)
             .val(file.id))
-          .append($('<div class="clear"></div>'));
       if (this.options.deletable) {
-        filenode.prepend($('<span><i class="icon-trash"></i></span>')
+        filenode.prepend($('<span><i class="fa fa-trash"></i></span>')
           .addClass('trash pull-right')
           .click($.proxy(this.deleteNode, this, filenode))
         );
@@ -248,7 +247,7 @@
     files: [],
     deletable: true,
     shim: !window.FileReader,
-    queuefiles: 4
+    queuefiles: 1
   };
 
   $.fn.filedropbox.messages = {
@@ -350,8 +349,8 @@
     this.on('drop', drop).on('dragstart', opts.dragStart).on('dragenter', dragEnter).on('dragover', dragOver).on('dragleave', dragLeave);
     $(document).on('drop', docDrop).on('dragenter', docEnter).on('dragover', docOver).on('dragleave', docLeave);
 
-    (opts.link || this).on('click', function(e){
-      $('#' + opts.fallback_id).trigger(e);
+    (opts.link || this).click(function(e) {
+      $('#' + opts.fallback_id).trigger('click');
       return false;
     });
 
