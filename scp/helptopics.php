@@ -41,6 +41,8 @@ if($_POST){
             if ($_topic->update($_POST, $errors)) {
                 $topic = $_topic;
                 $msg=sprintf(__('Successfully added %s.'), Format::htmlchars($_POST['topic']));
+                $type = array('type' => 'created');
+                Signal::send('object.created', $topic, $type);
                 $_REQUEST['a']=null;
             }elseif(!$errors['err']){
                 $errors['err']=sprintf('%s %s',
@@ -71,8 +73,12 @@ if($_POST){
                           $t->setFlag(Topic::FLAG_ACTIVE, true);
                           $filter_actions = FilterAction::objects()->filter(array('type' => 'topic', 'configuration' => '{"topic_id":'. $t->getId().'}'));
                           FilterAction::setFilterFlag($filter_actions, 'topic', false);
-                          if($t->save())
-                            $num++;
+                          if($t->save()) {
+                              $type = array('type' => 'edited', 'status' => 'Active');
+                              Signal::send('object.edited', $t, $type);
+                              $num++;
+                          }
+
                         }
 
                         if ($num > 0) {
@@ -98,8 +104,11 @@ if($_POST){
                           $t->setFlag(Topic::FLAG_ACTIVE, false);
                           $filter_actions = FilterAction::objects()->filter(array('type' => 'topic', 'configuration' => '{"topic_id":'. $t->getId().'}'));
                           FilterAction::setFilterFlag($filter_actions, 'topic', true);
-                          if($t->save())
-                            $num++;
+                          if($t->save()) {
+                              $type = array('type' => 'edited', 'status' => 'Disabled');
+                              Signal::send('object.edited', $t, $type);
+                              $num++;
+                          }
                         }
                         if ($num > 0) {
                             if($num==$count)
@@ -124,8 +133,11 @@ if($_POST){
                           $t->setFlag(Topic::FLAG_ACTIVE, false);
                           $filter_actions = FilterAction::objects()->filter(array('type' => 'topic', 'configuration' => '{"topic_id":'. $t->getId().'}'));
                           FilterAction::setFilterFlag($filter_actions, 'topic', true);
-                          if($t->save())
+                          if($t->save()) {
+                            $type = array('type' => 'edited', 'status' => 'Archived');
+                            Signal::send('object.edited', $t, $type);
                             $num++;
+                          }
                         }
                         if ($num > 0) {
                             if($num==$count)
@@ -140,20 +152,35 @@ if($_POST){
                         }
                         break;
                     case 'delete':
-                        $i = Topic::objects()->filter(array(
+                        $topics = Topic::objects()->filter(array(
                             'topic_id__in'=>$_POST['ids']
-                        ))->delete();
+                        ));
 
-                        if($i && $i==$count)
+                        foreach ($topics as $t)
+                            $t->delete();
+
+                        if($topics && $topics==$count)
                             $msg = sprintf(__('Successfully deleted %s.'),
                                 _N('selected help topic', 'selected help topics', $count));
-                        elseif($i>0)
-                            $warn = sprintf(__('%1$d of %2$d %3$s deleted'), $i, $count,
+                        elseif($topics>0)
+                            $warn = sprintf(__('%1$d of %2$d %3$s deleted'), $topics, $count,
                                 _N('selected help topic', 'selected help topics', $count));
                         elseif(!$errors['err'])
                             $errors['err']  = sprintf(__('Unable to delete %s.'),
                                 _N('selected help topic', 'selected help topics', $count));
-
+                        if ($topics==$count || $topics>0) {
+                            $data = array();
+                            foreach ($_POST['ids'] as $id) {
+                                if ($data = AuditEntry::getDataById($id, 'H'))
+                                    $name = json_decode($data[2], true);
+                                else {
+                                    $name = __('NA');
+                                    $data = array('H', $id);
+                                }
+                                $type = array('type' => 'deleted');
+                                Signal::send('object.deleted', $data, $type);
+                            }
+                        }
                         break;
                     case 'sort':
                         try {

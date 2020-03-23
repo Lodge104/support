@@ -127,6 +127,14 @@ class Validator {
                 if($values=explode(',', $this->input[$k]))
                     foreach($values as $v)
                         if(!preg_match_all(
+                                '/^([a-z0-9|-]+\.)*[a-z0-9|-]+\.[a-z]+$/',
+                                ltrim($v)))
+                            $this->errors[$k]=$field['error'];
+                break;
+            case 'cs-url': // Comma separated list of urls
+                if($values=explode(',', $this->input[$k]))
+                    foreach($values as $v)
+                        if(!preg_match_all(
                                 '/^(https?:\/\/)?((\*\.|\w+\.)?[\w-]+(\.[a-zA-Z]+)?(:([0-9]+|\*))?)+$/',
                                 ltrim($v)))
                             $this->errors[$k]=$field['error'];
@@ -211,6 +219,11 @@ class Validator {
         return $error == '';
     }
 
+    static function is_formula($text, &$error='') {
+        if (!preg_match('/^[^=\+@-].*$/s', $text))
+            $error = __('Content cannot start with the following characters: = - + @');
+        return $error == '';
+    }
 
     /*
      * check_ip

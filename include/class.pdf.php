@@ -19,6 +19,9 @@ define('THIS_DIR', str_replace('\\', '/', Misc::realpath(dirname(__FILE__))) . '
 
 require_once(INCLUDE_DIR.'mpdf/vendor/autoload.php');
 
+// unregister phar stream to mitigate vulnerability in mpdf library
+@stream_wrapper_unregister('phar');
+
 class mPDFWithLocalImages extends Mpdf {
     function WriteHtml($html, $sub = 0, $init = true, $close = true) {
         static $filenumber = 1;
@@ -57,15 +60,18 @@ class Ticket2PDF extends mPDFWithLocalImages
 
 	var $includenotes = false;
 
+       var $includeevents = false;
+
 	var $pageOffset = 0;
 
     var $ticket = null;
 
-	function __construct($ticket, $psize='Letter', $notes=false) {
+	function __construct($ticket, $psize='Letter', $notes=false, $events=false) {
         global $thisstaff;
 
         $this->ticket = $ticket;
         $this->includenotes = $notes;
+        $this->includeevents = $events;
 
 	parent::__construct(['mode' => 'utf-8', 'format' => $psize, 'tempDir'=>sys_get_temp_dir()]);
 
