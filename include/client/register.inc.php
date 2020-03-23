@@ -91,8 +91,8 @@ $info = Format::htmlchars(($errors && $_POST)?$_POST:$info);
 
         <hr>
         <p>
-            <input class="btn btn-primary" type="submit" value="Register"/>
-            <input class="btn btn-primary" type="button" value="Cancel" onclick="javascript:
+            <input class="btn btn-primary" type="submit" value="<?php echo __('Register'); ?>"/>
+            <input class="btn btn-primary" type="button" value="<?php echo __('Cancel'); ?>" onclick="javascript:
                 window.location.href='index.php';"/>
         </p>
         </form>
@@ -102,7 +102,7 @@ $info = Format::htmlchars(($errors && $_POST)?$_POST:$info);
 
 <?php if (!isset($info['timezone'])) { ?>
 <!-- Auto detect client's timezone where possible -->
-<script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jstz.min.js?a076918"></script>
+<script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jstz.min.js?f1e9e88"></script>
 <script type="text/javascript">
 $(function() {
     var zone = jstz.determine();

@@ -138,6 +138,13 @@ class TEA_EditThreadEntry extends ThreadEntryAction {
                 && ($role = $thisstaff->getRole($T->getDeptId(), $T->isAssigned($thisstaff)))
                 && $role->hasPerm(ThreadEntry::PERM_EDIT)
             )
+            || ($T instanceof Task
+                && $T->getDept()->getManagerId() == $thisstaff->getId()
+            )
+            || ($T instanceof Task
+                && ($role = $thisstaff->getRole($T->getDeptId(), $T->isAssigned($thisstaff)))
+                && $role->hasPerm(ThreadEntry::PERM_EDIT)
+            )
         );
     }
 
@@ -390,6 +397,9 @@ class TEA_EditAndResendThreadEntry extends TEA_EditThreadEntry {
 
         // Log an event that the item was resent
         $object->logEvent('resent', array('entry' => $response->id));
+
+        $type = array('type' => 'resent');
+        Signal::send('object.edited', $object, $type);
 
         // Flag the entry as resent
         $response->flags |= ThreadEntry::FLAG_RESENT;

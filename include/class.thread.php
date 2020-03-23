@@ -119,7 +119,7 @@ implements Searchable {
 
     // Collaborators
     function getNumCollaborators() {
-        return $this->collaborators->count();
+        return $this->getCollaborators()->count();
     }
 
     function getNumActiveCollaborators() {
@@ -168,7 +168,6 @@ implements Searchable {
     }
 
     function addCollaborator($user, $vars, &$errors, $event=true) {
-
         if (!$user)
             return null;
 
@@ -183,15 +182,23 @@ implements Searchable {
 
         $this->_collaborators = null;
 
-        if ($event)
-            $this->getEvents()->log($this->getObject(),
-                'collab',
-                array('add' => array($user->getId() => array(
-                        'name' => $user->getName()->getOriginal(),
-                        'src' => @$vars['source'],
-                    ))
-                )
-            );
+        if ($event) {
+          $this->getEvents()->log($this->getObject(),
+              'collab',
+              array('add' => array($user->getId() => array(
+                      'name' => $user->getName()->getOriginal(),
+                      'src' => @$vars['source'],
+                  ))
+              )
+          );
+
+          $type = array('type' => 'collab', 'add' => array($user->getId() => array(
+                  'name' => $user->getName()->name,
+                  'src' => @$vars['source'],
+              )));
+          Signal::send('object.created', $this->getObject(), $type);
+        }
+
 
         return $c;
     }
@@ -213,6 +220,11 @@ implements Searchable {
                  $this->getEvents()->log($this->getObject(), 'collab', array(
                      'del' => array($c->user_id => array('name' => $c->getName()->getOriginal()))
                  ));
+                 $type = array('type' => 'collab', 'del' => array($c->user_id => array(
+                         'name' => $c->getName()->getOriginal(),
+                         'src' => @$vars['source'],
+                     )));
+                 Signal::send('object.deleted', $this->getObject(), $type);
             }
         }
 
@@ -254,7 +266,6 @@ implements Searchable {
 
         return true;
     }
-
 
     //UserList of participants (collaborators)
     function getParticipants() {
@@ -564,11 +575,24 @@ implements Searchable {
             $vars['thread-type'] = 'M';
         }
 
+        if ($mailinfo['system_emails']
+                && ($t = $this->getObject())
+                && $t instanceof Ticket)
+            $t->systemReferral($mailinfo['system_emails']);
+
         switch ($vars['thread-type']) {
         case 'M':
             $vars['message'] = $body;
-            if ($object instanceof Threadable)
-                return $object->postThreadEntry('M', $vars);
+            if ($object instanceof Threadable) {
+                $entry = $object->postThreadEntry('M', $vars);
+                if ($this->getObjectType() == 'C') {
+                    if ($object->isChild()) {
+                        $parent = Ticket::lookup($object->getPid());
+                        ThreadEntry::setExtra(array($entry), array('thread' => $this->getId()), $parent->getThread()->getId());
+                    }
+                }
+                return $entry;
+            }
             elseif ($this instanceof ObjectThread)
                 return $this->addMessage($vars, $errors);
             break;
@@ -604,6 +628,22 @@ implements Searchable {
         return Collaborator::objects()
             ->filter(array('thread_id'=>$this->getId()))
             ->delete();
+    }
+
+    function setExtra($mergedThread, $info='') {
+
+        if ($info && $info['extra']) {
+            $extra = json_decode($info['extra'], true);
+            $entries = ThreadEntry::objects()->filter(array('thread_id' => $info['threadId']));
+            foreach ($entries as $entry)
+                $entry->saveExtra($entry, array('thread' => $info['threadId']), $mergedThread->getId());
+        } else
+            ThreadEntry::setExtra($this->getEntries(), array('thread' => $this->getId()), $mergedThread->getId());
+
+        $this->object_type = 'C';
+        $number = Ticket::objects()->filter(array('ticket_id'=>$this->getObjectId()))->values_flat('number')->first();
+        $this->extra = json_encode(array('ticket_id' => $mergedThread->getObjectId(), 'number' => $extra['number'] ?: $number[0]));
+        $this->save();
     }
 
     /**
@@ -729,6 +769,18 @@ class ThreadEntryEmailInfo extends VerySimpleModel {
     );
 }
 
+class ThreadEntryMergeInfo extends VerySimpleModel {
+    static $meta = array(
+        'table' => THREAD_ENTRY_MERGE_TABLE,
+        'pk' => array('id'),
+        'joins' => array(
+            'thread_entry' => array(
+                'constraint' => array('thread_entry_id' => 'ThreadEntry.id'),
+            ),
+        ),
+    );
+}
+
 class ThreadEntry extends VerySimpleModel
 implements TemplateVariable {
     static $meta = array(
@@ -749,6 +801,10 @@ implements TemplateVariable {
             ),
             'email_info' => array(
                 'reverse' => 'ThreadEntryEmailInfo.thread_entry',
+                'list' => false,
+            ),
+            'merge_info' => array(
+                'reverse' => 'ThreadEntryMergeInfo.thread_entry',
                 'list' => false,
             ),
             'attachments' => array(
@@ -777,6 +833,7 @@ implements TemplateVariable {
     const FLAG_SYSTEM                   = 0x0080;   // Entry is a system note.
     const FLAG_REPLY_ALL                = 0x00100;  // Agent response, reply all
     const FLAG_REPLY_USER               = 0x00200;  // Agent response, reply to User
+    const FLAG_CHILD                    = 0x00400;  // Entry is from a child Ticket
 
     const PERM_EDIT     = 'thread.edit';
 
@@ -1497,6 +1554,66 @@ implements TemplateVariable {
         return $entry;
     }
 
+    function setExtra($entries, $info=NULL, $thread_id=NULL) {
+        foreach ($entries as $entry) {
+            $mergeInfo = new ThreadEntryMergeInfo(array(
+                'thread_entry_id' => $entry->getId(),
+                'data' => json_encode($info),
+            ));
+            $mergeInfo->save();
+            $entry->saveExtra($info, $thread_id);
+        }
+
+    }
+
+    function saveExtra($info=NULL, $thread_id=NULL) {
+        $this->setFlag(ThreadEntry::FLAG_CHILD, true);
+        $this->thread_id = $thread_id;
+        $this->save();
+    }
+
+    function getMergeData() {
+        return $this->merge_info ? $this->merge_info->data : null;
+    }
+
+    function sortEntries($entries, $ticket) {
+        $buckets = array();
+        $childEntries = array();
+        foreach ($entries as $i=>$E) {
+            if ($ticket) {
+                $extra = json_decode($E->getMergeData(), true);
+                //separated entries
+                if ($ticket->getMergeType() == 'separate') {
+                    if ($extra['thread']) {
+                        $childEntries[$E->getId()] = $E;
+                        if ($childEntries) {
+                            uasort($childEntries, function ($a, $b) { //sort by child ticket
+                                $aExtra = json_decode($a->getMergeData(), true);
+                                $bExtra = json_decode($b->getMergeData(), true);
+                                if ($aExtra['thread'] != $bExtra["thread"])
+                                    return $bExtra["thread"] - $aExtra['thread'];
+                            });
+                            uasort($childEntries, function($a, $b) { //sort by child created date
+                                $aExtra = json_decode($a->getMergeData(), true);
+                                $bExtra = json_decode($b->getMergeData(), true);
+                                if ($aExtra['thread'] == $bExtra["thread"])
+                                    return strtotime($a->created) - strtotime($b->created);
+                            });
+                        }
+                    } else
+                        $buckets[$E->getId()] = $E;
+                } else
+                    $buckets[$E->getId()] = $E;
+            } else //we may be looking at a task
+                $buckets[$E->getId()] = $E;
+        }
+
+        if ($ticket && $ticket->getMergeType() == 'separate')
+            $buckets = $buckets + $childEntries;
+
+        return $buckets;
+    }
+
     //new entry ... we're trusting the caller to check validity of the data.
     static function create($vars=false) {
         global $cfg;
@@ -1883,6 +2000,8 @@ class ThreadEvent extends VerySimpleModel {
     const TRANSFERRED = 'transferred';
     const REFERRED = 'referred';
     const VIEWED    = 'viewed';
+    const MERGED    = 'merged';
+    const UNLINKED    = 'unlinked';
 
     const MODE_STAFF = 1;
     const MODE_CLIENT = 2;
@@ -1906,17 +2025,20 @@ class ThreadEvent extends VerySimpleModel {
 
     function getIcon() {
         $icons = array(
-            'assigned'  => 'hand-right',
-            'released'  => 'unlock',
-            'collab'    => 'group',
-            'created'   => 'magic',
-            'overdue'   => 'time',
+            'assigned'    => 'hand-right',
+            'released'    => 'unlock',
+            'collab'      => 'group',
+            'created'     => 'magic',
+            'overdue'     => 'time',
             'transferred' => 'share-alt',
-            'referred' => 'exchange',
-            'edited'    => 'pencil',
-            'closed'    => 'thumbs-up-alt',
-            'reopened'  => 'rotate-right',
-            'resent'    => 'reply-all icon-flip-horizontal',
+            'referred'    => 'exchange',
+            'edited'      => 'pencil',
+            'closed'      => 'thumbs-up-alt',
+            'reopened'    => 'rotate-right',
+            'resent'      => 'reply-all icon-flip-horizontal',
+            'merged'      => 'code-fork',
+            'linked'      => 'link',
+            'unlinked'    => 'unlink',
         );
         return @$icons[$this->state] ?: 'chevron-sign-right';
     }
@@ -1961,7 +2083,7 @@ class ThreadEvent extends VerySimpleModel {
                     return $name;
                 case 'timestamp':
                     $timeFormat = null;
-                    if ($thisstaff
+                    if ($mode != self::MODE_CLIENT && $thisstaff
                             && !strcasecmp($thisstaff->datetime_format,
                                 'relative')) {
                         $timeFormat = function ($timestamp) {
@@ -2046,6 +2168,7 @@ class ThreadEvent extends VerySimpleModel {
         $staff = $ticket->getStaffId();
 
         $inst = self::create(array(
+            'thread_type' => ObjectModel::OBJECT_TYPE_TICKET,
             'staff_id' => $staff,
             'team_id' => $ticket->getTeamId(),
             'dept_id' => $ticket->getDeptId(),
@@ -2056,6 +2179,7 @@ class ThreadEvent extends VerySimpleModel {
 
     static function forTask($task, $state, $user=false) {
         $inst = self::create(array(
+            'thread_type' => ObjectModel::OBJECT_TYPE_TASK,
             'staff_id' => $task->getStaffId(),
             'team_id' => $task->getTeamId(),
             'dept_id' => $task->getDeptId(),
@@ -2125,6 +2249,18 @@ class Event extends VerySimpleModel {
         }
 
         return $ids;
+    }
+
+    static function getStates($dropdown=false) {
+        $names = array();
+        if ($dropdown)
+            $names = array(__('All'));
+
+        $events = self::objects()->values_flat('name');
+        foreach ($events as $val)
+            $names[] = ucfirst($val[0]);
+
+        return $names;
     }
 
     static function create($vars=false, &$errors=array()) {
@@ -2240,7 +2376,7 @@ class AssignmentEvent extends ThreadEvent {
             $desc = __('<b>{somebody}</b> claimed this {timestamp}');
             break;
         }
-        return $this->template($desc);
+        return $this->template($desc, $mode);
     }
 }
 
@@ -2264,7 +2400,7 @@ class ReleaseEvent extends ThreadEvent {
             $desc = __('<b>{somebody}</b> released ticket assignment {timestamp}');
             break;
         }
-        return $this->template($desc);
+        return $this->template($desc, $mode);
     }
 }
 
@@ -2285,7 +2421,7 @@ class ReferralEvent extends ThreadEvent {
             $desc = __('<b>{somebody}</b> referred this to <strong>{<Dept>data.dept}</strong> {timestamp}');
             break;
         }
-        return $this->template($desc);
+        return $this->template($desc, $mode);
     }
 }
 
@@ -2455,7 +2591,7 @@ class OverdueEvent extends ThreadEvent {
     static $state = 'overdue';
 
     function getDescription($mode=self::MODE_STAFF) {
-        return $this->template(__('Flagged as overdue by the system {timestamp}'));
+        return $this->template(__('Flagged as overdue by the system {timestamp}'), $mode);
     }
 }
 
@@ -2473,7 +2609,7 @@ class ResendEvent extends ThreadEvent {
     static $state = 'resent';
 
     function getDescription($mode=self::MODE_STAFF) {
-        return $this->template(__('<b>{somebody}</b> resent <strong><a href="#thread-entry-{data.entry}">a previous response</a></strong> {timestamp}'));
+        return $this->template(__('<b>{somebody}</b> resent <strong><a href="#thread-entry-{data.entry}">a previous response</a></strong> {timestamp}'), $mode);
     }
 }
 
@@ -2482,12 +2618,42 @@ class TransferEvent extends ThreadEvent {
     static $state = 'transferred';
 
     function getDescription($mode=self::MODE_STAFF) {
-        return $this->template(__('<b>{somebody}</b> transferred this to <strong>{dept}</strong> {timestamp}'));
+        return $this->template(__('<b>{somebody}</b> transferred this to <strong>{dept}</strong> {timestamp}'), $mode);
     }
 }
 
 class ViewEvent extends ThreadEvent {
     static $state = 'viewed';
+}
+
+class MergedEvent extends ThreadEvent {
+    static $icon = 'code-fork';
+    static $state = 'merged';
+
+    function getDescription($mode=self::MODE_STAFF) {
+        return sprintf($this->template(__('<b>{somebody}</b> merged this ticket with %s{data.id}%s<b>{data.ticket}</b>%s {timestamp}'), $mode),
+                '<a href="tickets.php?id=', '">', '</a>');
+    }
+}
+
+class LinkedEvent extends ThreadEvent {
+    static $icon = 'link';
+    static $state = 'linked';
+
+    function getDescription($mode=self::MODE_STAFF) {
+        return sprintf($this->template(__('<b>{somebody}</b> linked this ticket with %s{data.id}%s<b>{data.ticket}</b>%s {timestamp}'), $mode),
+                '<a href="tickets.php?id=', '">', '</a>');
+    }
+}
+
+class UnlinkEvent extends ThreadEvent {
+    static $icon = 'unlink';
+    static $state = 'unlinked';
+
+    function getDescription($mode=self::MODE_STAFF) {
+        return sprintf($this->template(__('<b>{somebody}</b> unlinked this ticket from %s{data.id}%s<b>{data.ticket}</b>%s {timestamp}'), $mode),
+                '<a href="tickets.php?id=', '">', '</a>');
+    }
 }
 
 class ThreadEntryBody /* extends SplString */ {

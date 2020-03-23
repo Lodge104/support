@@ -93,12 +93,12 @@ class ConfigVariables
 			// AUTOMATIC FONT SELECTION
 			// Based on script and/or language
 			// mPDF 6.0 (similar to previously using function SetAutoFont() )
-			'autoScriptToLang' => false,
+			'autoScriptToLang' => true,
 			'baseScript' => Ucdn::SCRIPT_LATIN,
 			'autoVietnamese' => true,
 			'autoArabic' => true,
 			// mPDF 6.0 (similar to old useLang)
-			'autoLangToFont' => false,
+			'autoLangToFont' => true,
 
 			// Substitute missing characters in UTF-8(multibyte) documents - from other fonts
 			'useSubstitutions' => false,
@@ -263,7 +263,7 @@ class ConfigVariables
 			'packTableData' => false,
 
 			'ignore_table_percents' => false,
-			'ignore_table_widths' => true,
+			'ignore_table_widths' => false,
 			// If table width set > page width, force resizing but keep relative sizes
 			// Also forces respect of cell widths set by %
 			'keep_table_proportions' => true,

@@ -95,7 +95,10 @@ class Misc {
             return $timestamp - $tz->getOffset($date);
         }
 
-        $date = new DateTime($timestamp ?: 'now', $tz);
+        $date = Format::parseDateTime($timestamp ?: 'now');
+        if ($tz)
+            $date->setTimezone($tz);
+
         return $date ? $date->getTimestamp() : $timestamp;
     }
 
@@ -144,16 +147,17 @@ class Misc {
     }
 
     // Date range for the period in a given time
-    function date_range($period, $time=false) {
+    function date_range($period, $time=false, $tz=null) {
         $time = $time ?: self::gmtime();
         if (!($dt = Format::parseDateTime($time)))
             return null;
-        // Force UTC
-        $dt->setTimezone(new DateTimeZone('UTC'));
+        // Force UTC if timezone is not provided
+        $tz = $tz ?: new DateTimeZone('UTC');
+        $dt->setTimezone($tz);
 
         // Make dt Immutable.
         $dt = DateTimeImmutable::createFromMutable($dt);
-        switch ($period) {
+	 switch ($period) {
             case 'td':
             case 'today':
                 $start = $end = $dt->modify('today');
@@ -226,7 +230,7 @@ class Misc {
     function currentURL() {
 
         $str = 'http';
-        if ($_SERVER['HTTPS'] == 'on') {
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
             $str .='s';
         }
         $str .= '://';
@@ -243,48 +247,6 @@ class Misc {
         }
 
         return $str;
-    }
-
-    function timeDropdown($hr=null, $min =null,$name='time') {
-        global $cfg;
-
-        //normalize;
-        if ($hr >= 24)
-            $hr = $hr%24;
-        elseif ($hr < 0)
-            $hr = 0;
-        elseif ($hr)
-            $hr = (int) $hr;
-        else  // Default to 5pm
-            $hr = 17;
-
-        if ($min >= 45)
-            $min = 45;
-        elseif ($min >= 30)
-            $min = 30;
-        elseif ($min >= 15)
-            $min = 15;
-        else
-            $min = 0;
-
-        $time = Misc::user2gmtime(mktime(0,0,0));
-        ob_start();
-        echo sprintf('<select name="%s" id="%s" style="display:inline-block;width:auto">',$name,$name);
-        echo '<option value="" selected="selected">&mdash;'.__('Time').'&mdash;</option>';
-        for($i=23; $i>=0; $i--) {
-            for ($minute=45; $minute>=0; $minute-=15) {
-                $sel=($hr===$i && $min===$minute) ? 'selected="selected"' : '';
-                $_minute=str_pad($minute, 2, '0',STR_PAD_LEFT);
-                $_hour=str_pad($i, 2, '0',STR_PAD_LEFT);
-                $disp = Format::time($time + ($i*3600 + $minute*60 + 1), false);
-                echo sprintf('<option value="%s:%s" %s>%s</option>',$_hour,$_minute,$sel,$disp);
-            }
-        }
-        echo '</select>';
-        $output = ob_get_contents();
-        ob_end_clean();
-
-        return $output;
     }
 
     function realpath($path) {

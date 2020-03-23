@@ -682,6 +682,12 @@ class VerySimpleModel {
         else {
             $data = array('dirty' => $this->dirty);
             Signal::send('model.updated', $this, $data);
+            foreach ($this->dirty as $key => $value) {
+                if ($key != 'value' && $key != 'updated') {
+                    $type = array('type' => 'edited', 'key' => $key, 'orm_audit' => true);
+                    Signal::send('object.edited', $this, $type);
+                }
+            }
         }
         # Refetch row from database
         if ($refetch) {
@@ -717,9 +723,11 @@ class VerySimpleModel {
     }
 
     private function refetch() {
-        $this->ht =
-            static::objects()->filter($this->getPk())->values()->one()
-            + $this->ht;
+        try {
+            $this->ht =
+                static::objects()->filter($this->getPk())->values()->one()
+                + $this->ht;
+        } catch (DoesNotExist $ex) {}
     }
 
     private function getPk() {
@@ -2560,8 +2568,10 @@ class SqlCompiler {
                         $criteria["{$field}__{$f}"] = $v;
                     }
                 }
-                $filter[] = $this->compileQ(new Q($criteria), $model,
-                    $Q->ored || $Q->negated);
+                // New criteria here is joined with AND, so if the outer
+                // criteria is joined with OR, then parentheses are
+                // necessary
+                $filter[] = $this->compileQ(new Q($criteria), $model, $Q->ored);
             }
             // Handle simple field = <value> constraints
             else {
@@ -2595,16 +2605,10 @@ class SqlCompiler {
 
     function compileConstraints($where, $model) {
         $constraints = array();
-        $prev = $parens = false;
         foreach ($where as $Q) {
-            if ($prev && !$prev->isCompatibleWith($Q)) {
-                $parens = true;
-                break;
-            }
-            $prev = $Q;
-        }
-        foreach ($where as $Q) {
-            $constraints[] = $this->compileQ($Q, $model, $parens);
+            // Constraints are joined by AND operators, so if they have
+            // internal OR operators, then they need to be parenthesized
+            $constraints[] = $this->compileQ($Q, $model, $Q->ored);
         }
         return $constraints;
     }
