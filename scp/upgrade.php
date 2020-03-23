@@ -82,7 +82,7 @@ $nav->addSubMenu(array('desc'=>__('Upgrader'),
                            'href'=>'upgrade.php',
                            'iconclass'=>'preferences'),
                         true);
-$ost->addExtraHeader('<script type="text/javascript" src="./js/upgrader.js?901e5ea"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="./js/upgrader.js?a076918"></script>');
 require(STAFFINC_DIR.'header.inc.php');
 require(UPGRADE_DIR.$inc);
 require(STAFFINC_DIR.'footer.inc.php');

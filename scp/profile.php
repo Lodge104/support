@@ -20,7 +20,8 @@ require_once(INCLUDE_DIR.'class.export.php');       // For paper sizes
 $msg='';
 $staff=Staff::lookup($thisstaff->getId());
 if($_POST && $_POST['id']!=$thisstaff->getId()) { //Check dummy ID used on the form.
- $errors['err']=__('Internal Error. Action Denied');
+ $errors['err']=__('Action Denied.')
+        .' '.__('Internal error occurred');
 } elseif(!$errors && $_POST) { //Handle post
 
     if(!$staff)
@@ -47,7 +48,8 @@ elseif($thisstaff->onVacation() && !$warn)
     $warn=sprintf(__("<b>Welcome back %s</b>! You are listed as 'on vacation' Please let your manager know that you are back."),$thisstaff->getFirstName());
 
 $inc='profile.inc.php';
-$nav->setTabActive('dashboard');
+if ($nav)
+    $nav->setTabActive('dashboard');
 $ost->addExtraHeader('<meta name="tip-namespace" content="dashboard.my_profile" />',
     "$('#content').data('tipNamespace', 'dashboard.my_profile');");
 require_once(STAFFINC_DIR.'header.inc.php');

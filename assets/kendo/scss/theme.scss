@@ -1,0 +1,134 @@
+ @import "base";
+ @import "landing";
+ @import "form";
+ @import "faq";
+ @import "head";
+ @import "tickets";
+ @import "footer";
+
+body{
+    font-family: 'Arimo',Arial, sans-serif;
+    font-size: 14px;
+  	line-height: 1.6;
+  	color: #777;
+  	background: $primary-color url(../images/body.jpg) top repeat-x;
+}
+
+a:link, a:visited{
+	color:$link-color;
+}
+
+a:hover{
+	text-decoration: none;
+
+}
+.clear{
+	clear:both;
+}
+
+.error {
+  color:#f00;
+  input {
+    border:1px solid #f00;
+  }
+}
+.bordered{
+	border:1px solid #ddd;
+}
+
+.cover{
+	background: #f4f3f1;
+	padding: 50px 0px;
+}
+
+.alert-area{
+	background: #f4f3f1;
+	.col-md-12{
+		min-height: 0px;
+	}
+}
+
+.page-title{
+	margin-bottom: 30px;
+	h1{
+		text-transform: uppercase;
+		font-size: 24px;
+		color: #000;
+	}
+}
+
+#msg_notice {
+	margin: 0;
+	border-radius: 3px;
+	padding: 5px 10px 5px 10px;
+	line-height: 16px;
+	margin: 30px 0px 0px 0px;
+	border: 1px solid #0a0;
+	background: #e0ffe0;
+}
+
+#msg_warning {
+	margin: 0;
+	border-radius: 3px;
+	padding: 5px 10px 5px 36px;
+	line-height: 16px;
+	margin: 30px 0px 0px 0px;
+	border: 1px solid #f26522;
+	background:#ffffdd;
+}
+
+#msg_error {
+	margin: 0;
+	border-radius: 3px;
+	padding: 5px 10px 5px 10px;
+	line-height: 16px;
+	margin: 30px 0px 0px 0px;
+	border: 1px solid #a00;
+	background: #fff0f0;
+}
+
+@media screen and (max-width: 767px) {
+
+    .tinynav {
+        display: block;
+        margin:0px
+        auto 30px;
+    }
+    #nav {
+        display: none
+    }
+    #landing_page .welcome-page #kb-search{
+		width:300px;
+	}
+	#landing_page .welcome-page #kb-search .form-group{
+		display: inline!important;
+		float: left;
+		margin-right: 10px;
+	}
+	#landing_page .welcome-page #kb-search #query{
+		width:200px;
+	}
+    #landing_page .welcome-page .wptext h1{
+    	font-size: 36px;
+    	margin:30px 0px;
+    }
+    #landing_page .home-box #new_ticket{
+		margin-bottom: 30px;
+	}
+    #footer .fwidgets{
+        text-align: center;
+
+    }
+    #footer .fwidgets h2:after{
+        left:50%;
+        margin-left:-25px;
+    }
+
+    #footer .fwidgets .social-icons ul{
+        text-align: center;
+    }
+    #footer .fwidgets .social-icons ul li{
+        float: none;
+        display: inline-block;
+    }
+}

@@ -26,14 +26,14 @@ if ($_POST) {
         if(!$_POST['captcha'])
             $errors['captcha']=__('Enter text shown on the image');
         elseif(strcmp($_SESSION['captcha'], md5(strtoupper($_POST['captcha']))))
-            $errors['captcha']=__('Invalid - try again!');
+            $errors['captcha']=sprintf('%s - %s', __('Invalid'), __('Please try again!'));
     }
 
     $tform = TicketForm::objects()->one()->getForm($vars);
     $messageField = $tform->getField('message');
     $attachments = $messageField->getWidget()->getAttachments();
     if (!$errors && $messageField->isAttachmentsEnabled())
-        $vars['cannedattachments'] = $attachments->getClean();
+        $vars['files'] = $attachments->getFiles();
 
     // Drop the draft.. If there are validation errors, the content
     // submitted will be displayed back to the user
@@ -77,14 +77,21 @@ if ($ticket
         (($topic = $ticket->getTopic()) && ($page = $topic->getPage()))
         || ($page = $cfg->getThankYouPage())
     )
-) {
+) { 
     // Thank the user and promise speedy resolution!
+    ?>
+<div class="cover">
+    <div class="container"> <div class="row"> <div class="col-md-12">
+    <?php 
     echo Format::viewableImages(
         $ticket->replaceVars(
             $page->getLocalBody()
-        )
-    );
-}
+        ),
+        ['type' => 'P']
+    ); ?>
+    </div></div></div>
+</div>
+<?php }
 else {
     require(CLIENTINC_DIR.'open.inc.php');
 }
