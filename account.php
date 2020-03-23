@@ -34,7 +34,7 @@ elseif ($thisclient) {
                 $user_form = $f;
                 $user_form->getField('email')->configure('disabled', true);
             }
-        }    
+        }
     }
     // Existing client (with an account) updating profile
     else {
@@ -57,6 +57,7 @@ elseif ($_POST) {
     if ($thisclient) {
         $user_form->getField('email')->configure('disabled', true);
         $user_form->getField('email')->value = $thisclient->getEmail();
+        $_POST['email'] = $thisclient->getEmail();
     }
 
     if (!$user_form->isValid(function($f) { return !$f->isVisibleToUsers(); }))
@@ -124,4 +125,3 @@ elseif ($_POST) {
 include(CLIENTINC_DIR.'header.inc.php');
 include(CLIENTINC_DIR.$inc);
 include(CLIENTINC_DIR.'footer.inc.php');
-

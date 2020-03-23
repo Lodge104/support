@@ -90,7 +90,7 @@ if($_POST && !$errors):
                     $task = null; //Going back to main listing.
                 else
                     // Task is still open -- clear draft for the note
-                    Draft::deleteForNamespace('task.reply.'.$task->getId(),
+                    Draft::deleteForNamespace('task.response.'.$task->getId(),
                         $thisstaff->getId());
 
             } else {
@@ -207,8 +207,8 @@ if ($thisstaff->hasPerm(TaskModel::PERM_CREATE, false)) {
 }
 
 
-$ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?a076918"></script>');
-$ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?a076918"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?f1e9e88"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?f1e9e88"></script>');
 $ost->addExtraHeader('<meta name="tip-namespace" content="tasks.queue" />',
     "$('#content').data('tipNamespace', 'tasks.queue');");
 

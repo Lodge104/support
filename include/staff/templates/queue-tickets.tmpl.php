@@ -6,8 +6,16 @@
 
 // Impose visibility constraints
 // ------------------------------------------------------------
-if (!$queue->ignoreVisibilityConstraints($thisstaff))
+//filter if limited visibility or if unlimited visibility and in a queue
+$ignoreVisibility = $queue->ignoreVisibilityConstraints($thisstaff);
+if (!$ignoreVisibility || //limited visibility
+   ($ignoreVisibility && ($queue->isAQueue() || $queue->isASubQueue())) //unlimited visibility + not a search
+)
     $tickets->filter($thisstaff->getTicketsVisibility());
+
+// do not show children tickets unless agent is doing a search
+if ($queue->isAQueue() || $queue->isASubQueue())
+    $tickets->filter(Q::all(new Q(array('thread__object_type' => 'T'))));
 
 // Make sure the cdata materialized view is available
 TicketForm::ensureDynamicDataView();
@@ -66,9 +74,14 @@ foreach ($columns as $C) {
         $sorted = true;
     }
 }
-if (!$sorted && isset($sort['queuesort'])) {
+
+// Apply queue sort if it's not already sorted by a column
+if (!$sorted) {
     // Apply queue sort-dropdown selected preference
-    $sort['queuesort']->applySort($tickets, $sort['dir']);
+    if (isset($sort['queuesort']))
+        $sort['queuesort']->applySort($tickets, $sort['dir']);
+    else // otherwise sort by created DESC
+        $tickets->order_by('-created');
 }
 
 // Apply pagination
@@ -86,14 +99,16 @@ if (isset($tickets->extra['tables'])) {
     $criteria->annotations = $criteria->related = $criteria->aggregated =
         $criteria->annotations = $criteria->ordering = [];
     $tickets->constraints = $tickets->extra = [];
+    $criteria->extra(array('select' => array('relevance' => 'Z1.relevance')));
     $tickets = $tickets->filter(['ticket_id__in' =>
             $criteria->values_flat('ticket_id')]);
+    $tickets->order_by(new SqlCode('relevance'), QuerySet::DESC);
     # Index hint should be used on the $criteria query only
     $tickets->clearOption(QuerySet::OPT_INDEX_HINT);
 }
 
 $tickets->distinct('ticket_id');
-$count = $queue->getCount($thisstaff) ?: (PAGE_LIMIT*3);
+$count = $queue->getCount($thisstaff) ?: PAGE_LIMIT;
 $pageNav->setTotal($count, true);
 $pageNav->setURL('tickets.php', $args);
 ?>
@@ -272,23 +287,11 @@ foreach ($tickets as $T) {
 <?php
         echo __('Page').':'.$pageNav->getPageLinks().'&nbsp;';
         ?>
-        <a href="#tickets/export/<?php echo $queue->getId(); ?>" id="queue-export" class="no-pjax"
+        <a href="#tickets/export/<?php echo $queue->getId(); ?>"
+        id="queue-export" class="no-pjax export"
             ><?php echo __('Export'); ?></a>
         <i class="help-tip icon-question-sign" href="#export"></i>
     </div>
 <?php
     } ?>
 </form>
-<script type="text/javascript">
-$(function() {
-    $(document).on('click', 'a#queue-export', function(e) {
-        e.preventDefault();
-        var url = 'ajax.php/'+$(this).attr('href').substr(1)
-        $.dialog(url, 201, function (xhr) {
-            window.location.href = '?a=export&queue=<?php echo $queue->getId(); ?>';
-            return false;
-         });
-        return false;
-    });
-});
-</script>

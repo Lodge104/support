@@ -331,6 +331,8 @@ extends VerySimpleModel {
         if (!self::validate_actions($vars, $errors))
             return false;
 
+        $vars['flags'] = $this->flags;
+
         if(!$vars['execorder'])
             $errors['execorder'] = __('Order required');
         elseif(!is_numeric($vars['execorder']))
@@ -400,6 +402,8 @@ extends VerySimpleModel {
     function delete() {
         try {
             parent::delete();
+            $type = array('type' => 'deleted');
+            Signal::send('object.deleted', $this, $type);
             $this->rules->expunge();
             $this->actions->expunge();
         }

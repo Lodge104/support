@@ -12,7 +12,7 @@ AttachmentFile::objects()->filter(array(
             ))->all();
 
 $entries = $thread->getEntries();
-$entries->filter(array('type__in' => array_keys($entryTypes)))->order_by("{$order}id");;
+$entries->filter(array('type__in' => array_keys($entryTypes)))->order_by("{$order}id");
 ?>
 <style type="text/css">
     div {font-family: sans-serif;}
@@ -83,6 +83,7 @@ $entries->filter(array('type__in' => array_keys($entryTypes)))->order_by("{$orde
                         </div>
                     </td>
                 </tr>
+                <tr><td>&nbsp;</td></tr>
             <?php
             } ?>
         </tbody>

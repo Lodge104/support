@@ -98,7 +98,17 @@ claim_tickets:
     content: >
         Enable this to auto-assign unassigned tickets to the responding Agent.
         <br><br>
-        Reopened tickets are always assigned to the last respondent.
+        Reopened tickets are always assigned to the last respondent unless auto
+        assign on reopen is disabled on the Department level.
+
+auto_refer:
+    title: Auto-refer Tickets on Close
+    content: >
+        Enable this to auto-refer tickets to the assigned or closing
+        Agent when a ticket is closed.
+        <br><br>
+        This is necessary when you want to give agents with limited access
+        continued access to assigned tickets after they're closed.
 
 collaborator_ticket_visibility:
     title: Collaborator Tickets Visibility
@@ -135,4 +145,3 @@ ticket_attachment_settings:
         class="doc-desc-title">issue details</span> field. These settings
         are used for all new tickets and new messages regardless of the
         source channel (web portal, email, api, etc.).
-
