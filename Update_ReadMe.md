@@ -6,14 +6,32 @@ Under Ticket Sources, add this code underneath the email one.
             /* @trans */ 'Live Chat',
 If you get an 500 error on the site, check the database under ost_ticket and make sure Live Chat is still an option in the table.
 
-/include/client/footer.inc.php
-Add the google analytics toward the end of the footer but before "End of Footer" note.
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-37461006-10"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+Line 186
+    // Ticket Sources
+    static protected $sources =  array(
+            'Phone' =>
+            /* @trans */ 'Phone',
+            'Email' =>
+            /* @trans */ 'Email',
+            'Live Chat' =>
+            /* @trans */ 'Live Chat',
 
-  gtag('config', 'UA-37461006-10');
-</script>
+            'Web' =>
+            /* @trans */ 'Web',
+            'API' =>
+            /* @trans */ 'API',
+            'Other' =>
+            /* @trans */ 'Other',
+            );
+
+
+/include/client/open.inc.php
+Add this code at line 10
+
+if(isset($_REQUEST["tid"])){
+    $info['topicId']=$_REQUEST["tid"];
+    }
+
+
+/include/client/footer.inc.php
+Add the google analytics toward the end of the footer but before "End of Footer" note. Copy the old footer before overwriting
