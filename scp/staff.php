@@ -174,16 +174,22 @@ $tip_namespace = 'staff.agent';
 if($staff || ($_REQUEST['a'] && !strcasecmp($_REQUEST['a'],'add'))) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   if ($staff && ($pdept=$staff->getDept()) && !$pdept->isActive())
     $warn = sprintf(__('%s is assigned a %s that is not active.'), __('Agent'), __('Primary Department'));
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
   if ($staff && ($pdept=$staff->getDept()) && !$pdept->isActive())
     $warn = sprintf(__('%s is assigned a %s that is not active.'), __('Agent'), __('Primary Department'));
 
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     $page='staff.inc.php';
 }
 

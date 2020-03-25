@@ -383,10 +383,14 @@ class MysqlSearchBackend extends SearchBackend {
                     str_replace(array(':', '{}'), array(TABLE_PREFIX, $search),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     "(SELECT COALESCE(Z3.`object_id`, Z5.`ticket_id`, Z8.`ticket_id`) as `ticket_id`, Z1.relevance FROM (SELECT Z1.`object_id`, Z1.`object_type`, {} AS `relevance` FROM `:_search` Z1 WHERE {} ORDER BY relevance DESC) Z1 LEFT JOIN `:thread_entry` Z2 ON (Z1.`object_type` = 'H' AND Z1.`object_id` = Z2.`id`) LEFT JOIN `:thread` Z3 ON (Z2.`thread_id` = Z3.`id` AND (Z3.`object_type` = 'T' OR Z3.`object_type` = 'C')) LEFT JOIN `:ticket` Z5 ON (Z1.`object_type` = 'T' AND Z1.`object_id` = Z5.`ticket_id`) LEFT JOIN `:user` Z6 ON (Z6.`id` = Z1.`object_id` and Z1.`object_type` = 'U') LEFT JOIN `:organization` Z7 ON (Z7.`id` = Z1.`object_id` AND Z7.`id` = Z6.`org_id` AND Z1.`object_type` = 'O') LEFT JOIN `:ticket` Z8 ON (Z8.`user_id` = Z6.`id`)) Z1"),
 =======
                     "(SELECT COALESCE(Z3.`object_id`, Z5.`ticket_id`, Z8.`ticket_id`) as `ticket_id`, Z1.relevance FROM (SELECT Z1.`object_id`, Z1.`object_type`, {} AS `relevance` FROM `:_search` Z1 WHERE {} ORDER BY relevance DESC) Z1 LEFT JOIN `:thread_entry` Z2 ON (Z1.`object_type` = 'H' AND Z1.`object_id` = Z2.`id`) LEFT JOIN `:thread` Z3 ON (Z2.`thread_id` = Z3.`id` AND Z3.`object_type` = 'T') LEFT JOIN `:ticket` Z5 ON (Z1.`object_type` = 'T' AND Z1.`object_id` = Z5.`ticket_id`) LEFT JOIN `:user` Z6 ON (Z6.`id` = Z1.`object_id` and Z1.`object_type` = 'U') LEFT JOIN `:organization` Z7 ON (Z7.`id` = Z1.`object_id` AND Z7.`id` = Z6.`org_id` AND Z1.`object_type` = 'O') LEFT JOIN `:ticket` Z8 ON (Z8.`user_id` = Z6.`id`)) Z1"),
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                    "(SELECT COALESCE(Z3.`object_id`, Z5.`ticket_id`, Z8.`ticket_id`) as `ticket_id`, Z1.relevance FROM (SELECT Z1.`object_id`, Z1.`object_type`, {} AS `relevance` FROM `:_search` Z1 WHERE {} ORDER BY relevance DESC) Z1 LEFT JOIN `:thread_entry` Z2 ON (Z1.`object_type` = 'H' AND Z1.`object_id` = Z2.`id`) LEFT JOIN `:thread` Z3 ON (Z2.`thread_id` = Z3.`id` AND Z3.`object_type` = 'T') LEFT JOIN `:ticket` Z5 ON (Z1.`object_type` = 'T' AND Z1.`object_id` = Z5.`ticket_id`) LEFT JOIN `:user` Z6 ON (Z6.`id` = Z1.`object_id` and Z1.`object_type` = 'U') LEFT JOIN `:organization` Z7 ON (Z7.`id` = Z1.`object_id` AND Z7.`id` = Z6.`org_id` AND Z1.`object_type` = 'O') LEFT JOIN `:ticket` Z8 ON (Z8.`user_id` = Z6.`id`)) Z1"),
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 ),
 =======
                     "(SELECT COALESCE(Z3.`object_id`, Z5.`ticket_id`, Z8.`ticket_id`) as `ticket_id`, SUM({}) AS `relevance` FROM `:_search` Z1 LEFT JOIN `:thread_entry` Z2 ON (Z1.`object_type` = 'H' AND Z1.`object_id` = Z2.`id`) LEFT JOIN `:thread` Z3 ON (Z2.`thread_id` = Z3.`id` AND Z3.`object_type` = 'T') LEFT JOIN `:ticket` Z5 ON (Z1.`object_type` = 'T' AND Z1.`object_id` = Z5.`ticket_id`) LEFT JOIN `:user` Z6 ON (Z6.`id` = Z1.`object_id` and Z1.`object_type` = 'U') LEFT JOIN `:organization` Z7 ON (Z7.`id` = Z1.`object_id` AND Z7.`id` = Z6.`org_id` AND Z1.`object_type` = 'O') LEFT JOIN :ticket Z8 ON (Z8.`user_id` = Z6.`id`) WHERE {} GROUP BY `ticket_id`) Z1"),
@@ -673,10 +677,14 @@ class SavedQueue extends CustomQueue {
     private $_settings;
     private $_form;
 <<<<<<< HEAD
+<<<<<<< HEAD
     private $_sorts;
 =======
 class SavedSearch extends VerySimpleModel {
 =======
+=======
+
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 

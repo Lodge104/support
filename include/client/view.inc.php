@@ -174,6 +174,7 @@ if ($thisclient && $thisclient->isGuest()
     <div class="alert alert-warning" id="msg_warning"><?php echo $warn; ?></div>
 <?php } 
 
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 
@@ -182,6 +183,9 @@ if ((!$ticket->isClosed() || $ticket->isReopenable()) && !$blockReply){ ?>
 =======
 if (!$ticket->isClosed() || $ticket->isReopenable()) { ?>
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+if (!$ticket->isClosed() || $ticket->isReopenable()) { ?>
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 <form id="reply" action="tickets.php?id=<?php echo $ticket->getId();
 ?>#reply" name="reply" method="post" enctype="multipart/form-data">
     <?php csrf_token(); ?>

@@ -5,6 +5,7 @@ $plots = $report->getPlotData();
 ?>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <script type="text/javascript" src="js/raphael-min.js?f1e9e88"></script>
 <script type="text/javascript" src="js/g.raphael.js?f1e9e88"></script>
 <script type="text/javascript" src="js/g.line-min.js?f1e9e88"></script>
@@ -30,6 +31,15 @@ $plots = $report->getPlotData();
 
 <link rel="stylesheet" type="text/css" href="css/dashboard.css?a076918"/>
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+<script type="text/javascript" src="js/raphael-min.js?a076918"></script>
+<script type="text/javascript" src="js/g.raphael.js?a076918"></script>
+<script type="text/javascript" src="js/g.line-min.js?a076918"></script>
+<script type="text/javascript" src="js/g.dot-min.js?a076918"></script>
+<script type="text/javascript" src="js/dashboard.inc.js?a076918"></script>
+
+<link rel="stylesheet" type="text/css" href="css/dashboard.css?a076918"/>
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
 <form method="post" action="dashboard.php">
 <div id="basic_search">

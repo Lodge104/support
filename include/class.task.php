@@ -539,9 +539,12 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                 $t->logEvent('reopened', false, null, 'closed');
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 if ($t->ticket) {
                     $t->ticket->reopen();
                     $vars = array(
@@ -573,9 +576,12 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                 $t->logEvent('closed');
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 if ($t->ticket) {
                     $vars = array(
                             'title' => sprintf('Task %s Closed',
@@ -1362,6 +1368,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             return false;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         $thread->delete();
 <<<<<<< HEAD
         $this->logEvent('deleted');
@@ -1372,6 +1379,10 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         $this->logEvent('deleted');
 
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+        $this->logEvent('deleted');
+
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         Draft::deleteForNamespace('task.%.' . $this->getId());
 
         foreach (DynamicFormEntry::forObject($this->getId(), ObjectModel::OBJECT_TYPE_TASK) as $form)

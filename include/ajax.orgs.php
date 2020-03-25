@@ -94,6 +94,7 @@ class OrgsAjaxAPI extends AjaxController {
         $errors = array();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         if ($profile) {
             if ($org->updateProfile($_POST, $errors))
                 Http::response(201, $org->to_json(), 'application/json');
@@ -101,6 +102,9 @@ class OrgsAjaxAPI extends AjaxController {
 =======
         if($org->update($_POST, $errors))
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+        if($org->update($_POST, $errors))
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
              Http::response(201, $org->to_json(), 'application/json');
 =======
         if($org->update($_POST, $errors))

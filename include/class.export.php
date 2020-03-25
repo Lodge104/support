@@ -326,6 +326,7 @@ static function departmentMembers($dept, $agents, $filename='', $how='csv') {
     exit;
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   static function audits($type, $filename='', $tableInfo='', $object='', $how='csv', $show_viewed=true, $data=array(), CsvExporter $exporter) {
       $headings = array('Description', 'Timestamp', 'IP');
@@ -631,6 +632,8 @@ class CsvExporter extends Exporter {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 }
 
 class ResultSetExporter {

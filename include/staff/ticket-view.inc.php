@@ -11,6 +11,7 @@ $info=($_POST && $errors)?Format::input($_POST):array();
 //Get the goodies.
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 $dept     = $ticket->getDept();  //Dept
 $role     = $ticket->getRole($thisstaff);
 $staff    = $ticket->getStaff(); //Assigned or closed by..
@@ -27,15 +28,22 @@ $role  = $thisstaff->getRole($dept);
 $dept  = $ticket->getDept();  //Dept
 $role  = $ticket->getRole($thisstaff);
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+$dept  = $ticket->getDept();  //Dept
+$role  = $ticket->getRole($thisstaff);
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 $staff = $ticket->getStaff(); //Assigned or closed by..
 $user  = $ticket->getOwner(); //Ticket User (EndUser)
 $team  = $ticket->getTeam();  //Assigned team.
 $sla   = $ticket->getSLA();
 $lock  = $ticket->getLock();  //Ticket lock obj
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 if (!$lock && $cfg->getTicketLockMode() == Lock::MODE_ON_VIEW)
     $lock = $ticket->acquireLock($thisstaff->getId());
 $mylock = ($lock && $lock->getStaffId() == $thisstaff->getId()) ? $lock : null;
@@ -44,6 +52,7 @@ $id    = $ticket->getId();    //Ticket ID.
 $isManager = $dept->isManager($thisstaff); //Check if Agent is Manager
 $canRelease = ($isManager || $role->hasPerm(Ticket::PERM_RELEASE)); //Check if Agent can release tickets
 <<<<<<< HEAD
+<<<<<<< HEAD
 $blockReply = $ticket->isChild() && $ticket->getMergeType() != 'visual';
 $canMarkAnswered = ($isManager || $role->hasPerm(Ticket::PERM_MARKANSWERED)); //Check if Agent can mark as answered/unanswered
 =======
@@ -51,6 +60,9 @@ $canMarkAnswered = ($isManager || $role->hasPerm(Ticket::PERM_MARKANSWERED)); //
 =======
 $canAnswer = ($isManager || $role->hasPerm(Ticket::PERM_REPLY)); //Check if Agent can mark as answered/unanswered
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+$canAnswer = ($isManager || $role->hasPerm(Ticket::PERM_REPLY)); //Check if Agent can mark as answered/unanswered
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
 //Useful warnings and errors the user might want to know!
 if ($ticket->isClosed() && !$ticket->isReopenable())
@@ -177,6 +189,7 @@ if($ticket->isOverdue())
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                  if ($role->hasPerm(Ticket::PERM_MERGE) && !$ticket->isChild()) { ?>
                      <li><a href="#ajax.php/tickets/<?php echo $ticket->getId();
                          ?>/merge" onclick="javascript:
@@ -197,6 +210,8 @@ if($ticket->isOverdue())
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                  if ($ticket->isAssigned() && $canRelease) { ?>
                         <li><a href="#tickets/<?php echo $ticket->getId();
                             ?>/release" class="ticket-action"
@@ -223,6 +238,7 @@ if($ticket->isOverdue())
 <<<<<<< HEAD
                  }
 <<<<<<< HEAD
+<<<<<<< HEAD
                  if($ticket->isOpen() && $canMarkAnswered) {
 =======
 
@@ -230,6 +246,9 @@ if($ticket->isOverdue())
 =======
                  if($ticket->isOpen() && $canAnswer) {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                 if($ticket->isOpen() && $canAnswer) {
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                     if($ticket->isAnswered()) { ?>
                     <li><a class="confirm-action" id="ticket-unanswered" href="#unanswered"><i class="icon-circle-arrow-left"></i> <?php
                             echo __('Mark as Unanswered'); ?></a></li>
@@ -286,9 +305,12 @@ if($ticket->isOverdue())
                   }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                   Signal::send('ticket.view.more', $ticket, $extras);
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                   if ($role->hasPerm(Ticket::PERM_DELETE)) {
 =======
                   if ($role->hasPerm(TicketModel::PERM_DELETE)) {
@@ -306,12 +328,15 @@ if($ticket->isOverdue())
                 <?php
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if (count($children) != 0)
                     echo sprintf('<span style="font-weight: 700; line-height: 26px;">%s</span>', __('PARENT'));
                 elseif ($ticket->isChild())
                     echo sprintf('<span style="font-weight: 700; line-height: 26px;">%s</span>', __('CHILD'));
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 if ($role->hasPerm(Ticket::PERM_REPLY)) { ?>
 =======
                 if ($role->hasPerm(TicketModel::PERM_REPLY)) { ?>
@@ -825,6 +850,7 @@ if ($errors['err'] && isset($_POST['a'])) {
         <?php
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         if ($role->hasPerm(Ticket::PERM_REPLY) && !($blockReply)) { ?>
 =======
         if ($role->hasPerm(TicketModel::PERM_REPLY)) { ?>
@@ -832,6 +858,9 @@ if ($errors['err'] && isset($_POST['a'])) {
 =======
         if ($role->hasPerm(Ticket::PERM_REPLY)) { ?>
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+        if ($role->hasPerm(Ticket::PERM_REPLY)) { ?>
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         <li class="active <?php
             echo isset($errors['reply']) ? 'error' : ''; ?>"><a
             href="#reply" id="post-reply-tab"><?php echo __('Post Reply');?></a></li>
@@ -844,10 +873,14 @@ if ($errors['err'] && isset($_POST['a'])) {
     <?php
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     if ($role->hasPerm(Ticket::PERM_REPLY) && !($blockReply)) {
 =======
     if ($role->hasPerm(Ticket::PERM_REPLY)) {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+    if ($role->hasPerm(Ticket::PERM_REPLY)) {
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $replyTo = $_POST['reply-to'] ?: 'all';
         $emailReply = ($replyTo != 'none');
         ?>
@@ -880,6 +913,7 @@ if ($errors['err'] && isset($_POST['a'])) {
                     <?php
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     if ($ticket->getThread()->getNumCollaborators())
                         $recipients = sprintf(__('(%d of %d)'),
                                 $ticket->getThread()->getNumActiveCollaborators(),
@@ -889,6 +923,9 @@ if ($errors['err'] && isset($_POST['a'])) {
 =======
                          echo sprintf('<span><a id="show_ccs">
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                         echo sprintf('<span><a id="show_ccs">
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                                  <i id="arrow-icon" class="icon-caret-right"></i>&nbsp;%s </a>
                                  &nbsp;
                                  <a class="manage-collaborators
@@ -1154,12 +1191,16 @@ if ($errors['err'] && isset($_POST['a'])) {
     <?php
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
     if (!($blockReply)) {
     ?>
 =======
     } ?>
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+    } ?>
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     <form id="note" class="hidden tab_content spellcheck exclusive save"
 =======
     } ?>

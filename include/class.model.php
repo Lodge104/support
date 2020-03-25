@@ -17,6 +17,7 @@ class ObjectModel {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     const OBJECT_TYPE_TICKET       = 'T';
     const OBJECT_TYPE_THREAD       = 'H';
     const OBJECT_TYPE_USER         = 'U';
@@ -31,6 +32,8 @@ class ObjectModel {
 =======
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     const OBJECT_TYPE_TICKET = 'T';
     const OBJECT_TYPE_THREAD = 'H';
     const OBJECT_TYPE_USER   = 'U';
@@ -39,17 +42,24 @@ class ObjectModel {
     const OBJECT_TYPE_FILE   = 'F';
     const OBJECT_TYPE_TASK   = 'A';
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 =======
     const OBJECT_TYPE_TEAM   = 'E';
     const OBJECT_TYPE_DEPT   = 'D';
     const OBJECT_TYPE_STAFF  = 'S';
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+    const OBJECT_TYPE_TEAM   = 'E';
+    const OBJECT_TYPE_DEPT   = 'D';
+    const OBJECT_TYPE_STAFF  = 'S';
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
     private function objects() {
         static $objects = false;
         if ($objects == false) {
             $objects = array(
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                 self::OBJECT_TYPE_TICKET        => 'Ticket',
@@ -67,6 +77,8 @@ class ObjectModel {
 =======
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                     self::OBJECT_TYPE_TICKET  => 'Ticket',
                     self::OBJECT_TYPE_THREAD  => 'ThreadEntry',
                     self::OBJECT_TYPE_USER    => 'User',
@@ -75,14 +87,20 @@ class ObjectModel {
                     self::OBJECT_TYPE_FILE    => 'AttachmentFile',
                     self::OBJECT_TYPE_TASK    => 'Task',
 <<<<<<< HEAD
+<<<<<<< HEAD
                     );
 >>>>>>> parent of 7093d97... 2020 Update
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                     self::OBJECT_TYPE_TEAM    => 'Team',
                     self::OBJECT_TYPE_DEPT    => 'Dept',
                     self::OBJECT_TYPE_STAFF   => 'Staff',
                     );
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         }
 
         return $objects;

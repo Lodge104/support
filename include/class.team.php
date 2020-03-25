@@ -132,6 +132,7 @@ implements TemplateVariable {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function hasFlag($flag) {
         return ($this->get('flags', 0) & $flag) != 0;
     }
@@ -146,6 +147,8 @@ implements TemplateVariable {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function alertsEnabled() {
         return ($this->flags & self::FLAG_NOALERTS) == 0;
     }
@@ -236,6 +239,7 @@ implements TemplateVariable {
       $this->members->saveAll();
       if ($dropped) {
 <<<<<<< HEAD
+<<<<<<< HEAD
           $type = array('type' => 'edited', 'key' => 'Members Removed');
           Signal::send('object.edited', $this, $type);
 =======
@@ -243,6 +247,8 @@ implements TemplateVariable {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
           $this->members
               ->filter(array('staff_id__in' => array_keys($dropped)))
               ->delete();

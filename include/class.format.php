@@ -321,6 +321,7 @@ class Format {
             'hook_tag' => function($e, $a=0) { return Format::__html_cleanup($e, $a); },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             'elements' => '*+iframe',
             'spec' =>
@@ -331,6 +332,11 @@ class Format {
             'spec' =>
             'iframe=-*,height,width,type,style,src(match="`^(https?:)?//(www\.)?(youtube|dailymotion|vimeo|player.vimeo)\.com/`i"),frameborder'.($options['spec'] ? '; '.$options['spec'] : '').',allowfullscreen',
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            'elements' => '*+iframe',
+            'spec' =>
+            'iframe=-*,height,width,type,style,src(match="`^(https?:)?//(www\.)?(youtube|dailymotion|vimeo|player.vimeo)\.com/`i"),frameborder'.($options['spec'] ? '; '.$options['spec'] : '').',allowfullscreen',
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         );
 
         return Format::html($html, $config);
@@ -436,10 +442,14 @@ class Format {
                 return preg_replace_callback(
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w\[\]\/]*)?)'
 =======
                     '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w]*)?)'
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                    '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w]*)?)'
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                    .'|(\b[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,63})`',
 =======
                     '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w]*)?)'
@@ -478,12 +488,16 @@ class Format {
 <<<<<<< HEAD
         $options +=array(
 <<<<<<< HEAD
+<<<<<<< HEAD
                 'disposition' => 'inline');
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 =======
                 'deposition' => 'inline');
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                'deposition' => 'inline');
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         return preg_replace_callback('/"cid:([\w._-]{32})"/',
         function($match) use ($script, $images) {
             if (!($file = AttachmentFile::lookup($match[1])))
@@ -537,6 +551,7 @@ class Format {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     /*
      * Add ORDINAL suffix to a number e.g 1st, 2nd, 3rd etc.
      * TODO: Combine this routine with Format::number and pass in type of
@@ -572,6 +587,8 @@ class Format {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     /* elapsed time */
     function elapsedTime($sec) {
 
@@ -645,13 +662,19 @@ class Format {
         if (class_exists('IntlDateFormatter')) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
             if ($cfg && $cfg->isForce24HourTime())
                 $format = str_replace(array('a', 'h'), array('', 'H'),
                         $format);
 
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             $options += array(
                     'pattern' => $format,
                     'timezone' => $timezone->getName());

@@ -81,11 +81,14 @@ RedactorPlugins.draft = function() {
         if (!this.opts.draftId && data.draft_id) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             this._setup(data.draft_id);
             $(this.app.rootElement).attr('data-draft-id', this.opts.draftId);
 =======
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             this.opts.draftId = data.draft_id;
             this.opts.autosave = 'ajax.php/draft/' + data.draft_id;
             this.opts.clipboardUploadUrl =
@@ -94,6 +97,9 @@ RedactorPlugins.draft = function() {
             if (!this.code.get())
                 this.code.set(' ', false);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         }
         // Only show the [Draft Saved] notice if there is content in the
         // field that has been touched
@@ -102,6 +108,7 @@ RedactorPlugins.draft = function() {
             // No change yet — dont't show the button
             return;
         }
+<<<<<<< HEAD
         if (data && this.code.get()) {
             this.$draft_saved.show().delay(5000).fadeOut();
 >>>>>>> parent of 7093d97... 2020 Update
@@ -115,6 +122,8 @@ RedactorPlugins.draft = function() {
             // No change yet — dont't show the button
             return;
         }
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         this.$box.find('textarea').attr('data-draft-id', this.opts.draftId);
         if (data && this.code.get()) {
             this.$draft_saved.show().delay(5000).fadeOut();
@@ -297,6 +306,7 @@ $(function() {
                 'tabFocus': false,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 'toolbarFixed': true,
                 'callbacks': {
                     'start': function() {
@@ -317,6 +327,9 @@ $(function() {
 =======
                 'toolbarFixed': false,
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                'toolbarFixed': false,
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 'focusCallback': function() { this.$box.addClass('no-pjax'); },
                 'initCallback': function() {
                     if (this.$element.data('width'))
@@ -326,9 +339,12 @@ $(function() {
                     if (lang)
                         this.$editor.attr('lang', lang);
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 },
                 'linkSize': 100000,
                 'definedLinks': 'ajax.php/config/links'
@@ -355,6 +371,7 @@ $(function() {
             });
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                 if (el.hasClass('draft'))
                     el.redactor('deleteDraft');
@@ -364,16 +381,21 @@ $(function() {
         }
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $('input[type=submit]', el.closest('form')).on('click', function() {
             // Some setups (IE v10 on Windows 7 at least) seem to have a bug
             // where Redactor does not sync properly after adding an image.
             // Therefore, the ::get() call will not include text added after
             // the image was inserted.
 <<<<<<< HEAD
+<<<<<<< HEAD
             el.redactor('code.sync');
         });
 >>>>>>> parent of 7093d97... 2020 Update
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             try {
                 el.redactor('code.sync');
             }
@@ -382,7 +404,10 @@ $(function() {
                 el.redactor('code.sync');
             }
         });
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         if (!$.clientPortal) {
             options['plugins'] = options['plugins'].concat(
                     'fontcolor', 'fontfamily', 'signature');

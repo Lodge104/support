@@ -1607,9 +1607,12 @@ class BooleanField extends FormField {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function getChanges() {
         $new = $this->getValue();
         $old = $this->answer ? $this->answer->getValue() : $this->get('default');
@@ -1617,7 +1620,10 @@ class BooleanField extends FormField {
         return ($old != $new) ? array($this->to_database($old), $this->to_database($new)) : false;
     }
 
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function getSearchMethods() {
         return array(
             'set' =>        __('checked'),
@@ -2016,6 +2022,7 @@ class DatetimeField extends FormField {
                         'configuration' => array('content' => 'and'))
                     ),
                     'right' => new DatetimeField(),
+<<<<<<< HEAD
                 ),
             )),
             'ndaysago' => array('InlineformField', array(
@@ -2026,6 +2033,8 @@ class DatetimeField extends FormField {
                     'text' => new FreeTextField(array(
                         'configuration' => array('content' => 'days'))
                     ),
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 ),
             )),
             'ndays' => array('InlineformField', array(
@@ -2148,7 +2157,10 @@ class DatetimeField extends FormField {
             $desc = $this->describeSearchMethod($method);
             return sprintf($desc, $name, $l, $r);
         }
+<<<<<<< HEAD
         return parent::describeSearch($method, $value, $name);
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     }
 }
 
@@ -2257,9 +2269,13 @@ class PriorityField extends ChoiceField {
     function getChoices($verbose=false) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         if (!isset($this->_choices)) {
             $choices = array('' => '— '.__('Default').' —');
             foreach ($this->getPriorities() as $p)
@@ -2414,6 +2430,7 @@ class DepartmentField extends ChoiceField {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     function getValue() {
          if (($value = parent::getValue()) && ($id=$this->getClean()))
             return $value[$id];
@@ -2421,6 +2438,8 @@ class DepartmentField extends ChoiceField {
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function to_php($value, $id=false) {
         if ($id) {
             if (is_array($id)) {
@@ -2510,6 +2529,7 @@ FormField::addFieldTypes(/*@trans*/ 'Dynamic Fields', function() {
 });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         'department' => array(__('Department'), DepartmentField),
     );
@@ -2518,6 +2538,8 @@ FormField::addFieldTypes(/*@trans*/ 'Dynamic Fields', function() {
 
 >>>>>>> parent of 7093d97... 2020 Update
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
 class SLAField extends ChoiceField {
     function getWidget($widgetClass=false) {
@@ -2579,7 +2601,10 @@ class SLAField extends ChoiceField {
     }
 }
 
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 class AssigneeField extends ChoiceField {
     var $_choices = null;
     var $_criteria = null;
@@ -3832,6 +3857,7 @@ class CheckboxWidget extends Widget {
         if (count($data)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             if (isset($data[$this->name]))
                 return @in_array($this->field->get('id'),
                         $data[$this->name]);
@@ -3848,6 +3874,11 @@ class CheckboxWidget extends Widget {
                 return null;
             return @in_array($this->field->get('id'), $data[$this->name]);
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            if (!isset($data[$this->name]))
+                return null;
+            return @in_array($this->field->get('id'), $data[$this->name]);
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         }
         return parent::getValue();
     }
@@ -3887,6 +3918,7 @@ class DatetimePickerWidget extends Widget {
         } else {
             $datetime = new DateTime('now');
             $datetime->setTimezone($timezone);
+<<<<<<< HEAD
 =======
         if ($this->value) {
             $this->value = is_int($this->value) ? $this->value :
@@ -3901,10 +3933,13 @@ class DatetimePickerWidget extends Widget {
             list($hr, $min) = explode(':', date('H:i', $this->value));
             $this->value = Format::date($this->value, false, false, 'UTC');
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         }
         ?>
         <input type="text" name="<?php echo $this->name; ?>"
             id="<?php echo $this->id; ?>" style="display:inline-block;width:auto"
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
             value="<?php echo $this->value; ?>"
@@ -3915,6 +3950,9 @@ class DatetimePickerWidget extends Widget {
 =======
             value="<?php echo Format::htmlchars($this->value ?: ''); ?>" size="12"
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            value="<?php echo Format::htmlchars($this->value ?: ''); ?>" size="12"
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             autocomplete="off" class="dp" />
         <script type="text/javascript">
             $(function() {
@@ -3927,6 +3965,7 @@ class DatetimePickerWidget extends Widget {
                     elseif (!$config['future'])
 <<<<<<< HEAD
                         echo "maxDate: new Date().getTime(),\n";
+<<<<<<< HEAD
 <<<<<<< HEAD
 
                     // Set time options
@@ -3945,6 +3984,8 @@ class DatetimePickerWidget extends Widget {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                     ?>
                     numberOfMonths: 2,
                     showButtonPanel: true,
@@ -3955,6 +3996,7 @@ class DatetimePickerWidget extends Widget {
             });
         </script>
         <?php
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     }
@@ -4012,19 +4054,25 @@ class TimePickerWidget extends Widget {
 
         if ($showtimezone) {
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         if ($config['time']) {
             list($hr, $min) = explode(':', $datetime ?
                     $datetime->format('H:i') : '');
             // TODO: Add time picker -- requires time picker or selection with
             //       Misc::timeDropdown
             echo '&nbsp;' . Misc::timeDropdown($hr, $min, $this->name . ':time');
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             echo sprintf('&nbsp;<span class="faded">(<a href="#"
                         data-placement="top" data-toggle="tooltip"
                         title="%s">%s</a>)</span>',
                     $datetime->getTimezone()->getName(),
                     $datetime->format('T'));
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
         ?>
         <script type="text/javascript">
@@ -4052,10 +4100,13 @@ class TimePickerWidget extends Widget {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     }
 
     /**
      * Function: getValue
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -4066,12 +4117,17 @@ class TimePickerWidget extends Widget {
      * Combines the datepicker date value and the time dropdown selected
      * time value into a single date and time string value in DateTime::W3C
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+     * Combines the datepicker date value and the time dropdown selected
+     * time value into a single date and time string value in DateTime::W3C
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
      */
     function getValue() {
         global $cfg;
 
 <<<<<<< HEAD
         if ($value = parent::getValue()) {
+<<<<<<< HEAD
 <<<<<<< HEAD
             // TODO: Return ISO format.
 =======
@@ -4092,12 +4148,21 @@ class TimePickerWidget extends Widget {
             }
 >>>>>>> parent of 7093d97... 2020 Update
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             // Effective timezone for the selection
             $timezone = $this->field->getTimezone();
             // See if we have time
             $data = $this->field->getSource();
             if ($value && isset($data[$this->name . ':time']))
                 $value .=' '.$data[$this->name . ':time'];
+<<<<<<< HEAD
+=======
+
+            $dt = new DateTime($value, $timezone);
+            $value = $dt->format('Y-m-d H:i:s T');
+        }
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
             $dt = new DateTime($value, $timezone);
             $value = $dt->format('Y-m-d H:i:s T');
@@ -4497,12 +4562,15 @@ class VisibilityConstraint {
 <<<<<<< HEAD
                 $wval = $field ? $field->getClean() : null;
 <<<<<<< HEAD
+<<<<<<< HEAD
                 $values = explode('|', $value);
 =======
                 $wval = $field->getClean();
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 switch ($op) {
                 case 'eq':
                 case null:

@@ -2300,6 +2300,7 @@ class SqlCompiler {
                 }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 // New criteria here is joined with AND, so if the outer
                 // criteria is joined with OR, then parentheses are
                 // necessary
@@ -2311,6 +2312,10 @@ class SqlCompiler {
                 $filter[] = $this->compileQ(new Q($criteria), $model,
                     $Q->ored || $Q->negated);
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                $filter[] = $this->compileQ(new Q($criteria), $model,
+                    $Q->ored || $Q->negated);
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             }
             // Handle simple field = <value> constraints
             else {
@@ -2354,6 +2359,7 @@ class SqlCompiler {
         foreach ($where as $Q) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             // Constraints are joined by AND operators, so if they have
             // internal OR operators, then they need to be parenthesized
             $constraints[] = $this->compileQ($Q, $model, $Q->ored);
@@ -2363,6 +2369,9 @@ class SqlCompiler {
 =======
             $constraints[] = $this->compileQ($Q, $model, $parens);
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            $constraints[] = $this->compileQ($Q, $model, $parens);
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         }
         return $constraints;
     }

@@ -445,6 +445,7 @@ if ($thisstaff->hasPerm(TicketModel::PERM_CREATE, false)) {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 $ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?f1e9e88"></script>');
 $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?f1e9e88"></script>');
 =======
@@ -455,6 +456,10 @@ $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?901e5ea">
 $ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?a076918"></script>');
 $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?a076918"></script>');
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+$ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?a076918"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?a076918"></script>');
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 $ost->addExtraHeader('<meta name="tip-namespace" content="tickets.queue" />',
     "$('#content').data('tipNamespace', 'tickets.queue');");
 
@@ -471,6 +476,7 @@ if($ticket) {
             $f->filterFields(function($f) { return !$f->isStorable(); });
             $f->addMissingFields();
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     } elseif($_REQUEST['a'] == 'print') {
@@ -503,15 +509,24 @@ if($ticket) {
         $errors['err'] = __('Unable to export the ticket to PDF for print.')
             .' '.__('Internal error occurred');
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+    } elseif($_REQUEST['a'] == 'print' && !$ticket->pdfExport($_REQUEST['psize'], $_REQUEST['notes']))
+        $errors['err'] = __('Unable to export the ticket to PDF for print.')
+            .' '.__('Internal error occurred');
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 } else {
 	$inc = 'tickets.inc.php';
     if ($_REQUEST['a']=='open' &&
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
             $thisstaff->hasPerm(Ticket::PERM_CREATE, false)) {
 =======
             $thisstaff->hasPerm(Ticket::PERM_CREATE, false))
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            $thisstaff->hasPerm(Ticket::PERM_CREATE, false))
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $inc = 'ticket-open.inc.php';
     elseif ($_REQUEST['a'] == 'export' && $queue) {
         // XXX: Check staff access?

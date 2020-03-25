@@ -211,6 +211,7 @@ if ($thisstaff->hasPerm(TaskModel::PERM_CREATE, false)) {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 $ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?f1e9e88"></script>');
 $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?f1e9e88"></script>');
 =======
@@ -221,6 +222,10 @@ $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?901e5ea">
 $ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?a076918"></script>');
 $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?a076918"></script>');
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+$ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?a076918"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?a076918"></script>');
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 $ost->addExtraHeader('<meta name="tip-namespace" content="tasks.queue" />',
     "$('#content').data('tipNamespace', 'tasks.queue');");
 

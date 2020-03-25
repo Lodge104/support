@@ -17,6 +17,7 @@ class TicketApiController extends ApiController {
 <<<<<<< HEAD
             "message", "ip", "priorityId",
 <<<<<<< HEAD
+<<<<<<< HEAD
             "system_emails" => array(
                 "*" => "*"
             ),
@@ -29,6 +30,9 @@ class TicketApiController extends ApiController {
 =======
             "system_emails", "thread_entry_recipients"
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            "system_emails", "thread_entry_recipients"
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         );
         # Fetch dynamic form field names for the given help topic and add
         # the names to the supported request structure

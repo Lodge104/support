@@ -363,10 +363,13 @@ implements TemplateVariable {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function updateProfile($vars, &$errors) {
 =======
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function update($vars, &$errors) {
 
         $valid = true;
@@ -385,9 +388,12 @@ implements TemplateVariable {
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         if ($vars['domain']) {
             foreach (explode(',', $vars['domain']) as $d) {
                 if (!Validator::is_email('t@' . trim($d))) {

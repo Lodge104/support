@@ -20,11 +20,14 @@ require_once(INCLUDE_DIR.'mpdf/mpdf.php');
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 // unregister phar stream to mitigate vulnerability in mpdf library
 @stream_wrapper_unregister('phar');
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 class mPDFWithLocalImages extends Mpdf {
     function WriteHtml($html, $sub = 0, $init = true, $close = true) {
 =======

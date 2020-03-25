@@ -70,6 +70,7 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
               $user = User::lookup($thisclient->getId());
               $ticket->logEvent('edited', array('fields' => $changes), $user);
 <<<<<<< HEAD
+<<<<<<< HEAD
               $type = array('type' => 'edited', 'fields' => $changes);
               Signal::send('object.edited', $ticket, $type);
 =======
@@ -79,6 +80,8 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             }
             if ($changes)
                 $ticket->logEvent('edited', array('fields' => $changes));

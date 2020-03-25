@@ -133,6 +133,15 @@ class Bootstrap {
         define('SEQUENCE_TABLE', $prefix.'sequence');
         define('TRANSLATION_TABLE', $prefix.'translation');
         define('QUEUE_TABLE', $prefix.'queue');
+<<<<<<< HEAD
+=======
+        define('COLUMN_TABLE', $prefix.'queue_column');
+        define('QUEUE_COLUMN_TABLE', $prefix.'queue_columns');
+        define('QUEUE_SORT_TABLE', $prefix.'queue_sort');
+        define('QUEUE_SORTING_TABLE', $prefix.'queue_sorts');
+        define('QUEUE_EXPORT_TABLE', $prefix.'queue_export');
+        define('QUEUE_CONFIG_TABLE', $prefix.'queue_config');
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
         define('API_KEY_TABLE',$prefix.'api_key');
         define('TIMEZONE_TABLE',$prefix.'timezone');
@@ -316,6 +325,7 @@ define('CLI_DIR', INCLUDE_DIR.'cli/');
 #Current version && schema signature (Changes from version to version)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 define('GIT_VERSION', 'f1e9e88'); // Set by installer
 define('MAJOR_VERSION', '1.14');
 define('THIS_VERSION', 'v1.14.1'); // Set by installer
@@ -329,6 +339,11 @@ define('THIS_VERSION', 'v1.12'); // Set by installer
 define('GIT_VERSION', 'a076918'); // Set by installer
 define('MAJOR_VERSION', '1.10');
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+define('THIS_VERSION', 'v1.12'); // Set by installer
+define('GIT_VERSION', 'a076918'); // Set by installer
+define('MAJOR_VERSION', '1.10');
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 //Path separator
 if(!defined('PATH_SEPARATOR')){
     if(strpos($_ENV['OS'],'Win')!==false || !strcasecmp(substr(PHP_OS, 0, 3),'WIN'))

@@ -223,6 +223,7 @@ var scp_prep = function() {
                     //Canned response.
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     var box = $('#response', fObj),
                         redactor = $R('#response');
                     if (canned.response) {
@@ -231,6 +232,11 @@ var scp_prep = function() {
                         redactor = box.data('redactor');
                     if(canned.response) {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                    var box = $('#response',fObj),
+                        redactor = box.data('redactor');
+                    if(canned.response) {
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                         if (redactor) {
                             redactor.selection.restore();
                             redactor.insert.html(canned.response);
@@ -556,9 +562,12 @@ jQuery.fn.exists = function() { return this.length>0; };
 <<<<<<< HEAD
 $.pjax.defaults.timeout = 30000;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 $.translate_format = function(str) {
     var translation = {
         'DD':   'oo',
@@ -584,9 +593,12 @@ $.translate_format = function(str) {
     return str;
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 $(document).keydown(function(e) {
 
     if (e.keyCode == 27 && !$('#overlay').is(':hidden')) {
@@ -1097,10 +1109,14 @@ if ($.support.pjax) {
         && !$this.closest('.no-pjax').length
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         && href && href.charAt(0) != '#')
 =======
         && $this.attr('href').charAt(0) != '#')
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+        && $this.attr('href').charAt(0) != '#')
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
       $.pjax.click(event, {container: $this.data('pjaxContainer') || '#pjax-container', timeout: 30000});
 =======
         && $this.attr('href').charAt(0) != '#')
@@ -1150,6 +1166,7 @@ $(document).on('click.note', '.quicknote .action.edit-note', function() {
     body.replaceWith(T);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     T.redactor({ focusEnd: true });
 =======
     $.redact(T);
@@ -1158,6 +1175,9 @@ $(document).on('click.note', '.quicknote .action.edit-note', function() {
 =======
     $.redact(T, { focusEnd: true });
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+    $.redact(T, { focusEnd: true });
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     note.find('.action.edit-note').hide();
     note.find('.action.save-note').show();
     note.find('.action.cancel-edit').show();
@@ -1232,6 +1252,7 @@ $(document).on('click', '#new-note', function() {
         .append(button).appendTo(T.parent());
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     T.redactor({ focusEnd: true });
 =======
     $.redact(T);
@@ -1240,6 +1261,9 @@ $(document).on('click', '#new-note', function() {
 =======
     $.redact(T, { focusEnd: true });
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+    $.redact(T, { focusEnd: true });
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     return false;
 });
 

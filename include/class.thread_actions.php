@@ -76,7 +76,12 @@ class TEA_EditThreadEntry extends ThreadEntryAction {
                 && $T->getDept()->getManagerId() == $thisstaff->getId()
             )
             || ($T instanceof Ticket
+<<<<<<< HEAD
                 && $thisstaff->getRole($T->getDeptId())->hasPerm(ThreadEntry::PERM_EDIT)
+=======
+                && ($role = $thisstaff->getRole($T->getDeptId(), $T->isAssigned($thisstaff)))
+                && $role->hasPerm(ThreadEntry::PERM_EDIT)
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             )
         );
     }

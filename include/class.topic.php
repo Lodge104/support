@@ -425,6 +425,7 @@ implements TemplateVariable {
 <<<<<<< HEAD
         $this->flags = $vars['custom-numbers'] ? self::FLAG_CUSTOM_NUMBERS : $this->flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
         $this->noautoresp = $vars['noautoresp'];
 =======
         $this->flags = $vars['custom-numbers'] ? self::FLAG_CUSTOM_NUMBERS : 0;
@@ -433,6 +434,9 @@ implements TemplateVariable {
 =======
         $this->noautoresp = !!$vars['noautoresp'];
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+        $this->noautoresp = !!$vars['noautoresp'];
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $this->notes = Format::sanitize($vars['notes']);
 
         //Auto assign ID is overloaded...

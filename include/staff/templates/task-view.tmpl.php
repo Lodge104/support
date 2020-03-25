@@ -488,6 +488,7 @@ else
                     <?php
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     if ($thread->getNumCollaborators())
                         $recipients = sprintf(__('(%d of %d)'),
 =======
@@ -500,6 +501,11 @@ else
                     if ($thread->getNumCollaborators())
                         $recipients = sprintf(__('Collaborators (%d of %d)'),
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                    $recipients = __('Collaborators');
+                    if ($thread->getNumCollaborators())
+                        $recipients = sprintf(__('Collaborators (%d of %d)'),
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                                 $thread->getNumActiveCollaborators(),
                                 $thread->getNumCollaborators());
 

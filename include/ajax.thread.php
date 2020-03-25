@@ -231,6 +231,7 @@ class ThreadAjaxAPI extends AjaxController {
         $errors = $info = array();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         $thread->updateCollaborators($_POST, $errors);
 =======
         if ($thread->updateCollaborators($_POST, $errors))
@@ -243,6 +244,8 @@ class ThreadAjaxAPI extends AjaxController {
                         ));
 >>>>>>> parent of 7093d97... 2020 Update
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         if ($thread->updateCollaborators($_POST, $errors))
             $users = array();
             foreach ($thread->getCollaborators() as $c)
@@ -257,7 +260,10 @@ class ThreadAjaxAPI extends AjaxController {
                                 $thread->getNumCollaborators())
                             )
                         ));
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
         if($errors && $errors['err'])
             $info +=array('error' => $errors['err']);

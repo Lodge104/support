@@ -891,6 +891,7 @@ class StaffAuthStrikeBackend extends  AuthStrikeBackend {
 <<<<<<< HEAD
                     $alert, $admin_alert);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
               if ($username) {
                 $agent = Staff::lookup($username);
@@ -903,6 +904,8 @@ class StaffAuthStrikeBackend extends  AuthStrikeBackend {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             return new AccessDenied(__('Forgot your login info? Contact Admin.'));
         //Log every other third failed login attempt as a warning.
         } elseif($authsession['strikes']%3==0) {
@@ -965,6 +968,7 @@ class UserAuthStrikeBackend extends  AuthStrikeBackend {
             $admin_alert = ($cfg->alertONLoginError() == 1 ? TRUE : FALSE);
             $ost->logError(_S('Excessive login attempts (user)'), $alert, $admin_alert);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             if ($username) {
               $account = UserAccount::lookupByUsername($username);
@@ -985,6 +989,8 @@ class UserAuthStrikeBackend extends  AuthStrikeBackend {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             return new AccessDenied(__('Access denied'));
         } elseif($authsession['strikes']%3==0) { //Log every third failed login attempt as a warning.
             $alert=_S('Username').": {$username}\n".

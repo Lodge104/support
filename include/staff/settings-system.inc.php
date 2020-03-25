@@ -134,6 +134,7 @@ $gmtime = Misc::gmtime();
         <tr>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             <td><?php echo __('Allow System iFrame'); ?>:</td>
             <td><input type="text" size="40" name="allow_iframes" value="<?php echo $config['allow_iframes']; ?>"
                     placeholder="eg. https://domain.tld, *.domain.tld">
@@ -142,6 +143,11 @@ $gmtime = Misc::gmtime();
             <td><input type="text" size="40" name="allow_iframes" value="<?php echo $config['allow_iframes']; ?>">
                 &nbsp;<font class="error">&nbsp;<?php echo $errors['allow_iframes']; ?></font>
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            <td><?php echo __('Allow iFrames'); ?>:</td>
+            <td><input type="text" size="40" name="allow_iframes" value="<?php echo $config['allow_iframes']; ?>">
+                &nbsp;<font class="error">&nbsp;<?php echo $errors['allow_iframes']; ?></font>
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 <i class="help-tip icon-question-sign" href="#allow_iframes"></i>
             </td>
         </tr>

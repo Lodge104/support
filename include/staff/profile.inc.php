@@ -302,6 +302,7 @@ if ($avatar->isChangeable()) { ?>
             </td>
         </tr>
 <<<<<<< HEAD
+<<<<<<< HEAD
         <tr>
             <td><?php echo __('Image Attachment View'); ?>:
                 <div class="faded"><?php echo __('Open image attachments in new tab or directly download. (CTRL + Right Click)');?></div>
@@ -323,6 +324,8 @@ if ($avatar->isChangeable()) { ?>
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
       </tbody>
       <tbody>
         <tr class="header">

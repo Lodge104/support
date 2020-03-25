@@ -29,6 +29,7 @@ if ($lang) {
     <![endif]-->
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-3.4.0.min.js?f1e9e88"></script>
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/thread.css?f1e9e88" media="all"/>
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/scp.css?f1e9e88" media="all"/>
@@ -36,13 +37,18 @@ if ($lang) {
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/typeahead.css?f1e9e88" media="screen"/>
     <link type="text/css" href="<?php echo ROOT_PATH; ?>css/ui-lightness/jquery-ui-1.10.3.custom.min.css?f1e9e88"
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-3.4.0.min.js?a076918"></script>
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/thread.css?a076918" media="all"/>
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/scp.css?a076918" media="all"/>
     <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/redactor.css?a076918" media="screen"/>
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/typeahead.css?a076918" media="screen"/>
     <link type="text/css" href="<?php echo ROOT_PATH; ?>css/ui-lightness/jquery-ui-1.10.3.custom.min.css?a076918"
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
          rel="stylesheet" media="screen" />
      <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome.min.css?a076918"/>
     <!--[if IE 7]>

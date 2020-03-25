@@ -173,6 +173,7 @@ getConfig = (function() {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 $.translate_format = function(str) {
     var translation = {
@@ -184,6 +185,8 @@ $.translate_format = function(str) {
         'n':'m',
         'Y':'yy'
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 $.translate_format = function(str) {
     var translation = {
         'DD':   'oo',
@@ -201,7 +204,10 @@ $.translate_format = function(str) {
         'yy':   'y',
         'y':    'yy',
         '`':    'yy'
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     };
     // Change PHP formats to datepicker ones
     $.each(translation, function(php, jqdp) {
@@ -211,9 +217,12 @@ $.translate_format = function(str) {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 $.sysAlert = function (title, msg, cb) {
     var $dialog =  $('.dialog#alert');
     if ($dialog.length) {

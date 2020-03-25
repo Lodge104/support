@@ -185,6 +185,7 @@ class Thread extends VerySimpleModel {
                      'del' => array($c->user_id => array('name' => $c->getName()->getOriginal()))
                  ));
 <<<<<<< HEAD
+<<<<<<< HEAD
                  $type = array('type' => 'collab', 'del' => array($c->user_id => array(
                          'name' => $c->getName()->getOriginal(),
                          'src' => @$vars['source'],
@@ -194,6 +195,8 @@ class Thread extends VerySimpleModel {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             }
             $this->getEvents()->log($this->getObject(), 'collab', array(
                 'del' => array($c->user_id => array('name' => $c->getName()->getOriginal()))
@@ -419,6 +422,7 @@ class Thread extends VerySimpleModel {
             $vars['message'] = $body;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             if ($object instanceof Threadable) {
                 $entry = $object->postThreadEntry('M', $vars);
                 if ($this->getObjectType() == 'C') {
@@ -438,6 +442,10 @@ class Thread extends VerySimpleModel {
             if ($object instanceof Threadable)
                 return $object->postThreadEntry('M', $vars);
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            if ($object instanceof Threadable)
+                return $object->postThreadEntry('M', $vars);
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             elseif ($this instanceof ObjectThread)
                 return $this->addMessage($vars, $errors);
             break;
@@ -634,11 +642,14 @@ implements TemplateVariable {
     const FLAG_REPLY_ALL                = 0x00100;  // Agent response, reply all
     const FLAG_REPLY_USER               = 0x00200;  // Agent response, reply to User
 <<<<<<< HEAD
+<<<<<<< HEAD
     const FLAG_CHILD                    = 0x00400;  // Entry is from a child Ticket
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
     const PERM_EDIT     = 'thread.edit';
 
@@ -1604,6 +1615,7 @@ class ThreadEvent extends VerySimpleModel {
         $icons = array(
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             'assigned'    => 'hand-right',
             'released'    => 'unlock',
             'collab'      => 'group',
@@ -1636,12 +1648,23 @@ class ThreadEvent extends VerySimpleModel {
             'created'   => 'magic',
             'overdue'   => 'time',
             'transferred' => 'share-alt',
+=======
+            'assigned'  => 'hand-right',
+            'released'  => 'unlock',
+            'collab'    => 'group',
+            'created'   => 'magic',
+            'overdue'   => 'time',
+            'transferred' => 'share-alt',
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             'referred' => 'exchange',
             'edited'    => 'pencil',
             'closed'    => 'thumbs-up-alt',
             'reopened'  => 'rotate-right',
             'resent'    => 'reply-all icon-flip-horizontal',
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         );
         return @$icons[$this->state] ?: 'chevron-sign-right';
     }
@@ -1762,9 +1785,12 @@ class ThreadEvent extends VerySimpleModel {
         $inst = self::create(array(
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             'thread_type' => ObjectModel::OBJECT_TYPE_TICKET,
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             'staff_id' => $staff,
 =======
             'staff_id' => $ticket->getStaffId(),

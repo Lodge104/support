@@ -71,6 +71,7 @@ class TicketsAjaxAPI extends AjaxController {
                 ->annotate(array(
                     'tickets' => new SqlCode('1'),
 <<<<<<< HEAD
+<<<<<<< HEAD
                     'tasks' => SqlAggregate::COUNT('tasks__id', true),
                     'collaborators' => SqlAggregate::COUNT('thread__collaborators__id', true),
                     'entries' => SqlAggregate::COUNT('thread__entries__id', true),
@@ -83,6 +84,8 @@ class TicketsAjaxAPI extends AjaxController {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 ))
                 ->filter($visibility)
                 ->filter(array('number__startswith' => $q))
@@ -102,12 +105,15 @@ class TicketsAjaxAPI extends AjaxController {
 <<<<<<< HEAD
                 $tickets[$T['number']] = array('id'=>$T['number'], 'value'=>$T['number'],
 <<<<<<< HEAD
+<<<<<<< HEAD
                     'ticket_id'=>$T['ticket_id'],
 =======
                 $tickets[] = array('id'=>$T['number'], 'value'=>$T['number'],
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                     'info'=>"{$T['number']} — {$email}",
                     'matches'=>$_REQUEST['q']);
             }
@@ -445,12 +451,18 @@ class TicketsAjaxAPI extends AjaxController {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     function referrals($tid) {
 =======
 
   function referrals($tid) {
 
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+
+  function referrals($tid) {
+
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
       return $this->refer($tid);
 
   }
@@ -575,6 +587,7 @@ function refer($tid, $target=null) {
       }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             $form->addErrors($errors);
             $info['error'] = $errors['err'] ?: __('Unable to update field');
         }
@@ -587,6 +600,10 @@ function refer($tid, $target=null) {
       include STAFFINC_DIR . 'templates/field-edit.tmpl.php';
   }
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+      include STAFFINC_DIR . 'templates/field-edit.tmpl.php';
+  }
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
     function assign($tid, $target=null) {
         global $thisstaff;
@@ -720,6 +737,7 @@ function refer($tid, $target=null) {
                     'verbed' => __('referred'),
                     ),
 <<<<<<< HEAD
+<<<<<<< HEAD
                 'merge' => array(
                     'verbed' => __('merged'),
                     ),
@@ -730,6 +748,8 @@ function refer($tid, $target=null) {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 'claim' => array(
                     'verbed' => __('assigned'),
                     ),
@@ -1433,6 +1453,7 @@ function refer($tid, $target=null) {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     function relations($tid) {
         global $thisstaff;
 
@@ -1445,6 +1466,8 @@ function refer($tid, $target=null) {
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function addTask($tid, $vars=array()) {
 =======
     function addTask($tid) {

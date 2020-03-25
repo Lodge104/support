@@ -43,12 +43,16 @@ class TicketModel extends VerySimpleModel {
 <<<<<<< HEAD
         'select_related' => array('topic', 'staff', 'user', 'team', 'dept',
 <<<<<<< HEAD
+<<<<<<< HEAD
             'sla', 'thread', 'child_thread', 'user__default_email', 'status'),
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 =======
             'sla', 'thread', 'user__default_email', 'status'),
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            'sla', 'thread', 'user__default_email', 'status'),
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         'joins' => array(
             'user' => array(
                 'constraint' => array('user_id' => 'User.id')
@@ -108,16 +112,20 @@ class TicketModel extends VerySimpleModel {
 <<<<<<< HEAD
     const PERM_REFER    = 'ticket.refer';
 <<<<<<< HEAD
+<<<<<<< HEAD
     const PERM_MERGE    = 'ticket.merge';
     const PERM_LINK     = 'ticket.link';
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     const PERM_REPLY    = 'ticket.reply';
     const PERM_CLOSE    = 'ticket.close';
     const PERM_DELETE   = 'ticket.delete';
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     const FLAG_COMBINE_THREADS     = 0x0001;
@@ -129,6 +137,8 @@ class TicketModel extends VerySimpleModel {
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     static protected $perms = array(
             self::PERM_CREATE => array(
                 'title' =>
@@ -157,6 +167,7 @@ class TicketModel extends VerySimpleModel {
                 'desc'  =>
                 /* @trans */ 'Ability to manage ticket referrals'),
 <<<<<<< HEAD
+<<<<<<< HEAD
             self::PERM_MERGE => array(
                 'title' =>
                 /* @trans */ 'Merge',
@@ -171,6 +182,8 @@ class TicketModel extends VerySimpleModel {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             self::PERM_REPLY => array(
                 'title' =>
                 /* @trans */ 'Post Reply',
@@ -203,6 +216,7 @@ class TicketModel extends VerySimpleModel {
             /* @trans */ 'Other',
             );
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -307,6 +321,8 @@ implements RestrictedAccess, Threadable {
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     var $lastMsgId;
     var $last_message;
 
@@ -320,6 +336,7 @@ implements RestrictedAccess, Threadable {
 <<<<<<< HEAD
     var $lastuserrespondent;
 <<<<<<< HEAD
+<<<<<<< HEAD
     var $_children;
 =======
 
@@ -329,6 +346,8 @@ implements RestrictedAccess, Threadable {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
     function loadDynamicData($force=false) {
         if (!isset($this->_answers) || $force) {
@@ -358,6 +377,7 @@ implements RestrictedAccess, Threadable {
         return $this->ticket_id;
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     function getPid() {
         return $this->ticket_pid;
@@ -418,6 +438,8 @@ implements RestrictedAccess, Threadable {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function hasState($state) {
         return  strcasecmp($this->getState(), $state) == 0;
     }
@@ -493,6 +515,7 @@ implements RestrictedAccess, Threadable {
                 && !$this->isAssigned($staff)
                 // check referral
 <<<<<<< HEAD
+<<<<<<< HEAD
                 && !$this->getThread()->isReferred($staff))
 =======
         // Check access based on department or assignment
@@ -507,6 +530,9 @@ implements RestrictedAccess, Threadable {
 =======
                 && !$this->thread->isReferred($staff))
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                && !$this->thread->isReferred($staff))
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             return false;
         }
 
@@ -637,6 +663,7 @@ implements RestrictedAccess, Threadable {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     function getSLADueDate($recompute=false) {
         global $cfg;
 
@@ -653,13 +680,18 @@ implements RestrictedAccess, Threadable {
             $dt->setTimezone($tz);
             return $dt->format('Y-m-d H:i:s');
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function getSLADueDate($datetime=null) {
         if ($sla = $this->getSLA()) {
             $dt = new DateTime($datetime ?: $this->getReopenDate() ?: $this->getCreateDate());
             return $dt
                 ->add(new DateInterval('PT' . $sla->getGracePeriod() . 'H'))
                 ->format('Y-m-d H:i:s');
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         }
     }
 
@@ -757,18 +789,25 @@ implements RestrictedAccess, Threadable {
     function getPriority() {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         if (($a = $this->getAnswer('priority')))
             return $a->getValue();
 
         return null;
+<<<<<<< HEAD
 =======
         if (($a = $this->_answers['priority']) && ($b = $a->getValue()))
             return $b->getDesc();
         return '';
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     }
 
     function getPhoneNumber() {
@@ -1097,6 +1136,7 @@ implements RestrictedAccess, Threadable {
 
     function getNumActiveCollaborators() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return $this->getThread() ? $this->getThread()->getNumActiveCollaborators() : '';
 =======
         return $this->recipients;
@@ -1104,6 +1144,9 @@ implements RestrictedAccess, Threadable {
 =======
         return $this->getThread()->getNumActiveCollaborators();
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+        return $this->getThread()->getNumActiveCollaborators();
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     }
 
     function getAssignmentForm($source=null, $options=array()) {
@@ -1116,6 +1159,7 @@ implements RestrictedAccess, Threadable {
             case 'agents':
                 $assignees = array();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         $assignees = array();
         switch (strtolower($options['target'])) {
@@ -1125,6 +1169,9 @@ implements RestrictedAccess, Threadable {
 =======
                 $dept = $this->getDept();
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                $dept = $this->getDept();
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 foreach ($dept->getAssignees() as $member)
                     $assignees['s'.$member->getId()] = $member;
 
@@ -1165,6 +1212,7 @@ implements RestrictedAccess, Threadable {
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         // Field configurations
         if ($f=$form->getField('assignee')) {
             if ($prompt)
@@ -1175,6 +1223,12 @@ implements RestrictedAccess, Threadable {
         if ($prompt && ($f=$form->getField('assignee')))
             $f->configure('prompt', $prompt);
 =======
+=======
+
+        if ($prompt && ($f=$form->getField('assignee')))
+            $f->configure('prompt', $prompt);
+
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
         if ($prompt && ($f=$form->getField('assignee')))
             $f->configure('prompt', $prompt);
@@ -1720,6 +1774,7 @@ implements RestrictedAccess, Threadable {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if ($cfg->alertDeptManagerONNewTicket() && $manager) {
                     $recipients[] = $manager;
                 }
@@ -1740,6 +1795,11 @@ implements RestrictedAccess, Threadable {
                 $recipients[] = $manager;
             }
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            if ($cfg->alertDeptManagerONNewTicket() && $manager) {
+                $recipients[] = $manager;
+            }
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
             // Account manager
             if ($cfg->alertAcctManagerONNewTicket()
@@ -1908,9 +1968,12 @@ implements RestrictedAccess, Threadable {
             $this->reopen();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             // Auto-assign to closing staff or the last respondent if the
             // agent is available and has access. Otherwise, put the ticket back
             // to unassigned pool.
@@ -1923,18 +1986,25 @@ implements RestrictedAccess, Threadable {
                     && $staff->isAvailable()
                     // Does the agent have access to dept?
 <<<<<<< HEAD
+<<<<<<< HEAD
                     && $staff->canAccessDept($dept->getId()))
 =======
                     && $staff->canAccessDept($dept))
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                    && $staff->canAccessDept($dept))
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 $this->setStaffId($staff->getId());
             else
                 $this->setStaffId(0); // Clear assignment
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
         if (!$autorespond)
             return;
@@ -2665,9 +2735,12 @@ implements RestrictedAccess, Threadable {
         $evd = array();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         $audit = array();
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $refer = null;
         $dept = $this->getDept();
 =======
@@ -2876,10 +2949,14 @@ implements RestrictedAccess, Threadable {
         $errors = array();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         if ($vars['userId'] != $ticket->user_id) {
 =======
         if ($vars['userId'] != $this->user_id) {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+        if ($vars['userId'] != $this->user_id) {
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             if ($vars['userId']) {
                 $user = User::lookup($vars['userId']);
              } elseif ($vars['header']
@@ -2920,6 +2997,7 @@ implements RestrictedAccess, Threadable {
           $vars['thread_entry_recipients'] = $recipients->getEmailAddresses();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (!($message = $ticket->getThread()->addMessage($vars, $errors)))
 =======
         if (!($message = $this->getThread()->addMessage($vars, $errors)))
@@ -2927,6 +3005,9 @@ implements RestrictedAccess, Threadable {
 =======
         if (!($message = $this->getThread()->addMessage($vars, $errors)))
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+        if (!($message = $this->getThread()->addMessage($vars, $errors)))
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             return null;
 
         $this->setLastMessage($message);
@@ -3069,6 +3150,7 @@ implements RestrictedAccess, Threadable {
         }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         $type = array('type' => 'message', 'uid' => $vars['userId']);
         Signal::send('object.created', $this, $type);
 =======
@@ -3076,6 +3158,8 @@ implements RestrictedAccess, Threadable {
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         return $message;
     }
 
@@ -3374,6 +3458,7 @@ implements RestrictedAccess, Threadable {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         //deleting parent ticket
         if ($children = Ticket::getChildTickets($this->getId())) {
             foreach ($children as $childId) {
@@ -3399,6 +3484,8 @@ implements RestrictedAccess, Threadable {
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $this->logEvent('deleted');
 =======
         $t->delete();
@@ -3562,8 +3649,11 @@ implements RestrictedAccess, Threadable {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         return true;
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         // Clear overdue flag if duedate or SLA changes and the ticket is no longer overdue.
         if($this->isOverdue()
             && (!$estimatedDueDate //Duedate + SLA cleared
@@ -3574,7 +3664,10 @@ implements RestrictedAccess, Threadable {
 
         Signal::send('model.updated', $this);
         return $this->save();
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     }
 
 
@@ -3691,6 +3784,7 @@ implements RestrictedAccess, Threadable {
         $num = static::objects()
             ->filter(array('number' => $number))
 	    ->count();
+<<<<<<< HEAD
 
 	return ($num === 0);
     }
@@ -3747,6 +3841,10 @@ implements RestrictedAccess, Threadable {
                 $stats['assigned'] += $S['count'];
         }
         return $stats;
+=======
+
+	return ($num === 0);
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     }
 
     /* Quick client's tickets stats
@@ -4405,6 +4503,7 @@ implements RestrictedAccess, Threadable {
                 array(
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     'message'   => $message ?: '',
                     'response'  => $response ?: '',
                     'signature' => $signature,
@@ -4418,6 +4517,11 @@ implements RestrictedAccess, Threadable {
                     'signature' => $signature,
                     'response'  => $response ?: '',
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                    'message'   => $message,
+                    'signature' => $signature,
+                    'response'  => $response ?: '',
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                     'recipient' => $ticket->getOwner(), //End user
                     'staff'     => $thisstaff,
                 )
@@ -4444,6 +4548,7 @@ implements RestrictedAccess, Threadable {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         foreach ($overdue as $ticket)
             $ticket->markOverdue();
 =======
@@ -4452,12 +4557,17 @@ implements RestrictedAccess, Threadable {
 
         $sql='SELECT ticket_id FROM '.TICKET_TABLE.' T1 '
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
          Punt for now
          */
 
         $sql='SELECT ticket_id FROM '.TICKET_TABLE.' T1'
             .' USE INDEX (status_id)'
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             .' INNER JOIN '.TICKET_STATUS_TABLE.' status
                 ON (status.id=T1.status_id AND status.state="open") '
             .' LEFT JOIN '.SLA_TABLE.' T2 ON (T1.sla_id=T2.id AND T2.flags & 1 = 1) '
@@ -4475,9 +4585,12 @@ implements RestrictedAccess, Threadable {
         } else {
             //TODO: Trigger escalation on already overdue tickets - make sure last overdue event > grace_period.
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
         }
    }

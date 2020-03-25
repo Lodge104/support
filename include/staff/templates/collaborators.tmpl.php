@@ -91,6 +91,7 @@ if(($users=$thread->getCollaborators())) {?>
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 if ($_POST && $thread) {
     $collabs = $thread->getCollaborators();
     foreach ($collabs as $c) {
@@ -110,13 +111,18 @@ if ($_POST && $thread && $thread->getNumCollaborators()) {
     $recipients = sprintf(__('Recipients (%d of %d)'),
 >>>>>>> parent of 7093d97... 2020 Update
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 if ($_POST && $thread && $thread->getNumCollaborators()) {
 
     $collaborators = sprintf('Collaborators (%d)',
             $thread->getNumCollaborators());
 
     $recipients = sprintf(__('Collaborators (%d of %d)'),
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
           $thread->getNumActiveCollaborators(),
           $thread->getNumCollaborators());
     ?>

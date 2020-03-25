@@ -69,11 +69,15 @@ if (count($ext_bks)) { ?>
     <![endif]-->
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.12.1.custom.min.js?f1e9e88"></script>
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 =======
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.12.1.custom.min.js?a076918"></script>
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.12.1.custom.min.js?a076918"></script>
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 </body>
 </html>

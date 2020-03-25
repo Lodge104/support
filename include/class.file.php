@@ -242,6 +242,7 @@ class AttachmentFile extends VerySimpleModel {
 <<<<<<< HEAD
     function download($name=false, $disposition=false, $expires=false) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         $thisstaff = StaffAuthenticationBackend::getUser();
         $inline = ($thisstaff ? ($thisstaff->getImageAttachmentView() === 'inline') : false);
         $disposition = ((($disposition && strcasecmp($disposition, 'inline') == 0)
@@ -255,6 +256,9 @@ class AttachmentFile extends VerySimpleModel {
 =======
         $disposition = $disposition ?: 'inline';
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+        $disposition = $disposition ?: 'inline';
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $bk = $this->open();
         if ($bk->sendRedirectUrl($disposition))
             return;
@@ -263,12 +267,18 @@ class AttachmentFile extends VerySimpleModel {
         $type = $this->getType() ?: 'application/octet-stream';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         if (isset($_REQUEST['overridetype']))
             $type = $_REQUEST['overridetype'];
         elseif (!strcasecmp($disposition, 'attachment'))
             $type = 'application/octet-stream';
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         Http::download($name ?: $this->getName(), $type, null, $disposition);
 =======
         if (isset($_REQUEST['overridetype']))

@@ -190,6 +190,7 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
         <tr>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             <td><?php echo __('Auto-refer on Close'); ?>:</td>
             <td>
                 <input type="checkbox" name="auto_refer_closed" <?php echo $config['auto_refer_closed']?'checked="checked"':''; ?>>
@@ -209,6 +210,12 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                 <input type="checkbox" name="collaborator_ticket_visibility" <?php echo $config['collaborator_ticket_visibility']?'checked="checked"':''; ?>>
                 <?php echo __('Enable'); ?>&nbsp;<i class="help-tip icon-question-sign" href="#collaborator_ticket_visibility"></i>
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            <td><?php echo __('Collaborator Tickets Visibility'); ?>:</td>
+            <td>
+                <input type="checkbox" name="collaborator_ticket_visibility" <?php echo $config['collaborator_ticket_visibility']?'checked="checked"':''; ?>>
+                <?php echo __('Enable'); ?>&nbsp;<i class="help-tip icon-question-sign" href="#collaborator_ticket_visibility"></i>
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             </td>
         </tr>
         <tr>

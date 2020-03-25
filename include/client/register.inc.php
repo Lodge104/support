@@ -130,6 +130,7 @@ $info = Format::htmlchars(($errors && $_POST)?$_POST:$info);
 <?php if (!isset($info['timezone'])) { ?>
 <!-- Auto detect client's timezone where possible -->
 <<<<<<< HEAD
+<<<<<<< HEAD
 <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jstz.min.js?f1e9e88"></script>
 =======
 				<h4><?php echo __('Login With'); ?></h4>
@@ -180,6 +181,9 @@ $info = Format::htmlchars(($errors && $_POST)?$_POST:$info);
 =======
 <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jstz.min.js?a076918"></script>
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+<script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jstz.min.js?a076918"></script>
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 <script type="text/javascript">
 $(function() {
     var zone = jstz.determine();

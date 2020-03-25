@@ -135,6 +135,7 @@ class DraftAjaxAPI extends AjaxController {
             'draft_id' => $draft->getId(),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             'url' => $f->getDownloadUrl(
                 ['type' => 'D', 'deposition' => 'inline']),
         )));
@@ -147,6 +148,11 @@ class DraftAjaxAPI extends AjaxController {
                 ['type' => 'D', 'deposition' => 'inline']),
         ));
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            'filelink' => $f->getDownloadUrl(
+                ['type' => 'D', 'deposition' => 'inline']),
+        ));
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     }
 
     // Client interface for drafts =======================================
@@ -353,17 +359,23 @@ class DraftAjaxAPI extends AjaxController {
         ) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             $search->add(Q::all([
                 'attachments__thread_entry__thread_id' => $_GET['threadId'],
                 'attachments__inline' => 1,
             ]));
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             $union = ' UNION SELECT f.id, a.id as aid, a.`type`, a.`name` FROM '.THREAD_TABLE.' t
                 JOIN '.THREAD_ENTRY_TABLE.' th ON (th.thread_id = t.id)
                 JOIN '.ATTACHMENT_TABLE.' a ON (a.object_id = th.id AND a.`type` = \'H\')
                 JOIN '.FILE_TABLE.' f ON (a.file_id = f.id)
                 WHERE a.`inline` = 1 AND t.id='.db_input($_GET['threadId']);
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         }
 
         $sql = 'SELECT distinct f.id, a.id as aid, COALESCE(a.type, f.ft), a.`name` FROM '.FILE_TABLE
@@ -374,6 +386,7 @@ class DraftAjaxAPI extends AjaxController {
             Http::response(500, 'Unable to lookup files');
 
         $files = array();
+<<<<<<< HEAD
 <<<<<<< HEAD
         foreach ($images as $f) {
 =======
@@ -397,12 +410,17 @@ class DraftAjaxAPI extends AjaxController {
 >>>>>>> parent of 7093d97... 2020 Update
             $url = $f->getDownloadUrl();
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         while (list($id, $aid, $type, $name) = db_fetch_row($res)) {
             if (!($f = AttachmentFile::lookup((int) $id)))
                 continue;
 
             $url = $f->getDownloadUrl(['id' => $aid]);
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             $files[] = array(
                 // Don't send special sizing for thread items 'cause they
                 // should be cached already by the client

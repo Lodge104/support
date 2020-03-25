@@ -144,10 +144,14 @@ echo '</div>'; // ticket preview content.
     echo sprintf('<span><a class="collaborators"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                             href="#thread/%d/collaborators/1">%s</a></span>',
 =======
                             href="#thread/%d/collaborators">%s</a></span>',
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+                            href="#thread/%d/collaborators">%s</a></span>',
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                             $thread->getId(),
 =======
                             href="#tickets/%d/collaborators">%s</a></span>',

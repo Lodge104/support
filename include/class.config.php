@@ -199,9 +199,12 @@ class OsticketConfig extends Config {
         'auto_claim_tickets'=>  true,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         'auto_refer_closed' => true,
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         'collaborator_ticket_visibility' =>  true,
         'require_topic_to_close' =>  false,
 =======
@@ -952,12 +955,15 @@ class OsticketConfig extends Config {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     function autoReferTicketsOnClose() {
          return $this->get('auto_refer_closed');
     }
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function collaboratorTicketsVisibility() {
         return $this->get('collaborator_ticket_visibility');
 =======
@@ -1152,11 +1158,15 @@ class OsticketConfig extends Config {
         $f['autolock_minutes']=array('type'=>'int',   'required'=>1, 'error'=>__('Enter lock time in minutes'));
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         $f['allow_iframes']=array('type'=>'cs-url',   'required'=>0, 'error'=>__('Enter comma separated list of urls'));
         $f['embedded_domain_whitelist']=array('type'=>'cs-domain',   'required'=>0, 'error'=>__('Enter comma separated list of domains'));
 =======
         $f['allow_iframes']=array('type'=>'cs-domain',   'required'=>0, 'error'=>__('Enter comma separated list of domains'));
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+        $f['allow_iframes']=array('type'=>'cs-domain',   'required'=>0, 'error'=>__('Enter comma separated list of domains'));
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $f['acl']=array('type'=>'ipaddr',   'required'=>0, 'error'=>__('Enter comma separated list of IP addresses'));
 =======
 >>>>>>> parent of 7093d97... 2020 Update
@@ -1337,9 +1347,12 @@ class OsticketConfig extends Config {
             'auto_claim_tickets'=>isset($vars['auto_claim_tickets'])?1:0,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             'auto_refer_closed' => isset($vars['auto_refer_closed']) ? 1 : 0,
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             'collaborator_ticket_visibility'=>isset($vars['collaborator_ticket_visibility'])?1:0,
             'require_topic_to_close'=>isset($vars['require_topic_to_close'])?1:0,
 =======

@@ -347,11 +347,14 @@ class Mailer {
                 switch (true) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 case $recipients instanceof MailingList:
                     $entry = $thread->getLastEmailMessage();
                     break;
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 case $recipients instanceof TicketOwner:
                 case $recipients instanceof Collaborator:
 =======

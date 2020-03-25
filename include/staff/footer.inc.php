@@ -42,6 +42,7 @@ if(is_object($thisstaff) && $thisstaff->isStaff()) { ?>
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery.pjax.js?f1e9e88"></script>
 <script type="text/javascript" src="<?php echo ROOT_PATH; ?>scp/js/bootstrap-typeahead.js?f1e9e88"></script>
 <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.12.1.custom.min.js?f1e9e88"></script>
@@ -77,6 +78,8 @@ if(is_object($thisstaff) && $thisstaff->isStaff()) { ?>
 <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>scp/css/tooltip.css?901e5ea"/>
 >>>>>>> parent of 7093d97... 2020 Update
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery.pjax.js?a076918"></script>
 <script type="text/javascript" src="<?php echo ROOT_PATH; ?>scp/js/bootstrap-typeahead.js?a076918"></script>
 <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.12.1.custom.min.js?a076918"></script>
@@ -93,7 +96,10 @@ if(is_object($thisstaff) && $thisstaff->isStaff()) { ?>
 <script type="text/javascript" src="<?php echo ROOT_PATH; ?>scp/js/jb.overflow.menu.js?a076918"></script>
 <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/fabric.min.js?a076918"></script>
 <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>scp/css/tooltip.css?a076918"/>
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 <script type="text/javascript">
     getConfig().resolve(<?php
         include INCLUDE_DIR . 'ajax.config.php';

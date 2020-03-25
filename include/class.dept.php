@@ -71,11 +71,14 @@ implements TemplateVariable {
     const FLAG_ARCHIVED = 0x0008;
     const FLAG_ASSIGN_PRIMARY_ONLY = 0x0010;
 <<<<<<< HEAD
+<<<<<<< HEAD
     const FLAG_DISABLE_REOPEN_AUTO_ASSIGN = 0x0020;
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
     function asVar() {
         return $this->getName();
@@ -375,12 +378,16 @@ implements TemplateVariable {
         $ht['status'] = $this->getStatus();
         $ht['assignment_flag'] = $this->getAssignmentFlag();
 <<<<<<< HEAD
+<<<<<<< HEAD
         $ht['disable_reopen_auto_assign'] =  $this->disableReopenAutoAssign();
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         return $ht;
     }
 
@@ -490,6 +497,7 @@ implements TemplateVariable {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     function hasFlag($flag) {
         return ($this->get('flags', 0) & $flag) != 0;
     }
@@ -502,6 +510,8 @@ implements TemplateVariable {
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function export($dept, $criteria=null, $filename='') {
         include_once(INCLUDE_DIR.'class.error.php');
         $members = $dept->getMembers();

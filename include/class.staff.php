@@ -92,11 +92,14 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
                         'default_ticket_queue_id' => 0,
                         'reply_redirect' => 'Ticket',
 <<<<<<< HEAD
+<<<<<<< HEAD
                         'img_att_view' => 'download',
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                         ));
             $this->_config = $_config->getInfo();
         }
@@ -338,6 +341,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function getImageAttachmentView() {
         return $this->img_att_view;
     }
@@ -346,6 +350,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function forcePasswdChange() {
         return $this->change_passwd;
     }
@@ -554,11 +560,16 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     function getTicketsVisibility($exclude_archived=false) {
 =======
     function getTicketsVisibility() {
 
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+    function getTicketsVisibility() {
+
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         // -- Open and assigned to me
         $assigned = Q::any(array(
             'staff_id' => $this->getId(),
@@ -588,10 +599,13 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function applyVisibility($query, $exclude_archived=false) {
         return $query->filter($this->getTicketsVisibility($exclude_archived));
 =======
 =======
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function applyVisibility($query) {
         return $query->filter($this->getTicketsVisibility());
     }
@@ -760,11 +774,14 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
                     'default_ticket_queue_id' => $vars['default_ticket_queue_id'],
                     'reply_redirect' => ($vars['reply_redirect'] == 'Queue') ? 'Queue' : 'Ticket',
 <<<<<<< HEAD
+<<<<<<< HEAD
                     'img_att_view' => ($vars['img_att_view'] == 'inline') ? 'inline' : 'download',
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                     )
                 );
         $this->_config = $_config->getInfo();
@@ -1176,10 +1193,14 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
                 $errors['dept_access'][$dept_id] = __('Select a valid role');
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             if (!$dept_id || !($dept=Dept::lookup($dept_id)))
 =======
             if (!$dept_id || !Dept::lookup($dept_id))
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+            if (!$dept_id || !Dept::lookup($dept_id))
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 $errors['dept_access'][$dept_id] = __('Select a valid department');
 =======
             if (!$dept_id || !Dept::lookup($dept_id))

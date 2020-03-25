@@ -195,6 +195,11 @@ implements TemplateVariable {
 
     var $_entries;
     var $_forms;
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
     static function fromVars($vars, $create=true, $update=false) {
         // Try and lookup by email address
@@ -475,10 +480,15 @@ implements TemplateVariable {
     function updateInfo($vars, &$errors, $staff=false) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+
+
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $isEditable = function ($f) use($staff) {
             return ($staff ? $f->isEditableToStaff() :
                     $f->isEditableToUsers());
@@ -527,6 +537,7 @@ implements TemplateVariable {
                 if (($email = $entry->getField('email'))
                         && $isEditable($email)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                     if ($this->default_email->address != $email->getClean()) {
                         $type = array('type' => 'edited', 'key' => 'Email');
                         Signal::send('object.edited', $this, $type);
@@ -536,6 +547,8 @@ implements TemplateVariable {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                     $this->default_email->address = $email->getClean();
                     $this->default_email->save();
                 }
@@ -634,6 +647,7 @@ implements TemplateVariable {
         return ROOT_PATH . sprintf('scp/users.php?id=%s', $id);
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     function getTicketsQueue($collabs=true) {
         global $thisstaff;
@@ -663,6 +677,8 @@ implements TemplateVariable {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 }
 
 class EmailAddress
@@ -1151,6 +1167,7 @@ class UserAccount extends VerySimpleModel {
     function update($vars, &$errors) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         global $thisstaff;
 
@@ -1164,6 +1181,9 @@ class UserAccount extends VerySimpleModel {
 =======
 
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
+=======
+
+>>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         // TODO: Make sure the username is unique
 
         // Timezone selection is not required. System default is a valid
