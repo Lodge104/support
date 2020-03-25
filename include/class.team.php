@@ -127,6 +127,7 @@ implements TemplateVariable {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function isAvailable() {
         return ($this->isActive() && $this->members);
     }
@@ -149,6 +150,8 @@ implements TemplateVariable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     function alertsEnabled() {
         return ($this->flags & self::FLAG_NOALERTS) == 0;
     }
@@ -232,6 +235,7 @@ implements TemplateVariable {
           $member->setAlerts($alerts);
       }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
       if ($errors)
           return false;
@@ -249,6 +253,9 @@ implements TemplateVariable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+      if (!$errors && $dropped) {
+>>>>>>> parent of 7093d97... 2020 Update
           $this->members
               ->filter(array('staff_id__in' => array_keys($dropped)))
               ->delete();

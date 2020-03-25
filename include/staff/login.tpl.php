@@ -70,6 +70,7 @@ if (count($ext_bks)) { ?>
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.12.1.custom.min.js?f1e9e88"></script>
 =======
 >>>>>>> parent of 7093d97... 2020 Update
@@ -79,5 +80,7 @@ if (count($ext_bks)) { ?>
 =======
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.12.1.custom.min.js?a076918"></script>
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 </body>
 </html>

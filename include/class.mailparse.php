@@ -155,6 +155,7 @@ class Mail_Parse {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     static function splitHeaders($headers_text, $as_array=false) {
 =======
     /* static */ function splitHeaders($headers_text, $as_array=false) {
@@ -165,6 +166,9 @@ class Mail_Parse {
 =======
     static  function splitHeaders($headers_text, $as_array=false) {
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+    /* static */ function splitHeaders($headers_text, $as_array=false) {
+>>>>>>> parent of 7093d97... 2020 Update
         $headers = preg_split("/\r?\n/", $headers_text);
         for ($i=0, $k=count($headers); $i<$k; $i++) {
             // first char might be whitespace (" " or "\t")

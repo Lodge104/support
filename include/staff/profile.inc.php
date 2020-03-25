@@ -284,6 +284,7 @@ if ($avatar->isChangeable()) { ?>
             </td>
         </tr>
 <<<<<<< HEAD
+<<<<<<< HEAD
         <tr>
             <td><?php echo __('Reply Redirect'); ?>:
                 <div class="faded"><?php echo __('Redirect URL used after replying to a ticket.');?></div>
@@ -326,6 +327,8 @@ if ($avatar->isChangeable()) { ?>
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
       </tbody>
       <tbody>
         <tr class="header">

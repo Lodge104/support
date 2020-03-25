@@ -341,6 +341,7 @@ class Filter {
 
     function update($vars,&$errors) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         //validate filter actions before moving on
         if (!self::validate_actions($vars, $errors))
             return false;
@@ -365,6 +366,8 @@ class Filter {
             $errors['target'] = __('Unknown or invalid target');
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 
         if(!Filter::save($this->getId(),$vars,$errors))
             return false;
@@ -376,6 +379,7 @@ class Filter {
 
     function delete() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         try {
             parent::delete();
             $this->rules->expunge();
@@ -384,11 +388,16 @@ class Filter {
         catch (OrmException $e) {
             return false;
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 
         $id=$this->getId();
         $sql='DELETE FROM '.FILTER_TABLE.' WHERE id='.db_input($id).' LIMIT 1';
         if(db_query($sql) && ($num=db_affected_rows())) {
             db_query('DELETE FROM '.FILTER_RULE_TABLE.' WHERE filter_id='.db_input($id));
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
         }
 
@@ -692,12 +701,21 @@ class FilterRule {
 
         if(isset($vars['notes']))
             $sql.=',notes='.db_input($vars['notes']);
+<<<<<<< HEAD
 
         if($id) {
             $sql='UPDATE '.FILTER_RULE_TABLE.' SET '.$sql.' WHERE id='.db_input($id).' AND filter_id='.db_input($vars['filter_id']);
             if(db_query($sql))
                 return true;
 
+=======
+
+        if($id) {
+            $sql='UPDATE '.FILTER_RULE_TABLE.' SET '.$sql.' WHERE id='.db_input($id).' AND filter_id='.db_input($vars['filter_id']);
+            if(db_query($sql))
+                return true;
+
+>>>>>>> parent of 7093d97... 2020 Update
         } else {
             $sql='INSERT INTO '.FILTER_RULE_TABLE.' SET created=NOW(), filter_id='.db_input($vars['filter_id']).', '.$sql;
             if(db_query($sql) && ($id=db_insert_id()))

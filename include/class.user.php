@@ -198,9 +198,12 @@ implements TemplateVariable {
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
 
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     static function fromVars($vars, $create=true, $update=false) {
         // Try and lookup by email address
         $user = static::lookupByEmail($vars['email']);
@@ -484,6 +487,7 @@ implements TemplateVariable {
 =======
 
 
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 
@@ -495,6 +499,8 @@ implements TemplateVariable {
         };
 =======
 
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
         $valid = true;
         $forms = $this->getForms($vars);
@@ -534,6 +540,7 @@ implements TemplateVariable {
 
                 // Email address field
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if (($email = $entry->getField('email'))
                         && $isEditable($email)) {
 <<<<<<< HEAD
@@ -549,6 +556,9 @@ implements TemplateVariable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+                if (($email = $entry->getField('email'))) {
+>>>>>>> parent of 7093d97... 2020 Update
                     $this->default_email->address = $email->getClean();
                     $this->default_email->save();
                 }
@@ -637,6 +647,7 @@ implements TemplateVariable {
             return $user->getName();
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     static function getLink($id) {
         global $thisstaff;
@@ -679,6 +690,8 @@ implements TemplateVariable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 }
 
 class EmailAddress
@@ -1168,9 +1181,19 @@ class UserAccount extends VerySimpleModel {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         global $thisstaff;
 
+=======
+        global $thisstaff;
+
+
+        if (!$thisstaff) {
+            $errors['err'] = __('Access denied');
+            return false;
+        }
+>>>>>>> parent of 7093d97... 2020 Update
 
         if (!$thisstaff) {
             $errors['err'] = __('Access denied');
@@ -1354,6 +1377,7 @@ implements TemplateVariable {
                 $list [] = $user->getName();
         }
         return $list ? implode(', ', $list) : '';
+<<<<<<< HEAD
     }
 
     function getFull() {
@@ -1375,6 +1399,29 @@ implements TemplateVariable {
         return $list ? implode(', ', $list) : '';
     }
 
+=======
+    }
+
+    function getFull() {
+        $list = array();
+        foreach($this->storage as $user) {
+            if (is_object($user))
+                $list[] = sprintf("%s <%s>", $user->getName(), $user->getEmail());
+        }
+
+        return $list ? implode(', ', $list) : '';
+    }
+
+    function getEmails() {
+        $list = array();
+        foreach($this->storage as $user) {
+            if (is_object($user))
+                $list[] = $user->getEmail();
+        }
+        return $list ? implode(', ', $list) : '';
+    }
+
+>>>>>>> parent of 7093d97... 2020 Update
     static function getVarScope() {
         return array(
             'names' => __('List of names'),

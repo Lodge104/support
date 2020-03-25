@@ -67,6 +67,7 @@ implements TemplateVariable {
     const FLAG_ASSIGN_MEMBERS_ONLY = 0x0001;
     const FLAG_DISABLE_AUTO_CLAIM  = 0x0002;
 <<<<<<< HEAD
+<<<<<<< HEAD
     const FLAG_ACTIVE = 0x0004;
     const FLAG_ARCHIVED = 0x0008;
     const FLAG_ASSIGN_PRIMARY_ONLY = 0x0010;
@@ -79,6 +80,8 @@ implements TemplateVariable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 
     function asVar() {
         return $this->getName();
@@ -375,6 +378,7 @@ implements TemplateVariable {
         $ht['assign_members_only'] = $this->assignMembersOnly();
         $ht['disable_auto_claim'] =  $this->disableAutoClaim();
 <<<<<<< HEAD
+<<<<<<< HEAD
         $ht['status'] = $this->getStatus();
         $ht['assignment_flag'] = $this->getAssignmentFlag();
 <<<<<<< HEAD
@@ -388,6 +392,8 @@ implements TemplateVariable {
 =======
 
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         return $ht;
     }
 
@@ -498,6 +504,7 @@ implements TemplateVariable {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     function hasFlag($flag) {
         return ($this->get('flags', 0) & $flag) != 0;
     }
@@ -521,6 +528,8 @@ implements TemplateVariable {
         Export::departmentMembers($dept, $members, $filename);
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
     /*----Static functions-------*/
@@ -684,17 +693,23 @@ implements TemplateVariable {
 
         $this->pid = $vars['pid'] ?: null;
 <<<<<<< HEAD
+<<<<<<< HEAD
         $this->ispublic = isset($vars['ispublic']) ? (int) $vars['ispublic'] : 0;
         $this->email_id = isset($vars['email_id']) ? (int) $vars['email_id'] : 0;
         $this->tpl_id = isset($vars['tpl_id']) ? (int) $vars['tpl_id'] : 0;
         $this->sla_id = isset($vars['sla_id']) ? (int) $vars['sla_id'] : 0;
         $this->autoresp_email_id = isset($vars['autoresp_email_id']) ? (int) $vars['autoresp_email_id'] : 0;
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         $this->ispublic = isset($vars['ispublic'])?$vars['ispublic']:0;
         $this->email_id = isset($vars['email_id'])?$vars['email_id']:0;
         $this->tpl_id = isset($vars['tpl_id'])?$vars['tpl_id']:0;
         $this->sla_id = isset($vars['sla_id'])?$vars['sla_id']:0;
         $this->autoresp_email_id = isset($vars['autoresp_email_id'])?$vars['autoresp_email_id']:0;
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
         $this->manager_id = $vars['manager_id'] ?: 0;
         $this->name = Format::striptags($vars['name']);
@@ -706,6 +721,7 @@ implements TemplateVariable {
         $this->setFlag(self::FLAG_ASSIGN_MEMBERS_ONLY, isset($vars['assign_members_only']));
         $this->setFlag(self::FLAG_DISABLE_AUTO_CLAIM, isset($vars['disable_auto_claim']));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         $filter_actions = FilterAction::objects()->filter(array('type' => 'dept', 'configuration' => '{"dept_id":'. $this->getId().'}'));
         if ($filter_actions && $vars['status'] == 'active')
@@ -746,6 +762,8 @@ implements TemplateVariable {
             break;
         }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
         $this->path = $this->getFullPath();

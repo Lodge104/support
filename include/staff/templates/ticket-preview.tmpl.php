@@ -145,6 +145,7 @@ echo '</div>'; // ticket preview content.
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                             href="#thread/%d/collaborators/1">%s</a></span>',
 =======
                             href="#thread/%d/collaborators">%s</a></span>',
@@ -153,6 +154,10 @@ echo '</div>'; // ticket preview content.
                             href="#thread/%d/collaborators">%s</a></span>',
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                             $thread->getId(),
+=======
+                            href="#tickets/%d/collaborators">%s</a></span>',
+                            $ticket->getId(),
+>>>>>>> parent of 7093d97... 2020 Update
 =======
                             href="#tickets/%d/collaborators">%s</a></span>',
                             $ticket->getId(),

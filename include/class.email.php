@@ -264,6 +264,7 @@ class Email extends VerySimpleModel {
             $errors['name']=__('Email name required');
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         $dept = Dept::lookup($vars['dept_id']);
         if($dept && !$dept->isActive())
           $errors['dept_id'] = '';
@@ -286,6 +287,8 @@ class Email extends VerySimpleModel {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         if($vars['mail_active'] || ($vars['smtp_active'] && $vars['smtp_auth'])) {
             if(!$vars['userid'])
                 $errors['userid']=__('Username missing');
@@ -298,6 +301,7 @@ class Email extends VerySimpleModel {
                     )
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 $errors['passwd'] = __('Unable to encrypt password - get technical support');
         }
 >>>>>>> parent of 7093d97... 2020 Update
@@ -307,6 +311,9 @@ class Email extends VerySimpleModel {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
                 $errors['passwd'] = sprintf('%s - %s', __('Unable to encrypt password'), __('Get technical help!'));
+=======
+                $errors['passwd'] = __('Unable to encrypt password - get technical support');
+>>>>>>> parent of 7093d97... 2020 Update
         }
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
@@ -423,12 +430,16 @@ class Email extends VerySimpleModel {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         $this->mail_folder = $vars['mail_folder'] ?: null;
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $this->mail_protocol = $vars['mail_protocol'] ?: 'POP';
+=======
+        $this->mail_protocol = $vars['mail_protocol']?$vars['mail_protocol']:'POP';
+>>>>>>> parent of 7093d97... 2020 Update
 =======
         $this->mail_protocol = $vars['mail_protocol']?$vars['mail_protocol']:'POP';
 >>>>>>> parent of 7093d97... 2020 Update
@@ -440,6 +451,7 @@ class Email extends VerySimpleModel {
         $this->smtp_host = $vars['smtp_host'];
         $this->smtp_port = $vars['smtp_port']?$vars['smtp_port']:0;
         $this->smtp_auth = $vars['smtp_auth'];
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -455,6 +467,9 @@ class Email extends VerySimpleModel {
 =======
         $this->smtp_spoofing = isset($vars['smtp_spoofing']) ? 1 : 0;
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+        $this->smtp_spoofing = isset($vars['smtp_spoofing'])?1:0;
+>>>>>>> parent of 7093d97... 2020 Update
         $this->notes = Format::sanitize($vars['notes']);
 
         //Post fetch email handling...

@@ -1163,10 +1163,15 @@ class DynamicFormEntry extends VerySimpleModel {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function render($options=array()) {
         if (is_array($options))
             $options += array('staff' => true);
         return $this->getForm()->render($options);
+=======
+    function render($staff=true, $title=false, $options=array()) {
+        return $this->getForm()->render($staff, $title, $options);
+>>>>>>> parent of 7093d97... 2020 Update
 =======
     function render($staff=true, $title=false, $options=array()) {
         return $this->getForm()->render($staff, $title, $options);

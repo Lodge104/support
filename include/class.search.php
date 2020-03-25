@@ -384,6 +384,7 @@ class MysqlSearchBackend extends SearchBackend {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     "(SELECT COALESCE(Z3.`object_id`, Z5.`ticket_id`, Z8.`ticket_id`) as `ticket_id`, Z1.relevance FROM (SELECT Z1.`object_id`, Z1.`object_type`, {} AS `relevance` FROM `:_search` Z1 WHERE {} ORDER BY relevance DESC) Z1 LEFT JOIN `:thread_entry` Z2 ON (Z1.`object_type` = 'H' AND Z1.`object_id` = Z2.`id`) LEFT JOIN `:thread` Z3 ON (Z2.`thread_id` = Z3.`id` AND (Z3.`object_type` = 'T' OR Z3.`object_type` = 'C')) LEFT JOIN `:ticket` Z5 ON (Z1.`object_type` = 'T' AND Z1.`object_id` = Z5.`ticket_id`) LEFT JOIN `:user` Z6 ON (Z6.`id` = Z1.`object_id` and Z1.`object_type` = 'U') LEFT JOIN `:organization` Z7 ON (Z7.`id` = Z1.`object_id` AND Z7.`id` = Z6.`org_id` AND Z1.`object_type` = 'O') LEFT JOIN `:ticket` Z8 ON (Z8.`user_id` = Z6.`id`)) Z1"),
 =======
                     "(SELECT COALESCE(Z3.`object_id`, Z5.`ticket_id`, Z8.`ticket_id`) as `ticket_id`, Z1.relevance FROM (SELECT Z1.`object_id`, Z1.`object_type`, {} AS `relevance` FROM `:_search` Z1 WHERE {} ORDER BY relevance DESC) Z1 LEFT JOIN `:thread_entry` Z2 ON (Z1.`object_type` = 'H' AND Z1.`object_id` = Z2.`id`) LEFT JOIN `:thread` Z3 ON (Z2.`thread_id` = Z3.`id` AND Z3.`object_type` = 'T') LEFT JOIN `:ticket` Z5 ON (Z1.`object_type` = 'T' AND Z1.`object_id` = Z5.`ticket_id`) LEFT JOIN `:user` Z6 ON (Z6.`id` = Z1.`object_id` and Z1.`object_type` = 'U') LEFT JOIN `:organization` Z7 ON (Z7.`id` = Z1.`object_id` AND Z7.`id` = Z6.`org_id` AND Z1.`object_type` = 'O') LEFT JOIN `:ticket` Z8 ON (Z8.`user_id` = Z6.`id`)) Z1"),
@@ -392,6 +393,10 @@ class MysqlSearchBackend extends SearchBackend {
                     "(SELECT COALESCE(Z3.`object_id`, Z5.`ticket_id`, Z8.`ticket_id`) as `ticket_id`, Z1.relevance FROM (SELECT Z1.`object_id`, Z1.`object_type`, {} AS `relevance` FROM `:_search` Z1 WHERE {} ORDER BY relevance DESC) Z1 LEFT JOIN `:thread_entry` Z2 ON (Z1.`object_type` = 'H' AND Z1.`object_id` = Z2.`id`) LEFT JOIN `:thread` Z3 ON (Z2.`thread_id` = Z3.`id` AND Z3.`object_type` = 'T') LEFT JOIN `:ticket` Z5 ON (Z1.`object_type` = 'T' AND Z1.`object_id` = Z5.`ticket_id`) LEFT JOIN `:user` Z6 ON (Z6.`id` = Z1.`object_id` and Z1.`object_type` = 'U') LEFT JOIN `:organization` Z7 ON (Z7.`id` = Z1.`object_id` AND Z7.`id` = Z6.`org_id` AND Z1.`object_type` = 'O') LEFT JOIN `:ticket` Z8 ON (Z8.`user_id` = Z6.`id`)) Z1"),
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 ),
+=======
+                    "(SELECT COALESCE(Z3.`object_id`, Z5.`ticket_id`, Z8.`ticket_id`) as `ticket_id`, SUM({}) AS `relevance` FROM `:_search` Z1 LEFT JOIN `:thread_entry` Z2 ON (Z1.`object_type` = 'H' AND Z1.`object_id` = Z2.`id`) LEFT JOIN `:thread` Z3 ON (Z2.`thread_id` = Z3.`id` AND Z3.`object_type` = 'T') LEFT JOIN `:ticket` Z5 ON (Z1.`object_type` = 'T' AND Z1.`object_id` = Z5.`ticket_id`) LEFT JOIN `:user` Z6 ON (Z6.`id` = Z1.`object_id` and Z1.`object_type` = 'U') LEFT JOIN `:organization` Z7 ON (Z7.`id` = Z1.`object_id` AND Z7.`id` = Z6.`org_id` AND Z1.`object_type` = 'O') LEFT JOIN :ticket Z8 ON (Z8.`user_id` = Z6.`id`) WHERE {} GROUP BY `ticket_id`) Z1"),
+                )
+>>>>>>> parent of 7093d97... 2020 Update
 =======
                     "(SELECT COALESCE(Z3.`object_id`, Z5.`ticket_id`, Z8.`ticket_id`) as `ticket_id`, SUM({}) AS `relevance` FROM `:_search` Z1 LEFT JOIN `:thread_entry` Z2 ON (Z1.`object_type` = 'H' AND Z1.`object_id` = Z2.`id`) LEFT JOIN `:thread` Z3 ON (Z2.`thread_id` = Z3.`id` AND Z3.`object_type` = 'T') LEFT JOIN `:ticket` Z5 ON (Z1.`object_type` = 'T' AND Z1.`object_id` = Z5.`ticket_id`) LEFT JOIN `:user` Z6 ON (Z6.`id` = Z1.`object_id` and Z1.`object_type` = 'U') LEFT JOIN `:organization` Z7 ON (Z7.`id` = Z1.`object_id` AND Z7.`id` = Z6.`org_id` AND Z1.`object_type` = 'O') LEFT JOIN :ticket Z8 ON (Z8.`user_id` = Z6.`id`) WHERE {} GROUP BY `ticket_id`) Z1"),
                 )
@@ -668,6 +673,7 @@ MysqlSearchBackend::register();
  * updated - (date:auto_update) time of last update
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 class SavedQueue extends CustomQueue {
     // Override the ORM relationship to force no children
     private $children = false;
@@ -695,6 +701,16 @@ class SavedSearch extends VerySimpleModel {
     );
 >>>>>>> parent of 7093d97... 2020 Update
 
+=======
+class SavedSearch extends VerySimpleModel {
+
+    static $meta = array(
+        'table' => QUEUE_TABLE,
+        'pk' => array('id'),
+        'ordering' => array('sort'),
+    );
+
+>>>>>>> parent of 7093d97... 2020 Update
     const FLAG_PUBLIC =     0x0001;
     const FLAG_QUEUE =      0x0002;
 
@@ -718,6 +734,7 @@ class SavedSearch extends VerySimpleModel {
             $state['fields'][] = $k;
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         return $this->_columns;
     }
@@ -740,6 +757,9 @@ class SavedSearch extends VerySimpleModel {
                     $this->getSupplementalMatches());
 
         return parent::getForm($source, $searchable);
+=======
+        return $this->getForm($state);
+>>>>>>> parent of 7093d97... 2020 Update
 =======
         return $this->getForm($state);
 >>>>>>> parent of 7093d97... 2020 Update
@@ -844,11 +864,15 @@ class SavedSearch extends VerySimpleModel {
             }
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         if (!$errors && $this->_config->update($vars, $errors))
             $this->_settings = $this->_criteria = null;
 
         return (!$errors);
+=======
+        return $core;
+>>>>>>> parent of 7093d97... 2020 Update
 =======
         return $core;
 >>>>>>> parent of 7093d97... 2020 Update
@@ -925,6 +949,7 @@ class SavedSearch extends VerySimpleModel {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Get ticket counts for queues the agent has acces to.
     static function counts($agent, $cached=true, $criteria=array()) {
 
@@ -973,6 +998,8 @@ class SavedSearch extends VerySimpleModel {
                 foreach ($Q->extra['tables'] as $T)
                     $query->addExtraJoin(array($T, $constraints, ''));
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     /**
      * Collect information on the search form.
      *
@@ -1005,6 +1032,9 @@ class SavedSearch extends VerySimpleModel {
                     'value' => $value,
                     'active' =>  $f->getClean(),
                 );
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
             }
         }
@@ -1242,6 +1272,7 @@ class AssigneeChoiceField extends ChoiceField {
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     function addToQuery($query, $name=false) {
 
@@ -1447,6 +1478,11 @@ class TicketStateChoiceField extends AdvancedSearchSelectionField {
 
 class TicketStateChoiceField extends ChoiceField {
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+}
+
+class TicketStateChoiceField extends ChoiceField {
+>>>>>>> parent of 7093d97... 2020 Update
     function getChoices($verbose=false) {
         return array(
             'open' => __('Open'),
@@ -1559,6 +1595,7 @@ class TicketStatusChoiceField extends SelectionField {
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     function applyOrderBy($query, $reverse=false, $name=false) {
         $reverse = $reverse ? '-' : '';
@@ -1619,6 +1656,8 @@ interface Searchable {
     // Determine if the object supports abritrary form additions, through
     // the "Manage Forms" dialog usually
     static function supportsCustomData();
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 }

@@ -135,6 +135,7 @@ $gmtime = Misc::gmtime();
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             <td><?php echo __('Allow System iFrame'); ?>:</td>
             <td><input type="text" size="40" name="allow_iframes" value="<?php echo $config['allow_iframes']; ?>"
                     placeholder="eg. https://domain.tld, *.domain.tld">
@@ -172,6 +173,8 @@ $gmtime = Misc::gmtime();
             </td>
         </tr>
         <tr>
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
             <th colspan="2">

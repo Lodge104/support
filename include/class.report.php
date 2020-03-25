@@ -84,6 +84,7 @@ class OverviewReport {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             .' AND T.event_id IN ('.implode(",",$event_ids).') AND T.thread_type = "T"'
 =======
             .' AND state IN ("created", "closed", "reopened", "assigned", "overdue", "transferred")'
@@ -94,12 +95,16 @@ class OverviewReport {
 =======
             .' AND T.event_id IN ('.implode(",",$event_ids).')'
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+            .' AND state IN ("created", "closed", "reopened", "assigned", "overdue", "transferred")'
+>>>>>>> parent of 7093d97... 2020 Update
             .' ORDER BY 1');
         $events = array();
         while ($row = db_fetch_row($res)) $events[] = $row[0];
 
         # TODO: Handle user => db timezone offset
         # XXX: Implement annulled column from the %ticket_event table
+<<<<<<< HEAD
 <<<<<<< HEAD
         $res = db_query('SELECT H.name, DATE_FORMAT(timestamp, \'%Y-%m-%d\'), '
                 .'COUNT(DISTINCT T.id)'
@@ -120,6 +125,11 @@ class OverviewReport {
                 ON (T.id = E.thread_id AND T.object_type = "T") '
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
+=======
+        $res = db_query('SELECT state, DATE_FORMAT(timestamp, \'%Y-%m-%d\'), '
+                .'COUNT(DISTINCT T.id)'
+            .' FROM '.THREAD_EVENT_TABLE. ' E '
+>>>>>>> parent of 7093d97... 2020 Update
             .' JOIN '.THREAD_TABLE. ' T
                 ON (T.id = E.thread_id AND T.object_type = "T") '
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
@@ -170,11 +180,14 @@ class OverviewReport {
         global $thisstaff;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         $event_ids = Event::getIds();
         $event = function ($name) use ($event_ids) {
             return $event_ids[$name];
         };
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
         list($start, $stop) = $this->getDateRange();
@@ -224,6 +237,7 @@ class OverviewReport {
             ));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             $stats = ThreadEvent::objects()
                 ->filter(array(
                         'annulled' => 0,
@@ -259,6 +273,8 @@ class OverviewReport {
 
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         switch ($group) {
         case 'dept':
             $headers = array(__('Department'));
@@ -276,6 +292,7 @@ class OverviewReport {
             $header = function($row) { return Topic::getLocalNameById($row['topic_id'], $row['topic__topic']); };
             $pk = 'topic_id';
 <<<<<<< HEAD
+<<<<<<< HEAD
             $topics = Topic::getHelpTopics(false, Topic::DISPLAY_DISABLED);
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -288,6 +305,8 @@ class OverviewReport {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
             $stats = $stats
                 ->values('topic_id', 'topic__topic')
                 ->filter(array('topic_id__gt' => 0));
@@ -347,8 +366,12 @@ class OverviewReport {
 =======
         return array("columns" => array_merge($headers,
                         array(__('Opened'),__('Assigned'),__('Overdue'),__('Closed'),__('Reopened'),
+<<<<<<< HEAD
                               __('Deleted'),__('Service Time'),__('Response Time'))),
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+                              __('Service Time'),__('Response Time'))),
+>>>>>>> parent of 7093d97... 2020 Update
                      "data" => $rows);
     }
 }

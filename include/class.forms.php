@@ -1236,6 +1236,7 @@ class FormField {
         return $T != $tag ? $T : ($default ?: $this->get($subtag));
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     function getEditForm($source=null) {
 
@@ -1290,6 +1291,8 @@ class FormField {
     static function init($config) {
         return new Static($config);
     }
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 }
@@ -1436,6 +1439,7 @@ class TextareaField extends FormField {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function validateEntry($value) {
         parent::validateEntry($value);
         $config = $this->getConfiguration();
@@ -1467,6 +1471,10 @@ class TextareaField extends FormField {
         if (is_array($func) && is_callable($func[0]))
             if (!call_user_func($func[0], $value))
                 $this->_errors[] = $error;
+=======
+    function hasSpecialSearch() {
+        return false;
+>>>>>>> parent of 7093d97... 2020 Update
 =======
     function hasSpecialSearch() {
         return false;
@@ -1595,6 +1603,7 @@ class BooleanField extends FormField {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function getClean($validate=true) {
         if (!isset($this->_clean)) {
             $this->_clean = (isset($this->value))
@@ -1624,6 +1633,8 @@ class BooleanField extends FormField {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     function getSearchMethods() {
         return array(
             'set' =>        __('checked'),
@@ -1946,6 +1957,7 @@ class DatetimeField extends FormField {
         $config = $this->getConfiguration();
         parent::validateEntry($value);
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (!$value || !($datetime = Format::parseDateTime($value)))
             return;
 
@@ -1970,6 +1982,16 @@ class DatetimeField extends FormField {
                         $max->getTimezone()->getName() ?: 'UTC')
                     );
         }
+=======
+        if (!$value) return;
+        if ($config['min'] and $value < $config['min'])
+            $this->_errors[] = __('Selected date is earlier than permitted');
+        elseif ($config['max'] and $value > $config['max'])
+            $this->_errors[] = __('Selected date is later than permitted');
+        // strtotime returns -1 on error for PHP < 5.1.0 and false thereafter
+        elseif ($value === -1 or $value === false)
+            $this->_errors[] = __('Enter a valid date');
+>>>>>>> parent of 7093d97... 2020 Update
 =======
         if (!$value) return;
         if ($config['min'] and $value < $config['min'])
@@ -2037,6 +2059,19 @@ class DatetimeField extends FormField {
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 ),
             )),
+<<<<<<< HEAD
+=======
+            'ndaysago' => array('InlineformField', array(
+                'form' => array(
+                    'until' => new TextboxField(array(
+                        'configuration' => array('validator'=>'number', 'size'=>4))
+                    ),
+                    'text' => new FreeTextField(array(
+                        'configuration' => array('content' => 'days'))
+                    ),
+                ),
+            )),
+>>>>>>> parent of 7093d97... 2020 Update
             'ndays' => array('InlineformField', array(
                 'form' => array(
                     'until' => new TextboxField(array(
@@ -2099,6 +2134,7 @@ class DatetimeField extends FormField {
                 "{$name}__lte" => SqlExpression::plus($now, SqlInterval::DAY($value['until'])),
             ));
 <<<<<<< HEAD
+<<<<<<< HEAD
         case 'distfut':
             $int = $intervals[$value['int'] ?: 'd'] ?: 'DAY';
             $interval = new SqlInterval($int, $value['until']);
@@ -2126,6 +2162,8 @@ class DatetimeField extends FormField {
                     )
                 ));
             break;
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
         default:
@@ -2158,9 +2196,13 @@ class DatetimeField extends FormField {
             return sprintf($desc, $name, $l, $r);
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
         return parent::describeSearch($method, $value, $name);
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+        return parent::describeSearch($method, $value, $name);
+>>>>>>> parent of 7093d97... 2020 Update
     }
 }
 
@@ -2270,6 +2312,7 @@ class PriorityField extends ChoiceField {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
@@ -2285,6 +2328,8 @@ class PriorityField extends ChoiceField {
 
         return $this->_choices;
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         $sql = 'SELECT priority_id, priority_desc FROM '.PRIORITY_TABLE
               .' ORDER BY priority_urgency DESC';
         $choices = array('' => '— '.__('Default').' —');
@@ -2294,6 +2339,9 @@ class PriorityField extends ChoiceField {
         while ($row = db_fetch_row($res))
             $choices[$row[0]] = $row[1];
         return $choices;
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
     }
 
@@ -2396,6 +2444,7 @@ class DepartmentField extends ChoiceField {
         global $cfg;
 
         $choices = array();
+<<<<<<< HEAD
 <<<<<<< HEAD
         if ($depts = Dept::getDepartments(null, true, Dept::DISPLAY_DISABLED)) {
           //create array w/queryset
@@ -2558,6 +2607,9 @@ class SLAField extends ChoiceField {
 
         $choices = array();
         if (($depts = SLA::getSLAs()))
+=======
+        if (($depts = Dept::getDepartments()))
+>>>>>>> parent of 7093d97... 2020 Update
             foreach ($depts as $id => $name)
                 $choices[$id] = $name;
 
@@ -2576,10 +2628,10 @@ class SLAField extends ChoiceField {
         return $id;
     }
 
-    function to_database($sla) {
-        return ($sla instanceof SLA)
-            ? array($sla->getName(), $sla->getId())
-            : $sla;
+    function to_database($dept) {
+        return ($dept instanceof Dept)
+            ? array($dept->getName(), $dept->getId())
+            : $dept;
     }
 
     function toString($value) {
@@ -2600,6 +2652,12 @@ class SLAField extends ChoiceField {
         );
     }
 }
+FormField::addFieldTypes(/*@trans*/ 'Dynamic Fields', function() {
+    return array(
+        'department' => array(__('Department'), DepartmentField),
+    );
+});
+
 
 <<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
@@ -3614,7 +3672,7 @@ class ChoicesWidget extends Widget {
         if (isset($config['classes']))
             $classes = 'class="'.$config['classes'].'"';
         ?>
-        <select class="form-control" name="<?php echo $this->name; ?>[]"
+        <select name="<?php echo $this->name; ?>[]"
             <?php echo implode(' ', array_filter(array($classes))); ?>
             id="<?php echo $this->id; ?>"
             <?php if (isset($config['data']))
@@ -3876,7 +3934,7 @@ class CheckboxWidget extends Widget {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
             if (!isset($data[$this->name]))
-                return null;
+                return false;
             return @in_array($this->field->get('id'), $data[$this->name]);
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         }
@@ -3894,24 +3952,25 @@ class DatetimePickerWidget extends Widget {
 
         $config = $this->field->getConfiguration();
 <<<<<<< HEAD
+<<<<<<< HEAD
         $timezone = $this->field->getTimezone();
 
         if (!isset($this->value) && ($default=$this->field->get('default')))
             $this->value = $default;
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         if ($this->value) {
+            $this->value = is_int($this->value) ? $this->value :
+                strtotime($this->value);
 
-            if (is_int($this->value))
-                // Assuming UTC timezone.
-                $datetime = DateTime::createFromFormat('U', $this->value);
-            else {
-                $datetime = Format::parseDateTime($this->value);
+            if ($config['gmt']) {
+                // Convert to GMT time
+                $tz = new DateTimeZone($cfg->getTimezone());
+                $D = DateTime::createFromFormat('U', $this->value);
+                $this->value += $tz->getOffset($D);
             }
-
-            if ($config['time']) {
-                // Convert to user's timezone for update.
-                $datetime->setTimezone($timezone);
-            }
+<<<<<<< HEAD
 
             $this->value = Format::date($datetime->getTimestamp(), false,
                     false, $timezone ? $timezone->getName() : 'UTC');
@@ -3935,10 +3994,15 @@ class DatetimePickerWidget extends Widget {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+            list($hr, $min) = explode(':', date('H:i', $this->value));
+            $this->value = Format::date($this->value, false, false, 'UTC');
+>>>>>>> parent of 7093d97... 2020 Update
         }
         ?>
         <input type="text" name="<?php echo $this->name; ?>"
             id="<?php echo $this->id; ?>" style="display:inline-block;width:auto"
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -3953,6 +4017,9 @@ class DatetimePickerWidget extends Widget {
 =======
             value="<?php echo Format::htmlchars($this->value ?: ''); ?>" size="12"
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+            value="<?php echo Format::htmlchars($this->value); ?>" size="12"
+>>>>>>> parent of 7093d97... 2020 Update
             autocomplete="off" class="dp" />
         <script type="text/javascript">
             $(function() {
@@ -3963,6 +4030,7 @@ class DatetimePickerWidget extends Widget {
                     if ($config['max'])
                         echo "maxDate: new Date({$config['max']}000),";
                     elseif (!$config['future'])
+<<<<<<< HEAD
 <<<<<<< HEAD
                         echo "maxDate: new Date().getTime(),\n";
 <<<<<<< HEAD
@@ -3986,6 +4054,9 @@ class DatetimePickerWidget extends Widget {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+                        echo "maxDate: new Date().getTime(),";
+>>>>>>> parent of 7093d97... 2020 Update
                     ?>
                     numberOfMonths: 2,
                     showButtonPanel: true,
@@ -3996,6 +4067,7 @@ class DatetimePickerWidget extends Widget {
             });
         </script>
         <?php
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -4102,6 +4174,12 @@ class TimePickerWidget extends Widget {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+        if ($config['time'])
+            // TODO: Add time picker -- requires time picker or selection with
+            //       Misc::timeDropdown
+            echo '&nbsp;' . Misc::timeDropdown($hr, $min, $this->name . ':time');
+>>>>>>> parent of 7093d97... 2020 Update
     }
 
     /**
@@ -4119,18 +4197,25 @@ class TimePickerWidget extends Widget {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
      * Combines the datepicker date value and the time dropdown selected
+<<<<<<< HEAD
      * time value into a single date and time string value in DateTime::W3C
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+     * time value into a single date and time string value.
+>>>>>>> parent of 7093d97... 2020 Update
      */
     function getValue() {
         global $cfg;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         if ($value = parent::getValue()) {
 <<<<<<< HEAD
 <<<<<<< HEAD
             // TODO: Return ISO format.
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         $data = $this->field->getSource();
         $config = $this->field->getConfiguration();
         if ($datetime = parent::getValue()) {
@@ -4146,6 +4231,7 @@ class TimePickerWidget extends Widget {
                 $D = DateTime::createFromFormat('U', $datetime);
                 $datetime -= $tz->getOffset($D);
             }
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 =======
@@ -4168,6 +4254,9 @@ class TimePickerWidget extends Widget {
             $value = $dt->format('Y-m-d H:i:s T');
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         }
+=======
+        }
+>>>>>>> parent of 7093d97... 2020 Update
         return $datetime;
     }
 }
@@ -4560,6 +4649,7 @@ class VisibilityConstraint {
                 @list($f, $op) = self::splitFieldAndOp($c);
                 $field = $form->getField($f);
 <<<<<<< HEAD
+<<<<<<< HEAD
                 $wval = $field ? $field->getClean() : null;
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -4571,6 +4661,9 @@ class VisibilityConstraint {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+                $wval = $field->getClean();
+>>>>>>> parent of 7093d97... 2020 Update
                 switch ($op) {
                 case 'eq':
                 case null:

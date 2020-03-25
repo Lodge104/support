@@ -30,8 +30,12 @@ $role  = $ticket->getRole($thisstaff);
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 $dept  = $ticket->getDept();  //Dept
+<<<<<<< HEAD
 $role  = $ticket->getRole($thisstaff);
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+$role  = $thisstaff->getRole($dept);
+>>>>>>> parent of 7093d97... 2020 Update
 $staff = $ticket->getStaff(); //Assigned or closed by..
 $user  = $ticket->getOwner(); //Ticket User (EndUser)
 $team  = $ticket->getTeam();  //Assigned team.
@@ -49,6 +53,7 @@ if (!$lock && $cfg->getTicketLockMode() == Lock::MODE_ON_VIEW)
 $mylock = ($lock && $lock->getStaffId() == $thisstaff->getId()) ? $lock : null;
 $id    = $ticket->getId();    //Ticket ID.
 <<<<<<< HEAD
+<<<<<<< HEAD
 $isManager = $dept->isManager($thisstaff); //Check if Agent is Manager
 $canRelease = ($isManager || $role->hasPerm(Ticket::PERM_RELEASE)); //Check if Agent can release tickets
 <<<<<<< HEAD
@@ -63,6 +68,8 @@ $canAnswer = ($isManager || $role->hasPerm(Ticket::PERM_REPLY)); //Check if Agen
 =======
 $canAnswer = ($isManager || $role->hasPerm(Ticket::PERM_REPLY)); //Check if Agent can mark as answered/unanswered
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 
 //Useful warnings and errors the user might want to know!
 if ($ticket->isClosed() && !$ticket->isReopenable())
@@ -190,6 +197,7 @@ if($ticket->isOverdue())
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                  if ($role->hasPerm(Ticket::PERM_MERGE) && !$ticket->isChild()) { ?>
                      <li><a href="#ajax.php/tickets/<?php echo $ticket->getId();
                          ?>/merge" onclick="javascript:
@@ -221,6 +229,8 @@ if($ticket->isOverdue())
                  }
                  if($ticket->isOpen() && $isManager) {
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
                  if($ticket->isOpen() && ($dept && $dept->isManager($thisstaff))) {
 
                     if($ticket->isAssigned()) { ?>
@@ -229,12 +239,16 @@ if($ticket->isOverdue())
                     <?php
                     }
 
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
                     if(!$ticket->isOverdue()) { ?>
                         <li><a class="confirm-action" id="ticket-overdue" href="#overdue"><i class="icon-bell"></i> <?php
                             echo __('Mark as Overdue'); ?></a></li>
                     <?php
                     }
+<<<<<<< HEAD
 <<<<<<< HEAD
                  }
 <<<<<<< HEAD
@@ -249,6 +263,9 @@ if($ticket->isOverdue())
 =======
                  if($ticket->isOpen() && $canAnswer) {
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+
+>>>>>>> parent of 7093d97... 2020 Update
                     if($ticket->isAnswered()) { ?>
                     <li><a class="confirm-action" id="ticket-unanswered" href="#unanswered"><i class="icon-circle-arrow-left"></i> <?php
                             echo __('Mark as Unanswered'); ?></a></li>
@@ -268,6 +285,7 @@ if($ticket->isOverdue())
                     ><i class="icon-paste"></i> <?php echo __('Manage Forms'); ?></a></li>
                 <?php
 <<<<<<< HEAD
+<<<<<<< HEAD
                 }
 
                 if ($role->hasPerm(Ticket::PERM_REPLY)) {
@@ -284,6 +302,8 @@ if($ticket->isOverdue())
                    ?>
                 </li>
                 <?php
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
                 } ?>
@@ -306,12 +326,16 @@ if($ticket->isOverdue())
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                   Signal::send('ticket.view.more', $ticket, $extras);
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                   if ($role->hasPerm(Ticket::PERM_DELETE)) {
+=======
+                  if ($role->hasPerm(TicketModel::PERM_DELETE)) {
+>>>>>>> parent of 7093d97... 2020 Update
 =======
                   if ($role->hasPerm(TicketModel::PERM_DELETE)) {
 >>>>>>> parent of 7093d97... 2020 Update
@@ -329,6 +353,7 @@ if($ticket->isOverdue())
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if (count($children) != 0)
                     echo sprintf('<span style="font-weight: 700; line-height: 26px;">%s</span>', __('PARENT'));
                 elseif ($ticket->isChild())
@@ -338,6 +363,9 @@ if($ticket->isOverdue())
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 if ($role->hasPerm(Ticket::PERM_REPLY)) { ?>
+=======
+                if ($role->hasPerm(TicketModel::PERM_REPLY)) { ?>
+>>>>>>> parent of 7093d97... 2020 Update
 =======
                 if ($role->hasPerm(TicketModel::PERM_REPLY)) { ?>
 >>>>>>> parent of 7093d97... 2020 Update
@@ -375,6 +403,7 @@ if($ticket->isOverdue())
                 <tr>
                     <th width="100"><?php echo __('Status');?>:</th>
 <<<<<<< HEAD
+<<<<<<< HEAD
                     <?php
                          if ($role->hasPerm(Ticket::PERM_CLOSE)) {?>
                     <td>
@@ -387,24 +416,17 @@ if($ticket->isOverdue())
                       <?php } else { ?>
                           <td><?php echo ($S = $ticket->getStatus()) ? $S->display() : ''; ?></td>
                       <?php } ?>
+=======
+                    <td><?php echo ($S = $ticket->getStatus()) ? $S->display() : ''; ?></td>
+>>>>>>> parent of 7093d97... 2020 Update
                 </tr>
                 <tr>
                     <th><?php echo __('Priority');?>:</th>
-                      <?php
-                         if ($role->hasPerm(Ticket::PERM_EDIT)) {?>
-                           <td>
-                             <a class="ticket-action" id="inline-update" data-placement="bottom" data-toggle="tooltip" title="<?php echo __('Update'); ?>"
-                                 data-redirect="tickets.php?id=<?php echo $ticket->getId(); ?>"
-                                 href="#tickets/<?php echo $ticket->getId(); ?>/field/priority/edit">
-                                 <?php echo $ticket->getPriority(); ?>
-                             </a>
-                           </td>
-                      <?php } else { ?>
-                           <td><?php echo $ticket->getPriority(); ?></td>
-                      <?php } ?>
+                    <td><?php echo $ticket->getPriority(); ?></td>
                 </tr>
                 <tr>
                     <th><?php echo __('Department');?>:</th>
+<<<<<<< HEAD
                     <?php
                     if ($role->hasPerm(Ticket::PERM_TRANSFER)) {?>
                       <td>
@@ -424,6 +446,8 @@ if($ticket->isOverdue())
                 </tr>
                 <tr>
                     <th><?php echo __('Department');?>:</th>
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
                     <td><?php echo Format::htmlchars($ticket->getDeptName()); ?></td>
                 </tr>
@@ -479,6 +503,7 @@ if($ticket->isOverdue())
                                 </ul>
                             </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
                             <?php
                             if ($role->hasPerm(Ticket::PERM_EDIT)) {
                             $numCollaborators = $ticket->getThread()->getNumCollaborators();
@@ -494,6 +519,8 @@ if($ticket->isOverdue())
                                     $ticket->getThreadId(),
                                     $recipients);
                              }?>
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 <?php                   } # end if ($user) ?>
@@ -547,16 +574,23 @@ if($ticket->isOverdue())
 <?php   } # end if (user->org) ?>
                 <tr>
 <<<<<<< HEAD
+<<<<<<< HEAD
                   <th><?php echo __('Source'); ?>:</th>
                   <td>
                   <?php
                          if ($role->hasPerm(Ticket::PERM_EDIT)) {?>
                     <a class="ticket-action" id="inline-update" data-placement="bottom" data-toggle="tooltip" title="<?php echo __('Update'); ?>"
                         data-redirect="tickets.php?id=<?php echo $ticket->getId(); ?>"
+=======
+                    <th><?php echo __('Source'); ?>:</th>
+                    <td><?php
+                        echo Format::htmlchars($ticket->getSource());
+>>>>>>> parent of 7093d97... 2020 Update
 
-                        href="#tickets/<?php echo $ticket->getId(); ?>/field/source/edit">
-                        <?php echo Format::htmlchars($ticket->getSource());
+                        if (!strcasecmp($ticket->getSource(), 'Web') && $ticket->getIP())
+                            echo '&nbsp;&nbsp; <span class="faded">('.Format::htmlchars($ticket->getIP()).')</span>';
                         ?>
+<<<<<<< HEAD
                     </a>
                       <?php
                          } else {
@@ -577,6 +611,9 @@ if($ticket->isOverdue())
                         ?>
                     </td>
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+                    </td>
+>>>>>>> parent of 7093d97... 2020 Update
                 </tr>
             </table>
         </td>
@@ -591,6 +628,7 @@ if($ticket->isOverdue())
                 if($ticket->isOpen()) { ?>
                 <tr>
                     <th width="100"><?php echo __('Assigned To');?>:</th>
+<<<<<<< HEAD
 <<<<<<< HEAD
                     <?php
                     if ($role->hasPerm(Ticket::PERM_ASSIGN)) {?>
@@ -608,6 +646,8 @@ if($ticket->isOverdue())
                     </td>
                     <?php
                     } else { ?>
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
                     <td>
@@ -637,6 +677,7 @@ if($ticket->isOverdue())
                 <tr>
                     <th><?php echo __('SLA Plan');?>:</th>
 <<<<<<< HEAD
+<<<<<<< HEAD
                     <td>
                     <?php
                          if ($role->hasPerm(Ticket::PERM_EDIT)) {?>
@@ -653,11 +694,15 @@ if($ticket->isOverdue())
 =======
                     <td><?php echo $sla?Format::htmlchars($sla->getName()):'<span class="faded">&mdash; '.__('None').' &mdash;</span>'; ?></td>
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+                    <td><?php echo $sla?Format::htmlchars($sla->getName()):'<span class="faded">&mdash; '.__('None').' &mdash;</span>'; ?></td>
+>>>>>>> parent of 7093d97... 2020 Update
                 </tr>
                 <?php
                 if($ticket->isOpen()){ ?>
                 <tr>
                     <th><?php echo __('Due Date');?>:</th>
+<<<<<<< HEAD
 <<<<<<< HEAD
                     <?php
                          if ($role->hasPerm(Ticket::PERM_EDIT)) {?>
@@ -673,6 +718,9 @@ if($ticket->isOverdue())
                       <?php } else { ?>
                            <td><?php echo Format::datetime($ticket->getEstDueDate()); ?></td>
                       <?php } ?>
+=======
+                    <td><?php echo Format::datetime($ticket->getEstDueDate()); ?></td>
+>>>>>>> parent of 7093d97... 2020 Update
 =======
                     <td><?php echo Format::datetime($ticket->getEstDueDate()); ?></td>
 >>>>>>> parent of 7093d97... 2020 Update
@@ -693,6 +741,7 @@ if($ticket->isOverdue())
                 <tr>
                     <th width="100"><?php echo __('Help Topic');?>:</th>
 <<<<<<< HEAD
+<<<<<<< HEAD
                       <?php
                            if ($role->hasPerm(Ticket::PERM_EDIT)) {?>
                              <td>
@@ -706,6 +755,9 @@ if($ticket->isOverdue())
                         <?php } else { ?>
                              <td><?php echo Format::htmlchars($ticket->getHelpTopic()); ?></td>
                         <?php } ?>
+=======
+                    <td><?php echo Format::htmlchars($ticket->getHelpTopic()); ?></td>
+>>>>>>> parent of 7093d97... 2020 Update
 =======
                     <td><?php echo Format::htmlchars($ticket->getHelpTopic()); ?></td>
 >>>>>>> parent of 7093d97... 2020 Update
@@ -749,6 +801,7 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
     <tbody>
 <?php
 <<<<<<< HEAD
+<<<<<<< HEAD
     foreach ($displayed as $a) {
         $id =  $a->getLocal('id');
         $label = $a->getLocal('label');
@@ -788,12 +841,21 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
         list($label, $v) = $stuff;
 ?>
         <tr>
+=======
+    foreach ($displayed as $stuff) {
+        list($label, $v) = $stuff;
+?>
+        <tr>
+>>>>>>> parent of 7093d97... 2020 Update
             <td width="200"><?php
 echo Format::htmlchars($label);
             ?>:</th>
             <td><?php
 echo $v;
             ?></td>
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
         </tr>
 <?php } ?>
@@ -851,6 +913,7 @@ if ($errors['err'] && isset($_POST['a'])) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         if ($role->hasPerm(Ticket::PERM_REPLY) && !($blockReply)) { ?>
 =======
         if ($role->hasPerm(TicketModel::PERM_REPLY)) { ?>
@@ -861,6 +924,9 @@ if ($errors['err'] && isset($_POST['a'])) {
 =======
         if ($role->hasPerm(Ticket::PERM_REPLY)) { ?>
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+        if ($role->hasPerm(TicketModel::PERM_REPLY)) { ?>
+>>>>>>> parent of 7093d97... 2020 Update
         <li class="active <?php
             echo isset($errors['reply']) ? 'error' : ''; ?>"><a
             href="#reply" id="post-reply-tab"><?php echo __('Post Reply');?></a></li>
@@ -871,6 +937,7 @@ if ($errors['err'] && isset($_POST['a'])) {
             id="post-note-tab"><?php echo __('Post Internal Note');?></a></li>
     </ul>
     <?php
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -885,6 +952,10 @@ if ($errors['err'] && isset($_POST['a'])) {
         $emailReply = ($replyTo != 'none');
         ?>
     <form id="reply" class="tab_content spellcheck exclusive save"
+=======
+    if ($role->hasPerm(TicketModel::PERM_REPLY)) { ?>
+    <form id="reply" class="tab_content spellcheck exclusive"
+>>>>>>> parent of 7093d97... 2020 Update
 =======
     if ($role->hasPerm(TicketModel::PERM_REPLY)) { ?>
     <form id="reply" class="tab_content spellcheck exclusive"
@@ -911,6 +982,7 @@ if ($errors['err'] && isset($_POST['a'])) {
                 </td>
                 <td>
                     <?php
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -1014,6 +1086,14 @@ if ($errors['err'] && isset($_POST['a'])) {
                             $ticket->getReplyToEmail());
                     $emailReply = (!isset($info['emailreply']) || $info['emailreply']);
                     ?>
+=======
+                    # XXX: Add user-to-name and user-to-email HTML ID#s
+                    $to =sprintf('%s &lt;%s&gt;',
+                            Format::htmlchars($ticket->getName()),
+                            $ticket->getReplyToEmail());
+                    $emailReply = (!isset($info['emailreply']) || $info['emailreply']);
+                    ?>
+>>>>>>> parent of 7093d97... 2020 Update
                     <select id="emailreply" name="emailreply">
                         <option value="1" <?php echo $emailReply ?  'selected="selected"' : ''; ?>><?php echo $to; ?></option>
                         <option value="0" <?php echo !$emailReply ? 'selected="selected"' : ''; ?>
@@ -1027,6 +1107,9 @@ if ($errors['err'] && isset($_POST['a'])) {
                 ?>
             <tbody id="cc_sec"
                 style="display:<?php echo $emailReply?  'table-row-group':'none'; ?>;">
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
              <tr>
                 <td width="120">
@@ -1082,8 +1165,13 @@ if ($errors['err'] && isset($_POST['a'])) {
                         ?>
                     </select>
 <<<<<<< HEAD
+<<<<<<< HEAD
                     </div>
                 <?php } # endif (canned-resonse-enabled)
+=======
+                    <br>
+<?php } # endif (canned-resonse-enabled)
+>>>>>>> parent of 7093d97... 2020 Update
 =======
                     <br>
 <?php } # endif (canned-resonse-enabled)
@@ -1098,7 +1186,6 @@ if ($errors['err'] && isset($_POST['a'])) {
                         $signature = $thisstaff->getSignature();
                         break;
                     } ?>
-                  <div>
                     <input type="hidden" name="draft_id" value=""/>
                     <textarea name="response" id="response" cols="50"
                         data-signature-field="signature" data-dept-id="<?php echo $dept->getId(); ?>"
@@ -1113,7 +1200,6 @@ if ($errors['err'] && isset($_POST['a'])) {
     list($draft, $attrs) = Draft::getDraftAndDataAttrs('ticket.response', $ticket->getId(), $info['response']);
     echo $attrs; ?>><?php echo $_POST ? $info['response'] : $draft;
                     ?></textarea>
-                </div>
                 <div id="reply_form_attachments" class="attachments">
                 <?php
                     print $response_form->getField('attachments')->render();
@@ -1200,10 +1286,14 @@ if ($errors['err'] && isset($_POST['a'])) {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
     } ?>
+<<<<<<< HEAD
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     <form id="note" class="hidden tab_content spellcheck exclusive save"
 =======
     } ?>
+    <form id="note" class="hidden tab_content spellcheck exclusive"
+>>>>>>> parent of 7093d97... 2020 Update
+=======
     <form id="note" class="hidden tab_content spellcheck exclusive"
 >>>>>>> parent of 7093d97... 2020 Update
         data-lock-object-id="ticket/<?php echo $ticket->getId(); ?>"

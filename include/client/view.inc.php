@@ -53,6 +53,7 @@ if ($thisclient && $thisclient->isGuest()
                 </span>  
             </h3>
         </header>
+<<<<<<< HEAD
     </div>
     <!-- /.col -->
     
@@ -79,6 +80,34 @@ if ($thisclient && $thisclient->isGuest()
 	    </div>
 	    <!-- /.table-responsive -->
     </div>
+=======
+    </div>
+    <!-- /.col -->
+    
+</div>
+<!-- /.row -->
+
+<div class="row"> 
+    <div class="col-xs-6">
+	    <div class="table-responsive">
+		    <table class="table table-bordered table-striped">
+		        <tr>
+		            <th width="160"><?php echo __('Ticket Status');?>:</th>
+		            <td><?php echo ($S = $ticket->getStatus()) ? $S->getLocalName() : ''; ?></td>
+		        </tr>
+		        <tr>
+		            <th><?php echo __('Department');?>:</th>
+		            <td><?php echo Format::htmlchars($dept instanceof Dept ? $dept->getName() : ''); ?></td>
+		        </tr>
+		        <tr>
+		            <th><?php echo __('Create Date');?>:</th>
+		            <td><?php echo Format::datetime($ticket->getCreateDate()); ?></td>
+		        </tr>
+		   </table>
+	    </div>
+	    <!-- /.table-responsive -->
+    </div>
+>>>>>>> parent of 7093d97... 2020 Update
 	<!-- /.col -->
 	<div class="col-xs-6">
 		<div class="table-responsive">
@@ -100,6 +129,7 @@ if ($thisclient && $thisclient->isGuest()
 		<!-- /.table-responsive -->
     </div>
 	<!-- /.col -->
+<<<<<<< HEAD
 </div>
 <!-- /.row -->
                 
@@ -158,11 +188,64 @@ if ($thisclient && $thisclient->isGuest()
                 );
   ?>
 =======
+=======
+</div>
+<!-- /.row -->
+                
+<div class="row"> 
+	<?php
+	$sections = array();
+    foreach (DynamicFormEntry::forTicket($ticket->getId()) as $i=>$form) {
+        // Skip core fields shown earlier in the ticket view
+	    $answers = $form->getAnswers()->exclude(Q::any(array(
+	        'field__flags__hasbit' => DynamicFormField::FLAG_EXT_STORED,
+	        'field__name__in' => array('subject', 'priority'),
+	        Q::not(array('field__flags__hasbit' => DynamicFormField::FLAG_CLIENT_VIEW)),
+	    )));
+        // Skip display of forms without any answers
+	    foreach ($answers as $j=>$a) {
+	        if ($v = $a->display())
+	            $sections[$i][$j] = array($v, $a);
+	    } ?>
+	    <div class="col-xs-12">
+		    <div class="table-responsive">
+		        <table class="table table-bordered table-striped">
+		            <?php foreach ($sections as $i=>$answers) {
+	                    if (in_array($answer->getField()->get('name'), array('name', 'email', 'subject')))
+	                        continue;
+	                    elseif ($answer->getField()->get('private'))
+	                        continue;
+	                    ?>
+	                    <tr>		                
+	                    <th colspan="2"><?php echo $form->getTitle(); ?></th>
+	                    </tr>
+	                    <?php foreach ($answers as $A) {
+							list($v, $a) = $A; ?>
+		                    <tr>		                
+		                    <th width="160"><?php echo $a->getField()->get('label'); ?></th>
+		                    <td><?php echo $v; ?></td>
+		                    </tr>
+		                <?php } ?>
+	                <?php } ?>
+		       </table>
+		    </div>
+		    <!-- /.table-responsive -->
+	    </div>
+		<!-- /.col -->
+	<?php } ?>
+</div>
+<!-- /.row -->
+
+<?php
+>>>>>>> parent of 7093d97... 2020 Update
     $ticket->getThread()->render(array('M', 'R'), array(
                 'mode' => Thread::MODE_CLIENT,
                 'html-id' => 'ticketThread')
             );
 ?>
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
 
 <div class="clear" style="padding-bottom:10px;"></div>
@@ -175,13 +258,18 @@ if ($thisclient && $thisclient->isGuest()
 <?php } 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 <<<<<<< HEAD
+=======
+
+>>>>>>> parent of 7093d97... 2020 Update
 
 <<<<<<< HEAD
 if ((!$ticket->isClosed() || $ticket->isReopenable()) && !$blockReply){ ?>
 =======
 if (!$ticket->isClosed() || $ticket->isReopenable()) { ?>
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 if (!$ticket->isClosed() || $ticket->isReopenable()) { ?>
@@ -193,10 +281,15 @@ if (!$ticket->isClosed() || $ticket->isReopenable()) { ?>
     <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
 =======
 if (!$ticket->isClosed() || $ticket->isReopenable()) { ?>
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 <form id="reply" action="tickets.php?id=<?php echo $ticket->getId(); ?>#reply" name="reply" method="post" enctype="multipart/form-data">
 	
 	<?php csrf_token(); ?>
 	<input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
     <input type="hidden" name="a" value="reply">
 	

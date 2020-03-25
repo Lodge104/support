@@ -259,6 +259,7 @@ class Export {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     static function agents($agents, $filename='', $how='csv') {
 
         // Filename or stream to export agents to
@@ -634,6 +635,8 @@ class CsvExporter extends Exporter {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 }
 
 class ResultSetExporter {
@@ -712,6 +715,7 @@ class ResultSetExporter {
 class CsvResultsExporter extends ResultSetExporter {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     function getDelimiter() {
 
@@ -721,12 +725,26 @@ class CsvResultsExporter extends ResultSetExporter {
         return Internationalization::getCSVDelimiter();
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     function dump() {
 
         if (!$this->output)
              $this->output = fopen('php://output', 'w');
 
+        // Detect delimeter from the current locale settings. For locales
+        // which use comma (,) as the decimal separator, the semicolon (;)
+        // should be used as the field separator
+        $delimiter = ',';
+        if (class_exists('NumberFormatter')) {
+            $nf = NumberFormatter::create(Internationalization::getCurrentLocale(),
+                NumberFormatter::DECIMAL);
+            $s = $nf->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+            if ($s == ',')
+                $delimiter = ';';
+        }
 
+<<<<<<< HEAD
         $delimiter = $this->getDelimiter();
 =======
     function dump() {
@@ -746,6 +764,8 @@ class CsvResultsExporter extends ResultSetExporter {
                 $delimiter = ';';
         }
 
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
         // Output a UTF-8 BOM (byte order mark)
         fputs($this->output, chr(0xEF) . chr(0xBB) . chr(0xBF));

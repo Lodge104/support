@@ -335,8 +335,12 @@ class Format {
 =======
             'elements' => '*+iframe',
             'spec' =>
+<<<<<<< HEAD
             'iframe=-*,height,width,type,style,src(match="`^(https?:)?//(www\.)?(youtube|dailymotion|vimeo|player.vimeo)\.com/`i"),frameborder'.($options['spec'] ? '; '.$options['spec'] : '').',allowfullscreen',
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+            'iframe=-*,height,width,type,style,src(match="`^(https?:)?//(www\.)?(youtube|dailymotion|vimeo)\.com/`i"),frameborder'.($options['spec'] ? '; '.$options['spec'] : ''),
+>>>>>>> parent of 7093d97... 2020 Update
         );
 
         return Format::html($html, $config);
@@ -446,6 +450,7 @@ class Format {
                     '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w\[\]\/]*)?)'
 =======
                     '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w]*)?)'
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
                     '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w]*)?)'
@@ -453,6 +458,9 @@ class Format {
                    .'|(\b[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,63})`',
 =======
                     '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w]*)?)'
+                   .'|(\b[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,4})`',
+>>>>>>> parent of 7093d97... 2020 Update
+=======
                    .'|(\b[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,4})`',
 >>>>>>> parent of 7093d97... 2020 Update
                     function ($match) {
@@ -486,6 +494,7 @@ class Format {
     function viewableImages($html, $script=false) {
         $cids = $images = array();
 <<<<<<< HEAD
+<<<<<<< HEAD
         $options +=array(
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -498,6 +507,8 @@ class Format {
 =======
                 'deposition' => 'inline');
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         return preg_replace_callback('/"cid:([\w._-]{32})"/',
         function($match) use ($script, $images) {
             if (!($file = AttachmentFile::lookup($match[1])))
@@ -533,6 +544,7 @@ class Format {
         return implode( $separator, $string );
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     function number($number, $locale=false) {
         if (is_array($number))
@@ -589,6 +601,8 @@ class Format {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     /* elapsed time */
     function elapsedTime($sec) {
 
@@ -660,6 +674,7 @@ class Format {
         global $cfg;
 
         if (class_exists('IntlDateFormatter')) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -760,10 +775,25 @@ class Format {
             );
             if ($cfg->isForce24HourTime()) {
                 $format = str_replace(array('a', 'h'), array('', 'H'),
+=======
+            $formatter = new IntlDateFormatter(
+                Internationalization::getCurrentLocale(),
+                null,
+                null,
+                null,
+                IntlDateFormatter::GREGORIAN,
+                $format ?: null
+            );
+            if ($cfg->isForce24HourTime()) {
+                $format = str_replace(array('a', 'h'), array('', 'H'),
+>>>>>>> parent of 7093d97... 2020 Update
                     $formatter->getPattern());
                 $formatter->setPattern($format);
             }
             return $formatter->parse($date);
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
         }
         // Fallback using strtotime

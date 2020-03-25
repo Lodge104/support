@@ -423,11 +423,14 @@ implements TemplateVariable {
         $this->sequence_id = $vars['custom-numbers'] ? $vars['sequence_id'] : 0;
         $this->number_format = $vars['custom-numbers'] ? $vars['number_format'] : '';
 <<<<<<< HEAD
+<<<<<<< HEAD
         $this->flags = $vars['custom-numbers'] ? self::FLAG_CUSTOM_NUMBERS : $this->flags;
 <<<<<<< HEAD
 <<<<<<< HEAD
         $this->noautoresp = $vars['noautoresp'];
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         $this->flags = $vars['custom-numbers'] ? self::FLAG_CUSTOM_NUMBERS : 0;
         $this->noautoresp = !!$vars['noautoresp'];
 >>>>>>> parent of 7093d97... 2020 Update

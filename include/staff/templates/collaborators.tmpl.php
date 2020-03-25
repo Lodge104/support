@@ -8,7 +8,7 @@ if($info && $info['msg']) {
 <?php
 if(($users=$thread->getCollaborators())) {?>
 <div id="manage_collaborators">
-<form method="post" class="collaborators" onsubmit="refreshAndClose(<?php echo $thread->object_id; ?>, <?php echo $type; ?>);" action="#thread/<?php echo $thread->getId(); ?>/collaborators">
+<form method="post" class="collaborators" action="#thread/<?php echo $thread->getId(); ?>/collaborators">
     <table border="0" cellspacing="1" cellpadding="1" width="100%">
     <?php
     foreach($users as $user) {
@@ -16,10 +16,10 @@ if(($users=$thread->getCollaborators())) {?>
         echo sprintf('<tr>
                         <td>
                             <label class="inline checkbox">
-                            <input type="checkbox" class="hidden" name="uid[]" id="%d" value="%d" checked="checked">
                             <input type="checkbox" name="cid[]" id="c%d" value="%d" %s>
                             </label>
                             <a class="collaborator" href="#thread/%d/collaborators/%d/view">%s%s</a>
+<<<<<<< HEAD
 <<<<<<< HEAD
                             <div align="left">
                                 <span class="faded"><em>%s</em></span>
@@ -45,6 +45,8 @@ if(($users=$thread->getCollaborators())) {?>
             <td width="30">&nbsp;</td>
             </tr>',$user->getId(), $user->getId());
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
                             <span class="faded"><em>%s</em></span></td>
                         <td width="10">
                             <input type="hidden" name="del[]" id="d%d" value="">
@@ -62,6 +64,9 @@ if(($users=$thread->getCollaborators())) {?>
                     $user->getEmail(),
                     $user->getId(),
                     $user->getId());
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
     }
     ?>
@@ -115,14 +120,18 @@ if ($_POST && $thread && $thread->getNumCollaborators()) {
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 if ($_POST && $thread && $thread->getNumCollaborators()) {
 
-    $collaborators = sprintf('Collaborators (%d)',
+    $collaborators = sprintf('Participants (%d)',
             $thread->getNumCollaborators());
 
+<<<<<<< HEAD
     $recipients = sprintf(__('Collaborators (%d of %d)'),
 <<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+    $recipients = sprintf(__('Recipients (%d of %d)'),
+>>>>>>> parent of 7093d97... 2020 Update
           $thread->getNumActiveCollaborators(),
           $thread->getNumCollaborators());
     ?>
@@ -191,8 +200,4 @@ $(function() {
     });
 
 });
-
-function refreshAndClose(tid, type) {
-  window.location.href = type + '.php?id=' + tid;
-}
 </script>

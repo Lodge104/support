@@ -124,6 +124,7 @@ class Validator {
                     $this->errors[$k]=$field['error'];
                 break;
 <<<<<<< HEAD
+<<<<<<< HEAD
             case 'cs-domain': // Comma separated list of domains
                 if($values=explode(',', $this->input[$k]))
                     foreach($values as $v)
@@ -139,6 +140,8 @@ class Validator {
                             $this->errors[$k]=$field['error'];
                 }
                 break;
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
             default://If param type is not set...or handle..error out...

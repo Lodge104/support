@@ -1455,6 +1455,7 @@ function StartProgressBarOutput($mode=1) {
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	<link rel="stylesheet" type="text/css" href="'._MPDF_URI.'progbar.css?901e5ea" />
 =======
 	<link rel="stylesheet" type="text/css" href="'._MPDF_URI.'progbar.css?9ae093d" />
@@ -1462,6 +1463,9 @@ function StartProgressBarOutput($mode=1) {
 =======
 	<link rel="stylesheet" type="text/css" href="'._MPDF_URI.'progbar.css?9ae093d" />
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+	<link rel="stylesheet" type="text/css" href="'._MPDF_URI.'progbar.css?901e5ea" />
+>>>>>>> parent of 7093d97... 2020 Update
 		</head>
 	<body>
 	<div class="main">

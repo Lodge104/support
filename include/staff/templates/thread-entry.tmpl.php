@@ -54,6 +54,7 @@ if ($user && $cfg->isAvatarsEnabled())
             <span class="label label-bare"><?php echo __('Resent'); ?></span>
 <?php   }
 <<<<<<< HEAD
+<<<<<<< HEAD
         if ($entry->flags & ThreadEntry::FLAG_REPLY_ALL) { ?>
             <span class="label label-bare"><i class="icon-group"></i></span>
 <?php   }
@@ -63,6 +64,11 @@ if ($user && $cfg->isAvatarsEnabled())
         if ($entry->flags & ThreadEntry::FLAG_COLLABORATOR && $entry->type == 'M') { ?>
             <span class="label label-bare"><?php echo __('Cc Collaborator'); ?></span>
         <?php   } ?>
+=======
+        if ($entry->flags & ThreadEntry::FLAG_COLLABORATOR) { ?>
+            <span class="label label-bare"><?php echo __('Collaborator'); ?></span>
+<?php   } ?>
+>>>>>>> parent of 7093d97... 2020 Update
 =======
         if ($entry->flags & ThreadEntry::FLAG_COLLABORATOR) { ?>
             <span class="label label-bare"><?php echo __('Collaborator'); ?></span>

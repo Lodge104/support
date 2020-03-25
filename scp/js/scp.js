@@ -194,6 +194,7 @@ var scp_prep = function() {
      });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     $('form select#cannedResp').select2({width: '350px'});
     $('form select#cannedResp').on('select2:opening', function (e) {
         var redactor = $('.richtext', $(this).closest('form')).data('redactor');
@@ -201,6 +202,8 @@ var scp_prep = function() {
             redactor.selection.save();
     });
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
     $('form select#cannedResp').change(function() {
@@ -236,6 +239,7 @@ var scp_prep = function() {
                     var box = $('#response',fObj),
                         redactor = box.data('redactor');
                     if(canned.response) {
+<<<<<<< HEAD
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                         if (redactor) {
                             redactor.selection.restore();
@@ -245,6 +249,11 @@ var scp_prep = function() {
                     var box = $('#response',fObj),
                         redactor = box.data('redactor');
                     if(canned.response) {
+                        if (redactor)
+                            redactor.insert.html(canned.response);
+                        else
+>>>>>>> parent of 7093d97... 2020 Update
+=======
                         if (redactor)
                             redactor.insert.html(canned.response);
                         else
@@ -560,6 +569,7 @@ $(document).ajaxSend(function(event, xhr, settings) {
 jQuery.fn.exists = function() { return this.length>0; };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 $.pjax.defaults.timeout = 30000;
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -568,6 +578,8 @@ $.pjax.defaults.timeout = 30000;
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 $.translate_format = function(str) {
     var translation = {
         'DD':   'oo',
@@ -1116,10 +1128,14 @@ if ($.support.pjax) {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
         && $this.attr('href').charAt(0) != '#')
+<<<<<<< HEAD
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
       $.pjax.click(event, {container: $this.data('pjaxContainer') || '#pjax-container', timeout: 30000});
 =======
         && $this.attr('href').charAt(0) != '#')
+      $.pjax.click(event, {container: $this.data('pjaxContainer') || $('#pjax-container'), timeout: 2000});
+>>>>>>> parent of 7093d97... 2020 Update
+=======
       $.pjax.click(event, {container: $this.data('pjaxContainer') || $('#pjax-container'), timeout: 2000});
 >>>>>>> parent of 7093d97... 2020 Update
   })
@@ -1167,6 +1183,7 @@ $(document).on('click.note', '.quicknote .action.edit-note', function() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     T.redactor({ focusEnd: true });
 =======
     $.redact(T);
@@ -1178,6 +1195,10 @@ $(document).on('click.note', '.quicknote .action.edit-note', function() {
 =======
     $.redact(T, { focusEnd: true });
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+    $.redact(T);
+    $(T).redactor('focus.setStart');
+>>>>>>> parent of 7093d97... 2020 Update
     note.find('.action.edit-note').hide();
     note.find('.action.save-note').show();
     note.find('.action.cancel-edit').show();
@@ -1253,6 +1274,7 @@ $(document).on('click', '#new-note', function() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     T.redactor({ focusEnd: true });
 =======
     $.redact(T);
@@ -1264,6 +1286,10 @@ $(document).on('click', '#new-note', function() {
 =======
     $.redact(T, { focusEnd: true });
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+    $.redact(T);
+    $(T).redactor('focus.setStart');
+>>>>>>> parent of 7093d97... 2020 Update
     return false;
 });
 

@@ -348,6 +348,7 @@ class Mailer {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 case $recipients instanceof MailingList:
                     $entry = $thread->getLastEmailMessage();
                     break;
@@ -357,6 +358,10 @@ class Mailer {
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 case $recipients instanceof TicketOwner:
                 case $recipients instanceof Collaborator:
+=======
+                case $recipient instanceof TicketOwner:
+                case $recipient instanceof Collaborator:
+>>>>>>> parent of 7093d97... 2020 Update
 =======
                 case $recipient instanceof TicketOwner:
                 case $recipient instanceof Collaborator:

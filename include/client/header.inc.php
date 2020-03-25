@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 $title=($cfg && is_object($cfg) && $cfg->getTitle())
     ? $cfg->getTitle() : 'osTicket :: '.__('Support Ticket System');
@@ -200,6 +201,8 @@ if ($lang) {
              </div></div></div>
          </div>
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 <?php
 $title=($cfg && is_object($cfg) && $cfg->getTitle())
     ? $cfg->getTitle() : 'osTicket :: '.__('Support Ticket System');
@@ -444,5 +447,9 @@ if ($lang) {
 	            <div class="alert alert-info"><?php echo $msg; ?></div>
 	         <?php }elseif($warn) { ?>
 	            <div class="alert alert-warning"><?php echo $warn; ?></div>
+<<<<<<< HEAD
+	         <?php } ?>
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 	         <?php } ?>
 >>>>>>> parent of 7093d97... 2020 Update

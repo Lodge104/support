@@ -191,6 +191,7 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             <td><?php echo __('Auto-refer on Close'); ?>:</td>
             <td>
                 <input type="checkbox" name="auto_refer_closed" <?php echo $config['auto_refer_closed']?'checked="checked"':''; ?>>
@@ -216,6 +217,14 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                 <input type="checkbox" name="collaborator_ticket_visibility" <?php echo $config['collaborator_ticket_visibility']?'checked="checked"':''; ?>>
                 <?php echo __('Enable'); ?>&nbsp;<i class="help-tip icon-question-sign" href="#collaborator_ticket_visibility"></i>
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+            <td><?php echo __('Assigned Tickets');?>:</td>
+            <td>
+                <input type="checkbox" name="show_assigned_tickets" <?php
+                echo !$config['show_assigned_tickets']?'checked="checked"':''; ?>>
+                <?php echo __('Exclude assigned tickets from open queue.'); ?>
+                <i class="help-tip icon-question-sign" href="#assigned_tickets"></i>
+>>>>>>> parent of 7093d97... 2020 Update
             </td>
         </tr>
         <tr>

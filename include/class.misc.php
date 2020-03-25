@@ -142,6 +142,7 @@ class Misc {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Date range for the period in a given time
     function date_range($period, $time=false) {
         $time = $time ?: self::gmtime();
@@ -223,6 +224,8 @@ class Misc {
 
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     //Current page
     function currentURL() {
 
@@ -276,32 +279,36 @@ class Misc {
     function timeDropdown($hr=null, $min =null,$name='time') {
         global $cfg;
 
-        //normalize;
-        if ($hr >= 24)
-            $hr = $hr%24;
-        elseif ($hr < 0)
-            $hr = 0;
-        elseif ($hr)
-            $hr = (int) $hr;
-        else  // Default to 5pm
-            $hr = 17;
+        $hr =is_null($hr)?0:$hr;
+        $min =is_null($min)?0:$min;
 
-        if ($min >= 45)
-            $min = 45;
-        elseif ($min >= 30)
-            $min = 30;
-        elseif ($min >= 15)
-            $min = 15;
+        //normalize;
+        if($hr>=24)
+            $hr=$hr%24;
+        elseif($hr<0)
+            $hr=0;
+
+        if($min>=45)
+            $min=45;
+        elseif($min>=30)
+            $min=30;
+        elseif($min>=15)
+            $min=15;
         else
+<<<<<<< HEAD
             $min = 0;
 <<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+            $min=0;
+>>>>>>> parent of 7093d97... 2020 Update
 
         $time = Misc::user2gmtime(mktime(0,0,0));
         ob_start();
         echo sprintf('<select name="%s" id="%s" style="display:inline-block;width:auto">',$name,$name);
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         echo '<option value="" selected>'.__('Time').'</option>';
@@ -319,6 +326,12 @@ class Misc {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+        echo '<option value="" selected>'.__('Time').'</option>';
+        for($i=23; $i>=0; $i--) {
+            for ($minute=45; $minute>=0; $minute-=15) {
+                $sel=($hr==$i && $min==$minute)?'selected="selected"':'';
+>>>>>>> parent of 7093d97... 2020 Update
                 $_minute=str_pad($minute, 2, '0',STR_PAD_LEFT);
                 $_hour=str_pad($i, 2, '0',STR_PAD_LEFT);
                 $disp = Format::time($time + ($i*3600 + $minute*60 + 1), false);

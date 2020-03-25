@@ -200,6 +200,7 @@ class OsticketConfig extends Config {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         'auto_refer_closed' => true,
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
@@ -207,6 +208,8 @@ class OsticketConfig extends Config {
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         'collaborator_ticket_visibility' =>  true,
         'require_topic_to_close' =>  false,
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
         'system_language' =>    'en_US',
@@ -428,6 +431,7 @@ class OsticketConfig extends Config {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function getAllowIframes() {
         return str_replace(array(', ', ','), array(' ', ' '), $this->get('allow_iframes')) ?: "'self'";
     }
@@ -452,6 +456,8 @@ class OsticketConfig extends Config {
         return $this->get('acl_backend') ?: 0;
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
     function isAvatarsEnabled() {
@@ -956,6 +962,7 @@ class OsticketConfig extends Config {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     function autoReferTicketsOnClose() {
          return $this->get('auto_refer_closed');
     }
@@ -972,6 +979,12 @@ class OsticketConfig extends Config {
 >>>>>>> parent of 7093d97... 2020 Update
     }
 
+=======
+    function showAssignedTickets() {
+        return ($this->get('show_assigned_tickets'));
+    }
+
+>>>>>>> parent of 7093d97... 2020 Update
     function showAnsweredTickets() {
         return ($this->get('show_answered_tickets'));
     }
@@ -1159,6 +1172,7 @@ class OsticketConfig extends Config {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         $f['allow_iframes']=array('type'=>'cs-url',   'required'=>0, 'error'=>__('Enter comma separated list of urls'));
         $f['embedded_domain_whitelist']=array('type'=>'cs-domain',   'required'=>0, 'error'=>__('Enter comma separated list of domains'));
 =======
@@ -1170,6 +1184,8 @@ class OsticketConfig extends Config {
         $f['acl']=array('type'=>'ipaddr',   'required'=>0, 'error'=>__('Enter comma separated list of IP addresses'));
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         //Date & Time Options
         $f['time_format']=array('type'=>'string',   'required'=>1, 'error'=>__('Time format is required'));
         $f['date_format']=array('type'=>'string',   'required'=>1, 'error'=>__('Date format is required'));
@@ -1178,6 +1194,7 @@ class OsticketConfig extends Config {
         $f['default_timezone']=array('type'=>'string',   'required'=>1, 'error'=>__('Default Timezone is required'));
         $f['system_language']=array('type'=>'string',   'required'=>1, 'error'=>__('A primary system language is required'));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         $vars = Format::htmlchars($vars, true);
 
@@ -1193,6 +1210,8 @@ class OsticketConfig extends Config {
         } elseif ((int) $vars['acl_backend'] !== 0)
             $errors['acl'] = __('IP address required when selecting panel');
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
         // Make sure the selected backend is valid
@@ -1244,9 +1263,12 @@ class OsticketConfig extends Config {
             'enable_richtext' => isset($vars['enable_richtext']) ? 1 : 0,
             'files_req_auth' => isset($vars['files_req_auth']) ? 1 : 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
             'allow_iframes' => Format::sanitize($vars['allow_iframes']),
             'acl' => Format::sanitize($vars['acl']),
             'acl_backend' => Format::sanitize((int) $vars['acl_backend']) ?: 0,
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
         ));
@@ -1348,6 +1370,7 @@ class OsticketConfig extends Config {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             'auto_refer_closed' => isset($vars['auto_refer_closed']) ? 1 : 0,
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
@@ -1355,6 +1378,10 @@ class OsticketConfig extends Config {
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             'collaborator_ticket_visibility'=>isset($vars['collaborator_ticket_visibility'])?1:0,
             'require_topic_to_close'=>isset($vars['require_topic_to_close'])?1:0,
+=======
+            'show_assigned_tickets'=>isset($vars['show_assigned_tickets'])?0:1,
+            'show_answered_tickets'=>isset($vars['show_answered_tickets'])?0:1,
+>>>>>>> parent of 7093d97... 2020 Update
 =======
             'show_assigned_tickets'=>isset($vars['show_assigned_tickets'])?0:1,
             'show_answered_tickets'=>isset($vars['show_answered_tickets'])?0:1,

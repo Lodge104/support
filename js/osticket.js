@@ -189,6 +189,7 @@ $.translate_format = function(str) {
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 $.translate_format = function(str) {
     var translation = {
+<<<<<<< HEAD
         'DD':   'oo',
         'D':    'o',
         'EEEE': 'DD',
@@ -208,6 +209,15 @@ $.translate_format = function(str) {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+        'd':'dd',
+        'j':'d',
+        'z':'o',
+        'm':'mm',
+        'F':'MM',
+        'n':'m',
+        'Y':'yy'
+>>>>>>> parent of 7093d97... 2020 Update
     };
     // Change PHP formats to datepicker ones
     $.each(translation, function(php, jqdp) {

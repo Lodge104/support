@@ -109,6 +109,7 @@ RedactorPlugins.draft = function() {
             return;
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (data && this.code.get()) {
             this.$draft_saved.show().delay(5000).fadeOut();
 >>>>>>> parent of 7093d97... 2020 Update
@@ -125,6 +126,8 @@ RedactorPlugins.draft = function() {
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         this.$box.find('textarea').attr('data-draft-id', this.opts.draftId);
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         if (data && this.code.get()) {
             this.$draft_saved.show().delay(5000).fadeOut();
         }
@@ -307,6 +310,7 @@ $(function() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 'toolbarFixed': true,
                 'callbacks': {
                     'start': function() {
@@ -330,6 +334,9 @@ $(function() {
 =======
                 'toolbarFixed': false,
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+                'toolbarFixedBox': true,
+>>>>>>> parent of 7093d97... 2020 Update
                 'focusCallback': function() { this.$box.addClass('no-pjax'); },
                 'initCallback': function() {
                     if (this.$element.data('width'))
@@ -354,6 +361,7 @@ $(function() {
         if (reset) {
             reset.click(function() {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 var file = $('.file', el.closest('form'));
                 if (file)
                     file.remove();
@@ -368,6 +376,12 @@ $(function() {
                         el.redactor('insert.set', '', false, false);
                     }
                 }
+=======
+                if (el.hasClass('draft'))
+                    el.redactor('deleteDraft');
+                else
+                    el.redactor('set', '', false, false);
+>>>>>>> parent of 7093d97... 2020 Update
             });
         }
 <<<<<<< HEAD
@@ -390,6 +404,7 @@ $(function() {
             // the image was inserted.
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             el.redactor('code.sync');
         });
 >>>>>>> parent of 7093d97... 2020 Update
@@ -403,6 +418,9 @@ $(function() {
                 el.redactor(); //reinitialize redactor
                 el.redactor('code.sync');
             }
+=======
+            el.redactor('code.sync');
+>>>>>>> parent of 7093d97... 2020 Update
         });
 <<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
@@ -483,7 +501,3 @@ $(document).ajaxError(function(event, request, settings) {
             __('Refresh the current page to restore and continue your draft.'));
     }
 });
-
-// .size() is deprecated as of jQuery 1.8 and should move to .length, but
-// the packed Redactor code uses the deprecated function
-$.fn.size = function() { return this.length; }

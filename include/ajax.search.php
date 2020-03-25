@@ -172,6 +172,7 @@ class SearchAjaxAPI extends AjaxController {
             }
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         $root = 'Ticket';
         include STAFFINC_DIR . 'templates/queue-column-edit.tmpl.php';
@@ -194,6 +195,8 @@ class SearchAjaxAPI extends AjaxController {
                 if ($sort->save())
                     Http::response(201, 'Successfully updated');
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         $fields = &$matches[__('Custom Forms')];
         foreach (DynamicForm::objects()->filter(array('type'=>'G')) as $form) {
             foreach ($form->getFields() as $f) {
@@ -201,6 +204,9 @@ class SearchAjaxAPI extends AjaxController {
                     continue;
                 $key = sprintf(':field!%d', $f->get('id'), $f->get('id'));
                 $fields[$key] = $form->getLocal('title').' / '.$f->getLocal('label');
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
             }
         }

@@ -180,6 +180,7 @@ class Thread extends VerySimpleModel {
                         && $c->delete())
                      $collabs[] = $c;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                  $this->getEvents()->log($this->getObject(), 'collab', array(
                      'del' => array($c->user_id => array('name' => $c->getName()->getOriginal()))
@@ -197,6 +198,8 @@ class Thread extends VerySimpleModel {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
             }
             $this->getEvents()->log($this->getObject(), 'collab', array(
                 'del' => array($c->user_id => array('name' => $c->getName()->getOriginal()))
@@ -423,6 +426,7 @@ class Thread extends VerySimpleModel {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             if ($object instanceof Threadable) {
                 $entry = $object->postThreadEntry('M', $vars);
                 if ($this->getObjectType() == 'C') {
@@ -439,6 +443,9 @@ class Thread extends VerySimpleModel {
                 return $object->postThreadEntry('M', $vars);
 >>>>>>> parent of 7093d97... 2020 Update
 =======
+=======
+
+>>>>>>> parent of 7093d97... 2020 Update
             if ($object instanceof Threadable)
                 return $object->postThreadEntry('M', $vars);
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
@@ -639,6 +646,7 @@ implements TemplateVariable {
     const FLAG_BALANCED                 = 0x0040;   // HTML does not need to be balanced on ::display()
     const FLAG_SYSTEM                   = 0x0080;   // Entry is a system note.
 <<<<<<< HEAD
+<<<<<<< HEAD
     const FLAG_REPLY_ALL                = 0x00100;  // Agent response, reply all
     const FLAG_REPLY_USER               = 0x00200;  // Agent response, reply to User
 <<<<<<< HEAD
@@ -650,6 +658,8 @@ implements TemplateVariable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 
     const PERM_EDIT     = 'thread.edit';
 
@@ -1616,6 +1626,7 @@ class ThreadEvent extends VerySimpleModel {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             'assigned'    => 'hand-right',
             'released'    => 'unlock',
             'collab'      => 'group',
@@ -1665,6 +1676,17 @@ class ThreadEvent extends VerySimpleModel {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+            'assigned'  => 'hand-o-right',
+            'collab'    => 'users',
+            'created'   => 'magic',
+            'overdue'   => 'clock-o',
+            'transferred' => 'share',
+            'edited'    => 'pencil',
+            'closed'    => 'thumbs-up',
+            'reopened'  => 'undo',
+            'resent'    => 'repeat',
+>>>>>>> parent of 7093d97... 2020 Update
         );
         return @$icons[$this->state] ?: 'chevron-sign-right';
     }
@@ -1786,12 +1808,16 @@ class ThreadEvent extends VerySimpleModel {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             'thread_type' => ObjectModel::OBJECT_TYPE_TICKET,
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             'staff_id' => $staff,
+=======
+            'staff_id' => $ticket->getStaffId(),
+>>>>>>> parent of 7093d97... 2020 Update
 =======
             'staff_id' => $ticket->getStaffId(),
 >>>>>>> parent of 7093d97... 2020 Update
@@ -1803,6 +1829,7 @@ class ThreadEvent extends VerySimpleModel {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     static function forTask($task, $state, $user=false) {
         $inst = self::create(array(
             'staff_id' => $task->getStaffId(),
@@ -1812,6 +1839,8 @@ class ThreadEvent extends VerySimpleModel {
         return $inst;
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
     function getTypedEvent() {
@@ -1831,6 +1860,7 @@ class ThreadEvent extends VerySimpleModel {
     }
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 class Event extends VerySimpleModel {
     static $meta = array(
@@ -1894,6 +1924,8 @@ class Event extends VerySimpleModel {
     }
 }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 class ThreadEvents extends InstrumentedList {
@@ -1994,6 +2026,7 @@ class AssignmentEvent extends ThreadEvent {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 class ReleaseEvent extends ThreadEvent {
     static $icon = 'unlock';
     static $state = 'released';
@@ -2039,6 +2072,8 @@ class ReferralEvent extends ThreadEvent {
     }
 }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 class CloseEvent extends ThreadEvent {

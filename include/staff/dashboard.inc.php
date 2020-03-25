@@ -6,6 +6,7 @@ $plots = $report->getPlotData();
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <script type="text/javascript" src="js/raphael-min.js?f1e9e88"></script>
 <script type="text/javascript" src="js/g.raphael.js?f1e9e88"></script>
 <script type="text/javascript" src="js/g.line-min.js?f1e9e88"></script>
@@ -14,11 +15,14 @@ $plots = $report->getPlotData();
 
 <link rel="stylesheet" type="text/css" href="css/dashboard.css?f1e9e88"/>
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 <script type="text/javascript" src="js/raphael-min.js?901e5ea"></script>
 <script type="text/javascript" src="js/g.raphael.js?901e5ea"></script>
 <script type="text/javascript" src="js/g.line-min.js?901e5ea"></script>
 <script type="text/javascript" src="js/g.dot-min.js?901e5ea"></script>
 <script type="text/javascript" src="js/dashboard.inc.js?901e5ea"></script>
+<<<<<<< HEAD
 
 <link rel="stylesheet" type="text/css" href="css/dashboard.css?901e5ea"/>
 >>>>>>> parent of 7093d97... 2020 Update
@@ -40,6 +44,10 @@ $plots = $report->getPlotData();
 
 <link rel="stylesheet" type="text/css" href="css/dashboard.css?a076918"/>
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+
+<link rel="stylesheet" type="text/css" href="css/dashboard.css?901e5ea"/>
+>>>>>>> parent of 7093d97... 2020 Update
 
 <form method="post" action="dashboard.php">
 <div id="basic_search">

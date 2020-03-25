@@ -89,6 +89,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
                         'datetime_format'   => '',
                         'thread_view_order' => '',
 <<<<<<< HEAD
+<<<<<<< HEAD
                         'default_ticket_queue_id' => 0,
                         'reply_redirect' => 'Ticket',
 <<<<<<< HEAD
@@ -100,6 +101,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
                         ));
             $this->_config = $_config->getInfo();
         }
@@ -336,6 +339,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function getReplyRedirect() {
         return $this->reply_redirect;
     }
@@ -352,6 +356,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     function forcePasswdChange() {
         return $this->change_passwd;
     }
@@ -557,6 +563,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         return $this->_teams;
     }
     /* stats */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -584,20 +591,23 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         }
 
         $visibility = Q::any(new Q(array('status__state'=>'open', $assigned)));
+=======
 
-        // -- If access is limited to assigned only, return assigned
-        if ($this->isAccessLimited())
-            return $visibility;
+    function resetStats() {
+        $this->stats = array();
+    }
+>>>>>>> parent of 7093d97... 2020 Update
 
-        // -- Routed to a department of mine
-        if (($depts=$this->getDepts()) && count($depts)) {
-            $visibility->add(array('dept_id__in' => $depts));
-            $visibility->add(array('thread__referrals__dept__id__in' => $depts));
-        }
+    /* returns staff's quick stats - used on nav menu...etc && warnings */
+    function getTicketsStats() {
 
-        return $visibility;
+        if(!$this->stats['tickets'])
+            $this->stats['tickets'] = Ticket::getStaffStats($this);
+
+        return  $this->stats['tickets'];
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     function applyVisibility($query, $exclude_archived=false) {
@@ -614,6 +624,14 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
     function resetStats() {
         $this->stats = array();
+=======
+    function getNumAssignedTickets() {
+        return ($stats=$this->getTicketsStats())?$stats['assigned']:0;
+    }
+
+    function getNumClosedTickets() {
+        return ($stats=$this->getTicketsStats())?$stats['closed']:0;
+>>>>>>> parent of 7093d97... 2020 Update
     }
 
     /* returns staff's quick stats - used on nav menu...etc && warnings */
@@ -771,6 +789,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
                     'default_from_name' => $vars['default_from_name'],
                     'thread_view_order' => $vars['thread_view_order'],
 <<<<<<< HEAD
+<<<<<<< HEAD
                     'default_ticket_queue_id' => $vars['default_ticket_queue_id'],
                     'reply_redirect' => ($vars['reply_redirect'] == 'Queue') ? 'Queue' : 'Ticket',
 <<<<<<< HEAD
@@ -782,6 +801,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
                     )
                 );
         $this->_config = $_config->getInfo();
@@ -1197,6 +1218,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
             if (!$dept_id || !($dept=Dept::lookup($dept_id)))
 =======
             if (!$dept_id || !Dept::lookup($dept_id))
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
             if (!$dept_id || !Dept::lookup($dept_id))
@@ -1204,6 +1226,9 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
                 $errors['dept_access'][$dept_id] = __('Select a valid department');
 =======
             if (!$dept_id || !Dept::lookup($dept_id))
+                $errors['dept_access'][$dept_id] = __('Select a valid departent');
+>>>>>>> parent of 7093d97... 2020 Update
+=======
                 $errors['dept_access'][$dept_id] = __('Select a valid departent');
 >>>>>>> parent of 7093d97... 2020 Update
             if ($dept_id == $this->getDeptId())

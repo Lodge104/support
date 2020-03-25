@@ -69,6 +69,7 @@ if($_POST){
                             'isactive' => true,
                         ));
 <<<<<<< HEAD
+<<<<<<< HEAD
                         foreach ($topics as $t) {
                           $t->setFlag(Topic::FLAG_ARCHIVED, false);
                           $t->setFlag(Topic::FLAG_ACTIVE, true);
@@ -77,6 +78,8 @@ if($_POST){
                           if($t->save())
                             $num++;
                         }
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 
@@ -101,6 +104,7 @@ if($_POST){
                             'isactive' => false,
                         ));
 <<<<<<< HEAD
+<<<<<<< HEAD
                         foreach ($topics as $t) {
                           $t->setFlag(Topic::FLAG_ARCHIVED, false);
                           $t->setFlag(Topic::FLAG_ACTIVE, false);
@@ -109,6 +113,8 @@ if($_POST){
                           if($t->save())
                             $num++;
                         }
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
                         if ($num > 0) {
@@ -123,6 +129,7 @@ if($_POST){
                                 _N('selected help topic', 'selected help topics', $count));
                         }
                         break;
+<<<<<<< HEAD
 <<<<<<< HEAD
                     case 'archive':
                         $topics = Topic::objects()->filter(array(
@@ -150,6 +157,8 @@ if($_POST){
                                 _N('selected help topic', 'selected help topics', $count));
                         }
                         break;
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
                     case 'delete':

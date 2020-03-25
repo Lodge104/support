@@ -676,6 +676,7 @@ class MailFetcher {
                         // Noop -- winmail.dat remains an attachment
                     }
 <<<<<<< HEAD
+<<<<<<< HEAD
                     break;
                 // Parse attached email message
                 case 'message/rfc822':
@@ -696,6 +697,8 @@ class MailFetcher {
                     }
                     $body = $parser = null;
                     break;
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
                 }

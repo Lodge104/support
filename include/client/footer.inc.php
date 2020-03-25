@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
         </div>
     </div>
     <div id="footer">
@@ -78,6 +79,8 @@ if (($lang = Internationalization::getCurrentLanguage()) && $lang != 'en_US') { 
 </body>
 </html>
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 		</div>
 		<!-- /.container -->
 	</section>
@@ -128,5 +131,9 @@ if (($lang = Internationalization::getCurrentLanguage()) && $lang != 'en_US') { 
     ?>);
 </script>
 </body>
+<<<<<<< HEAD
+</html>
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 </html>
 >>>>>>> parent of 7093d97... 2020 Update

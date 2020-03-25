@@ -59,6 +59,7 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
         }
         if (!$errors) {
 <<<<<<< HEAD
+<<<<<<< HEAD
             foreach ($forms as $form) {
                 $changes += $form->getChanges();
                 $form->saveAnswers(function ($f) {
@@ -82,6 +83,11 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+            foreach ($forms as $f) {
+                $changes += $f->getChanges();
+                $f->save();
+>>>>>>> parent of 7093d97... 2020 Update
             }
             if ($changes)
                 $ticket->logEvent('edited', array('fields' => $changes));

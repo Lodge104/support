@@ -34,7 +34,7 @@ if(OSTINSTALLED!=TRUE){
 define('SECRET_SALT','YHYTfrizV3FeATjBd2UsacTRKbfCqOwI');
 
 #Default admin email. Used only on db connection issues and related alerts.
-define('ADMIN_EMAIL','nickanderson1998@gmail.com');
+define('ADMIN_EMAIL','csbowe@gmail.com');
 
 # Database Options
 # ---------------------------------------------------

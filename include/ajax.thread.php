@@ -247,16 +247,10 @@ class ThreadAjaxAPI extends AjaxController {
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         if ($thread->updateCollaborators($_POST, $errors))
-            $users = array();
-            foreach ($thread->getCollaborators() as $c)
-                $users[] = array('id' => $c->getUserId(),
-                        'name' => $c->getName(),
-                        'email' => $c->getEmail());
-
             Http::response(201, $this->json_encode(array(
                             'id' => $thread->getId(),
-                            'users' => $users,
-                            'text' => sprintf('(%d)',
+                            'text' => sprintf('Recipients (%d of %d)',
+                                $thread->getNumActiveCollaborators(),
                                 $thread->getNumCollaborators())
                             )
                         ));

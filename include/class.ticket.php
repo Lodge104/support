@@ -41,6 +41,7 @@ class TicketModel extends VerySimpleModel {
         'table' => TICKET_TABLE,
         'pk' => array('ticket_id'),
 <<<<<<< HEAD
+<<<<<<< HEAD
         'select_related' => array('topic', 'staff', 'user', 'team', 'dept',
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -53,6 +54,8 @@ class TicketModel extends VerySimpleModel {
 =======
             'sla', 'thread', 'user__default_email', 'status'),
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         'joins' => array(
             'user' => array(
                 'constraint' => array('user_id' => 'User.id')
@@ -110,6 +113,7 @@ class TicketModel extends VerySimpleModel {
     const PERM_ASSIGN   = 'ticket.assign';
     const PERM_TRANSFER = 'ticket.transfer';
 <<<<<<< HEAD
+<<<<<<< HEAD
     const PERM_REFER    = 'ticket.refer';
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -121,10 +125,13 @@ class TicketModel extends VerySimpleModel {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     const PERM_REPLY    = 'ticket.reply';
     const PERM_CLOSE    = 'ticket.close';
     const PERM_DELETE   = 'ticket.delete';
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -139,6 +146,9 @@ class TicketModel extends VerySimpleModel {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+
+>>>>>>> parent of 7093d97... 2020 Update
     static protected $perms = array(
             self::PERM_CREATE => array(
                 'title' =>
@@ -160,6 +170,7 @@ class TicketModel extends VerySimpleModel {
                 /* @trans */ 'Transfer',
                 'desc'  =>
                 /* @trans */ 'Ability to transfer tickets between departments'),
+<<<<<<< HEAD
 <<<<<<< HEAD
             self::PERM_REFER => array(
                 'title' =>
@@ -184,6 +195,8 @@ class TicketModel extends VerySimpleModel {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
             self::PERM_REPLY => array(
                 'title' =>
                 /* @trans */ 'Post Reply',
@@ -219,7 +232,10 @@ class TicketModel extends VerySimpleModel {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     function getId() {
         return $this->ticket_id;
     }
@@ -317,12 +333,16 @@ implements RestrictedAccess, Threadable {
         'select_related' => array('topic', 'staff', 'user', 'team', 'dept', 'sla', 'thread',
             'user__default_email'),
     );
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+
+>>>>>>> parent of 7093d97... 2020 Update
     var $lastMsgId;
     var $last_message;
 
@@ -334,20 +354,26 @@ implements RestrictedAccess, Threadable {
     var $recipients;
     var $lastrespondent;
 <<<<<<< HEAD
+<<<<<<< HEAD
     var $lastuserrespondent;
 <<<<<<< HEAD
 <<<<<<< HEAD
     var $_children;
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 
     function __onload() {
         $this->loadDynamicData();
     }
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 
     function loadDynamicData($force=false) {
         if (!isset($this->_answers) || $force) {
@@ -366,6 +392,7 @@ implements RestrictedAccess, Threadable {
         return $this->_answers;
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     function getAnswer($field, $form=null) {
         // TODO: Prefer CDATA ORM relationship if already loaded
@@ -440,6 +467,8 @@ implements RestrictedAccess, Threadable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     function hasState($state) {
         return  strcasecmp($this->getState(), $state) == 0;
     }
@@ -509,6 +538,7 @@ implements RestrictedAccess, Threadable {
             return false;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         // check department access first
         if (!$staff->canAccessDept($this->getDept())
                 // check assignment
@@ -518,6 +548,8 @@ implements RestrictedAccess, Threadable {
 <<<<<<< HEAD
                 && !$this->getThread()->isReferred($staff))
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         // Check access based on department or assignment
         if (($staff->showAssignedOnly()
             || !$staff->canAccessDept($this->getDeptId()))
@@ -526,6 +558,7 @@ implements RestrictedAccess, Threadable {
             && $staff->getId() != $this->getStaffId()
             && !$staff->isTeamMember($this->getTeamId())
         ) {
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 =======
                 && !$this->thread->isReferred($staff))
@@ -533,6 +566,8 @@ implements RestrictedAccess, Threadable {
 =======
                 && !$this->thread->isReferred($staff))
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
             return false;
         }
 
@@ -664,6 +699,7 @@ implements RestrictedAccess, Threadable {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     function getSLADueDate($recompute=false) {
         global $cfg;
 
@@ -683,8 +719,12 @@ implements RestrictedAccess, Threadable {
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function getSLADueDate($datetime=null) {
+=======
+    function getSLADueDate() {
+>>>>>>> parent of 7093d97... 2020 Update
         if ($sla = $this->getSLA()) {
-            $dt = new DateTime($datetime ?: $this->getReopenDate() ?: $this->getCreateDate());
+            $dt = new DateTime($this->getCreateDate());
+
             return $dt
                 ->add(new DateInterval('PT' . $sla->getGracePeriod() . 'H'))
                 ->format('Y-m-d H:i:s');
@@ -695,6 +735,7 @@ implements RestrictedAccess, Threadable {
         }
     }
 
+<<<<<<< HEAD
     function updateEstDueDate($clearOverdue=true) {
         $DueDate = $this->getEstDueDate();
         $this->est_duedate = $this->getSLADueDate();
@@ -734,6 +775,22 @@ implements RestrictedAccess, Threadable {
         return $this->getSLADueDate();
     }
 
+=======
+    function updateEstDueDate() {
+        $this->est_duedate = $this->getEstDueDate();
+        $this->save();
+    }
+
+    function getEstDueDate() {
+        // Real due date
+        if ($duedate = $this->getDueDate()) {
+            return $duedate;
+        }
+        // return sla due date (If ANY)
+        return $this->getSLADueDate();
+    }
+
+>>>>>>> parent of 7093d97... 2020 Update
     function getCloseDate() {
         return $this->closed;
     }
@@ -790,6 +847,7 @@ implements RestrictedAccess, Threadable {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
@@ -808,6 +866,11 @@ implements RestrictedAccess, Threadable {
 >>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+        if (($a = $this->_answers['priority']) && ($b = $a->getValue()))
+            return $b->getDesc();
+        return '';
+>>>>>>> parent of 7093d97... 2020 Update
     }
 
     function getPhoneNumber() {
@@ -1119,6 +1182,7 @@ implements RestrictedAccess, Threadable {
             $this->recipients = $list;
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
         return $list;
     }
 
@@ -1147,12 +1211,16 @@ implements RestrictedAccess, Threadable {
 =======
         return $this->getThread()->getNumActiveCollaborators();
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+        return $this->recipients;
+>>>>>>> parent of 7093d97... 2020 Update
     }
 
     function getAssignmentForm($source=null, $options=array()) {
 
         $prompt = $assignee = '';
         // Possible assignees
+<<<<<<< HEAD
 <<<<<<< HEAD
         $assignees = null;
         switch (strtolower($options['target'])) {
@@ -1167,6 +1235,11 @@ implements RestrictedAccess, Threadable {
                 $dept = $this->getDept();
 >>>>>>> parent of 7093d97... 2020 Update
 =======
+=======
+        $assignees = array();
+        switch (strtolower($options['target'])) {
+            case 'agents':
+>>>>>>> parent of 7093d97... 2020 Update
                 $dept = $this->getDept();
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
@@ -1200,6 +1273,7 @@ implements RestrictedAccess, Threadable {
             $form->setAssignees($assignees);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (($refer = $form->getField('refer'))) {
             if ($assignee) {
                 $visibility = new VisibilityConstraint(
@@ -1225,6 +1299,8 @@ implements RestrictedAccess, Threadable {
 =======
 =======
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         if ($prompt && ($f=$form->getField('assignee')))
             $f->configure('prompt', $prompt);
 
@@ -1233,6 +1309,7 @@ implements RestrictedAccess, Threadable {
         if ($prompt && ($f=$form->getField('assignee')))
             $f->configure('prompt', $prompt);
 
+<<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 
 >>>>>>> parent of 7093d97... 2020 Update
@@ -1240,6 +1317,8 @@ implements RestrictedAccess, Threadable {
         return $form;
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     function getClaimForm($source=null, $options=array()) {
         global $thisstaff;
 
@@ -1262,6 +1341,7 @@ implements RestrictedAccess, Threadable {
         return TransferForm::instantiate($source);
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     function getField($fid) {
 
@@ -1335,6 +1415,8 @@ implements RestrictedAccess, Threadable {
         }
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
     function getDynamicFields($criteria=array()) {
@@ -1802,7 +1884,7 @@ implements RestrictedAccess, Threadable {
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
             // Account manager
-            if ($cfg->alertAcctManagerONNewTicket()
+            if ($cfg->alertAcctManagerONNewMessage()
                 && ($org = $this->getOwner()->getOrganization())
                 && ($acct_manager = $org->getAccountManager())
             ) {
@@ -1987,6 +2069,7 @@ implements RestrictedAccess, Threadable {
                     // Does the agent have access to dept?
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     && $staff->canAccessDept($dept->getId()))
 =======
                     && $staff->canAccessDept($dept))
@@ -1994,6 +2077,9 @@ implements RestrictedAccess, Threadable {
 =======
                     && $staff->canAccessDept($dept))
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+                    && $staff->canAccessDept($dept->getId()))
+>>>>>>> parent of 7093d97... 2020 Update
                 $this->setStaffId($staff->getId());
             else
                 $this->setStaffId(0); // Clear assignment
@@ -2388,6 +2474,7 @@ implements RestrictedAccess, Threadable {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Searchable interface
     static function getSearchableFields() {
         $base = array(
@@ -2499,6 +2586,8 @@ implements RestrictedAccess, Threadable {
         return true;
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
     //Replace base variables.
@@ -2736,6 +2825,7 @@ implements RestrictedAccess, Threadable {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         $audit = array();
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
@@ -2743,6 +2833,8 @@ implements RestrictedAccess, Threadable {
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $refer = null;
         $dept = $this->getDept();
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
         $assignee = $form->getAssignee();
@@ -2811,6 +2903,7 @@ implements RestrictedAccess, Threadable {
         return true;
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     function release($info=array(), &$errors) {
         if ($info['sid'] && $info['tid'])
@@ -2900,6 +2993,10 @@ implements RestrictedAccess, Threadable {
     function release() {
         return $this->unassign();
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+    function release() {
+        return $this->unassign();
+>>>>>>> parent of 7093d97... 2020 Update
     }
 
     //Change ownership
@@ -2947,6 +3044,7 @@ implements RestrictedAccess, Threadable {
             $vars['ip_address'] = $_SERVER['REMOTE_ADDR'];
 
         $errors = array();
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -3006,6 +3104,8 @@ implements RestrictedAccess, Threadable {
         if (!($message = $this->getThread()->addMessage($vars, $errors)))
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         if (!($message = $this->getThread()->addMessage($vars, $errors)))
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             return null;
@@ -3029,6 +3129,7 @@ implements RestrictedAccess, Threadable {
                     continue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if (($cuser=User::fromVars($recipient))) {
                   if (!$existing = Collaborator::getIdByUserId($cuser->getId(), $this->getThreadId())) {
                     if ($c=$this->addCollaborator($cuser, $info, $errors, false)) {
@@ -3046,6 +3147,8 @@ implements RestrictedAccess, Threadable {
                 }
 
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
                 if (($user=User::fromVars($recipient)))
                     if ($c=$this->addCollaborator($user, $info, $errors, false))
                         // FIXME: This feels very unwise — should be a
@@ -3054,6 +3157,9 @@ implements RestrictedAccess, Threadable {
                             'name' => $c->getName()->getOriginal(),
                             'src' => $recipient['source'],
                         );
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
             }
             // TODO: Can collaborators add others?
@@ -3075,12 +3181,17 @@ implements RestrictedAccess, Threadable {
         $this->onMessage($message, ($autorespond && $alerts), $reopen); //must be called b4 sending alerts to staff.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         if ($autorespond && $alerts
             && $cfg && $cfg->notifyCollabsONNewMessage()
             && strcasecmp($origin, 'email')) {
           //when user replies, this is where collabs notified
           $this->notifyCollaborators($message, array('signature' => ''));
         }
+=======
+        if ($autorespond && $alerts && $cfg && $cfg->notifyCollabsONNewMessage())
+            $this->notifyCollaborators($message, array('signature' => ''));
+>>>>>>> parent of 7093d97... 2020 Update
 =======
         if ($autorespond && $alerts && $cfg && $cfg->notifyCollabsONNewMessage())
             $this->notifyCollaborators($message, array('signature' => ''));
@@ -3151,6 +3262,7 @@ implements RestrictedAccess, Threadable {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         $type = array('type' => 'message', 'uid' => $vars['userId']);
         Signal::send('object.created', $this, $type);
 =======
@@ -3160,6 +3272,9 @@ implements RestrictedAccess, Threadable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+
+>>>>>>> parent of 7093d97... 2020 Update
         return $message;
     }
 
@@ -3459,6 +3574,7 @@ implements RestrictedAccess, Threadable {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         //deleting parent ticket
         if ($children = Ticket::getChildTickets($this->getId())) {
             foreach ($children as $childId) {
@@ -3487,6 +3603,9 @@ implements RestrictedAccess, Threadable {
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $this->logEvent('deleted');
+=======
+        $t->delete();
+>>>>>>> parent of 7093d97... 2020 Update
 =======
         $t->delete();
 >>>>>>> parent of 7093d97... 2020 Update
@@ -3670,6 +3789,7 @@ implements RestrictedAccess, Threadable {
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     }
 
+<<<<<<< HEAD
 
     function updateField($form, &$errors) {
         global $thisstaff, $cfg;
@@ -3751,6 +3871,8 @@ implements RestrictedAccess, Threadable {
         return true;
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
    /*============== Static functions. Use Ticket::function(params); =============nolint*/
@@ -3841,10 +3963,13 @@ implements RestrictedAccess, Threadable {
                 $stats['assigned'] += $S['count'];
         }
         return $stats;
+<<<<<<< HEAD
 =======
 
 	return ($num === 0);
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     }
 
     /* Quick client's tickets stats
@@ -4520,8 +4645,12 @@ implements RestrictedAccess, Threadable {
 =======
                     'message'   => $message,
                     'signature' => $signature,
+<<<<<<< HEAD
                     'response'  => $response ?: '',
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+                    'response'  => ($response) ? $response->getBody() : '',
+>>>>>>> parent of 7093d97... 2020 Update
                     'recipient' => $ticket->getOwner(), //End user
                     'staff'     => $thisstaff,
                 )
@@ -4562,12 +4691,16 @@ implements RestrictedAccess, Threadable {
          Punt for now
          */
 
+<<<<<<< HEAD
         $sql='SELECT ticket_id FROM '.TICKET_TABLE.' T1'
             .' USE INDEX (status_id)'
 <<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+        $sql='SELECT ticket_id FROM '.TICKET_TABLE.' T1 '
+>>>>>>> parent of 7093d97... 2020 Update
             .' INNER JOIN '.TICKET_STATUS_TABLE.' status
                 ON (status.id=T1.status_id AND status.state="open") '
             .' LEFT JOIN '.SLA_TABLE.' T2 ON (T1.sla_id=T2.id AND T2.flags & 1 = 1) '
@@ -4601,6 +4734,7 @@ implements RestrictedAccess, Threadable {
 
         require STAFFINC_DIR.'templates/tickets-actions.tmpl.php';
     }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
     static function getLink($id) {
@@ -4685,6 +4819,8 @@ class TicketCData extends VerySimpleModel {
             ),
         ),
     );
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 }

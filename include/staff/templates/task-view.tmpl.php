@@ -489,6 +489,7 @@ else
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     if ($thread->getNumCollaborators())
                         $recipients = sprintf(__('(%d of %d)'),
 =======
@@ -506,6 +507,11 @@ else
                     if ($thread->getNumCollaborators())
                         $recipients = sprintf(__('Collaborators (%d of %d)'),
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+                    $recipients = __('Add Participants');
+                    if ($thread->getNumCollaborators())
+                        $recipients = sprintf(__('Recipients (%d of %d)'),
+>>>>>>> parent of 7093d97... 2020 Update
                                 $thread->getNumActiveCollaborators(),
                                 $thread->getNumCollaborators());
 

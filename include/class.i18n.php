@@ -67,6 +67,7 @@ class Internationalization {
             'file.yaml' =>          'AttachmentFile::__create',
             'sequence.yaml' =>      'Sequence::__create',
 <<<<<<< HEAD
+<<<<<<< HEAD
             'queue_column.yaml' =>  'QueueColumn::__create',
             'queue_sort.yaml' =>    'QueueSort::__create',
             'queue.yaml' =>         'CustomQueue::__create',
@@ -80,6 +81,8 @@ class Internationalization {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         );
 
         $errors = array();

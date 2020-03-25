@@ -658,12 +658,15 @@ class VerySimpleModel {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     private function refetch() {
         $this->ht =
             static::objects()->filter($this->getPk())->values()->one()
             + $this->ht;
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
     private function getPk() {
@@ -2301,6 +2304,7 @@ class SqlCompiler {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 // New criteria here is joined with AND, so if the outer
                 // criteria is joined with OR, then parentheses are
                 // necessary
@@ -2316,6 +2320,9 @@ class SqlCompiler {
                 $filter[] = $this->compileQ(new Q($criteria), $model,
                     $Q->ored || $Q->negated);
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+                $filter[] = $this->compileQ(new Q($criteria), $model, $slot);
+>>>>>>> parent of 7093d97... 2020 Update
             }
             // Handle simple field = <value> constraints
             else {
@@ -2348,8 +2355,8 @@ class SqlCompiler {
 
     function compileConstraints($where, $model) {
         $constraints = array();
-        $prev = $parens = false;
         foreach ($where as $Q) {
+<<<<<<< HEAD
             if ($prev && !$prev->isCompatibleWith($Q)) {
                 $parens = true;
                 break;
@@ -2372,6 +2379,9 @@ class SqlCompiler {
 =======
             $constraints[] = $this->compileQ($Q, $model, $parens);
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+            $constraints[] = $this->compileQ($Q, $model);
+>>>>>>> parent of 7093d97... 2020 Update
         }
         return $constraints;
     }

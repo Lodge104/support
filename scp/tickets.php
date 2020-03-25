@@ -393,6 +393,7 @@ if($cfg->showAnsweredTickets()) {
 }
 
 if($stats['assigned']) {
+<<<<<<< HEAD
 
     $nav->addSubMenu(array('desc'=>__('My Tickets').' ('.number_format($stats['assigned']).')',
                            'title'=>__('Assigned Tickets'),
@@ -408,6 +409,23 @@ if($stats['overdue']) {
                            'iconclass'=>'overdueTickets'),
                         ($_REQUEST['status']=='overdue'));
 
+=======
+
+    $nav->addSubMenu(array('desc'=>__('My Tickets').' ('.number_format($stats['assigned']).')',
+                           'title'=>__('Assigned Tickets'),
+                           'href'=>'tickets.php?status=assigned',
+                           'iconclass'=>'assignedTickets'),
+                        ($_REQUEST['status']=='assigned'));
+}
+
+if($stats['overdue']) {
+    $nav->addSubMenu(array('desc'=>__('Overdue').' ('.number_format($stats['overdue']).')',
+                           'title'=>__('Stale Tickets'),
+                           'href'=>'tickets.php?status=overdue',
+                           'iconclass'=>'overdueTickets'),
+                        ($_REQUEST['status']=='overdue'));
+
+>>>>>>> parent of 7093d97... 2020 Update
     if(!$sysnotice && $stats['overdue']>10)
         $sysnotice=sprintf(__('%d overdue tickets!'),$stats['overdue']);
 }
@@ -446,6 +464,7 @@ if ($thisstaff->hasPerm(TicketModel::PERM_CREATE, false)) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 $ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?f1e9e88"></script>');
 $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?f1e9e88"></script>');
 =======
@@ -460,6 +479,10 @@ $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?a076918">
 $ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?a076918"></script>');
 $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?a076918"></script>');
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+$ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?901e5ea"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?901e5ea"></script>');
+>>>>>>> parent of 7093d97... 2020 Update
 $ost->addExtraHeader('<meta name="tip-namespace" content="tickets.queue" />',
     "$('#content').data('tipNamespace', 'tickets.queue');");
 
@@ -511,6 +534,7 @@ if($ticket) {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
     } elseif($_REQUEST['a'] == 'print' && !$ticket->pdfExport($_REQUEST['psize'], $_REQUEST['notes']))
+<<<<<<< HEAD
         $errors['err'] = __('Unable to export the ticket to PDF for print.')
             .' '.__('Internal error occurred');
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
@@ -540,12 +564,23 @@ if($ticket) {
 =======
             $thisstaff->hasPerm(TicketModel::PERM_CREATE, false))
         $inc = 'ticket-open.inc.php';
+=======
+        $errors['err'] = __('Internal error: Unable to export the ticket to PDF for print.');
+} else {
+	$inc = 'tickets.inc.php';
+    if ($_REQUEST['a']=='open' &&
+            $thisstaff->hasPerm(TicketModel::PERM_CREATE, false))
+        $inc = 'ticket-open.inc.php';
+>>>>>>> parent of 7093d97... 2020 Update
     elseif($_REQUEST['a'] == 'export') {
         $ts = strftime('%Y%m%d');
         if (!($query=$_SESSION[':Q:tickets']))
             $errors['err'] = __('Query token not found');
         elseif (!Export::saveTickets($query, "tickets-$ts.csv", 'csv'))
             $errors['err'] = __('Internal error: Unable to dump query results');
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
     }
 

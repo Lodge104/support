@@ -104,10 +104,14 @@ class OrgsAjaxAPI extends AjaxController {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
         if($org->update($_POST, $errors))
+<<<<<<< HEAD
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
              Http::response(201, $org->to_json(), 'application/json');
 =======
         if($org->update($_POST, $errors))
+             Http::response(201, $org->to_json());
+>>>>>>> parent of 7093d97... 2020 Update
+=======
              Http::response(201, $org->to_json());
 >>>>>>> parent of 7093d97... 2020 Update
 

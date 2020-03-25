@@ -47,9 +47,13 @@ class TicketsAjaxAPI extends AjaxController {
             ->annotate(array(
                 'number' => new SqlCode('null'),
 <<<<<<< HEAD
+<<<<<<< HEAD
                 'tickets' => SqlAggregate::COUNT('ticket_id', true),
             ))
             ->order_by(SqlAggregate::SUM(new SqlCode('Z1.relevance')), QuerySet::DESC)
+=======
+                'tickets' => SqlAggregate::COUNT('ticket_id', true)))
+>>>>>>> parent of 7093d97... 2020 Update
 =======
                 'tickets' => SqlAggregate::COUNT('ticket_id', true)))
 >>>>>>> parent of 7093d97... 2020 Update
@@ -65,6 +69,7 @@ class TicketsAjaxAPI extends AjaxController {
             ->order_by(new SqlCode('__relevance__'), QuerySet::DESC);
 
         if (preg_match('/\d{2,}[^*]/', $q, $T = array())) {
+<<<<<<< HEAD
 <<<<<<< HEAD
             $hits = Ticket::objects()
                 ->values('user__default_email__address', 'number')
@@ -86,6 +91,13 @@ class TicketsAjaxAPI extends AjaxController {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+            $hits = TicketModel::objects()
+                ->values('user__default_email__address', 'number')
+                ->annotate(array(
+                    'tickets' => new SqlCode('1'),
+                    '__relevance__' => new SqlCode(1)
+>>>>>>> parent of 7093d97... 2020 Update
                 ))
                 ->filter($visibility)
                 ->filter(array('number__startswith' => $q))
@@ -103,6 +115,7 @@ class TicketsAjaxAPI extends AjaxController {
             $count = $T['tickets'];
             if ($T['number']) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 $tickets[$T['number']] = array('id'=>$T['number'], 'value'=>$T['number'],
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -114,6 +127,9 @@ class TicketsAjaxAPI extends AjaxController {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+                $tickets[] = array('id'=>$T['number'], 'value'=>$T['number'],
+>>>>>>> parent of 7093d97... 2020 Update
                     'info'=>"{$T['number']} — {$email}",
                     'matches'=>$_REQUEST['q']);
             }
@@ -455,6 +471,7 @@ class TicketsAjaxAPI extends AjaxController {
     function referrals($tid) {
 =======
 
+<<<<<<< HEAD
   function referrals($tid) {
 
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
@@ -605,6 +622,8 @@ function refer($tid, $target=null) {
   }
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     function assign($tid, $target=null) {
         global $thisstaff;
 
@@ -733,6 +752,7 @@ function refer($tid, $target=null) {
                     'verbed' => __('assigned'),
                     ),
 <<<<<<< HEAD
+<<<<<<< HEAD
                 'refer' => array(
                     'verbed' => __('referred'),
                     ),
@@ -750,6 +770,8 @@ function refer($tid, $target=null) {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
                 'claim' => array(
                     'verbed' => __('assigned'),
                     ),
@@ -1278,6 +1300,7 @@ function refer($tid, $target=null) {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function markAs($tid, $action='') {
         global $thisstaff;
 
@@ -1342,6 +1365,8 @@ function refer($tid, $target=null) {
         include STAFFINC_DIR . 'templates/mark-as.tmpl.php';
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
     function triggerThreadAction($ticket_id, $thread_id, $action) {
@@ -1454,6 +1479,7 @@ function refer($tid, $target=null) {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     function relations($tid) {
         global $thisstaff;
 
@@ -1469,6 +1495,9 @@ function refer($tid, $target=null) {
 =======
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function addTask($tid, $vars=array()) {
+=======
+    function addTask($tid) {
+>>>>>>> parent of 7093d97... 2020 Update
 =======
     function addTask($tid) {
 >>>>>>> parent of 7093d97... 2020 Update
@@ -1596,6 +1625,7 @@ function refer($tid, $target=null) {
         include STAFFINC_DIR . 'templates/task-view.tmpl.php';
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
     function export($id) {
@@ -1627,6 +1657,8 @@ function refer($tid, $target=null) {
         include STAFFINC_DIR . 'templates/queue-export.tmpl.php';
 
     }
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
 }

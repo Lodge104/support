@@ -240,6 +240,7 @@ class AttachmentFile extends VerySimpleModel {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function download($name=false, $disposition=false, $expires=false) {
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -254,6 +255,9 @@ class AttachmentFile extends VerySimpleModel {
         $disposition = $disposition ?: 'inline';
 >>>>>>> parent of 7093d97... 2020 Update
 =======
+=======
+    function download($disposition=false, $expires=false) {
+>>>>>>> parent of 7093d97... 2020 Update
         $disposition = $disposition ?: 'inline';
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
@@ -273,6 +277,7 @@ class AttachmentFile extends VerySimpleModel {
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         if (isset($_REQUEST['overridetype']))
             $type = $_REQUEST['overridetype'];
+<<<<<<< HEAD
         elseif (!strcasecmp($disposition, 'attachment'))
             $type = 'application/octet-stream';
 <<<<<<< HEAD
@@ -283,6 +288,9 @@ class AttachmentFile extends VerySimpleModel {
 =======
         if (isset($_REQUEST['overridetype']))
             $type = $_REQUEST['overridetype'];
+        Http::download($this->getName(), $type, null, 'inline');
+>>>>>>> parent of 7093d97... 2020 Update
+=======
         Http::download($this->getName(), $type, null, 'inline');
 >>>>>>> parent of 7093d97... 2020 Update
         header('Content-Length: '.$this->getSize());

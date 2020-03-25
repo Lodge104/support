@@ -20,6 +20,7 @@ if($_REQUEST['id'] && !($dept=Dept::lookup($_REQUEST['id'])))
     $errors['err']=sprintf(__('%s: Unknown or invalid ID.'), __('department'));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     if($_POST){
         switch(strtolower($_POST['do'])){
             case 'update':
@@ -70,6 +71,8 @@ if($_REQUEST['id'] && !($dept=Dept::lookup($_REQUEST['id'])))
                             } else {
                                 $errors['err']=sprintf(__('Unable to make %s PUBLIC.'),
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 if($_POST){
     switch(strtolower($_POST['do'])){
         case 'update':
@@ -110,6 +113,9 @@ if($_POST){
                         if(db_query($sql) && ($num=db_affected_rows())){
                             if($num==$count)
                                 $msg=sprintf(__('Successfully made %s PUBLIC'),
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
                                     _N('selected department', 'selected departments', $count));
                             else
@@ -118,6 +124,7 @@ if($_POST){
                                        <a> of <b> <selected objects> made PUBLIC */
                                     '%1$d of %2$d %3$s made PUBLIC'), $num, $count,
                                     _N('selected department', 'selected departments', $count));
+<<<<<<< HEAD
 <<<<<<< HEAD
                             }
                             break;
@@ -146,6 +153,8 @@ if($_POST){
                             } else {
                                 $errors['err'] = sprintf(__('Unable to enable %s'),
 =======
+=======
+>>>>>>> parent of 7093d97... 2020 Update
                         } else {
                             $errors['err']=sprintf(__('Unable to make %s PUBLIC.'),
                                 _N('selected department', 'selected departments', $count));
@@ -164,6 +173,9 @@ if($_POST){
                                     /* Phrase will read:
                                        <a> of <b> <selected objects> made PRIVATE */
                                     '%1$d of %2$d %3$s made PRIVATE'), $num, $count,
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
                                     _N('selected department', 'selected departments', $count));
                         } else {
@@ -184,6 +196,7 @@ if($_POST){
                                 if($v!=$cfg->getDefaultDeptId() && ($d=Dept::lookup($v)) && $d->delete())
                                     $i++;
                             }
+<<<<<<< HEAD
 <<<<<<< HEAD
                             break;
                         case 'disable':
@@ -274,6 +287,11 @@ if($_POST){
                             if($i && $i==$count)
                                 $msg = sprintf(__('Successfully deleted %s.'),
                                     _N('selected department', 'selected departments', $count));
+=======
+                            if($i && $i==$count)
+                                $msg = sprintf(__('Successfully deleted %s.'),
+                                    _N('selected department', 'selected departments', $count));
+>>>>>>> parent of 7093d97... 2020 Update
                             elseif($i>0)
                                 $warn = sprintf(__(
                                     /* Phrase will read:
@@ -287,6 +305,9 @@ if($_POST){
                         break;
                     default:
                         $errors['err']=__('Unknown action - get technical help.');
+<<<<<<< HEAD
+>>>>>>> parent of 7093d97... 2020 Update
+=======
 >>>>>>> parent of 7093d97... 2020 Update
                 }
             }

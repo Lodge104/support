@@ -134,6 +134,7 @@ class Bootstrap {
         define('TRANSLATION_TABLE', $prefix.'translation');
         define('QUEUE_TABLE', $prefix.'queue');
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         define('COLUMN_TABLE', $prefix.'queue_column');
         define('QUEUE_COLUMN_TABLE', $prefix.'queue_columns');
@@ -142,6 +143,8 @@ class Bootstrap {
         define('QUEUE_EXPORT_TABLE', $prefix.'queue_export');
         define('QUEUE_CONFIG_TABLE', $prefix.'queue_config');
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 
         define('API_KEY_TABLE',$prefix.'api_key');
         define('TIMEZONE_TABLE',$prefix.'timezone');
@@ -326,6 +329,7 @@ define('CLI_DIR', INCLUDE_DIR.'cli/');
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 define('GIT_VERSION', 'f1e9e88'); // Set by installer
 define('MAJOR_VERSION', '1.14');
 define('THIS_VERSION', 'v1.14.1'); // Set by installer
@@ -342,6 +346,10 @@ define('MAJOR_VERSION', '1.10');
 =======
 define('THIS_VERSION', 'v1.12'); // Set by installer
 define('GIT_VERSION', 'a076918'); // Set by installer
+=======
+define('THIS_VERSION', 'v1.10'); // Set by installer
+define('GIT_VERSION', '901e5ea'); // Set by installer
+>>>>>>> parent of 7093d97... 2020 Update
 define('MAJOR_VERSION', '1.10');
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 //Path separator

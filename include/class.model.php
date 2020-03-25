@@ -43,6 +43,7 @@ class ObjectModel {
     const OBJECT_TYPE_TASK   = 'A';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
 =======
     const OBJECT_TYPE_TEAM   = 'E';
@@ -54,6 +55,8 @@ class ObjectModel {
     const OBJECT_TYPE_DEPT   = 'D';
     const OBJECT_TYPE_STAFF  = 'S';
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 
     private function objects() {
         static $objects = false;
@@ -88,6 +91,7 @@ class ObjectModel {
                     self::OBJECT_TYPE_TASK    => 'Task',
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     );
 >>>>>>> parent of 7093d97... 2020 Update
 =======
@@ -96,6 +100,8 @@ class ObjectModel {
                     self::OBJECT_TYPE_TEAM    => 'Team',
                     self::OBJECT_TYPE_DEPT    => 'Dept',
                     self::OBJECT_TYPE_STAFF   => 'Staff',
+=======
+>>>>>>> parent of 7093d97... 2020 Update
                     );
 <<<<<<< HEAD
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support

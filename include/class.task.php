@@ -540,6 +540,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
@@ -554,6 +555,8 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                             );
                     $t->ticket->logNote($vars['title'], $vars['note'], $thisstaff);
                 }
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
             };
@@ -577,6 +580,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
@@ -590,6 +594,8 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                             );
                     $t->ticket->logNote($vars['title'], $vars['note'], $thisstaff);
                 }
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 =======
 >>>>>>> parent of 7093d97... 2020 Update
             };
@@ -1369,6 +1375,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         $thread->delete();
 <<<<<<< HEAD
         $this->logEvent('deleted');
@@ -1381,6 +1388,9 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 >>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 =======
         $this->logEvent('deleted');
+=======
+        $thread->delete();
+>>>>>>> parent of 7093d97... 2020 Update
 
 >>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         Draft::deleteForNamespace('task.%.' . $this->getId());
