@@ -243,6 +243,7 @@ class Page extends VerySimpleModel {
     }
 
     function update($vars, &$errors, $allowempty=false) {
+
         //Cleanup.
         $vars['name']=Format::striptags(trim($vars['name']));
 

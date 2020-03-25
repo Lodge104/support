@@ -59,15 +59,3 @@
 - id: 14
   name: deleted
   description:
-
-- id: 15
-  name: merged
-  description:
-
-- id: 16
-  name: unlinked
-  description:
-
-- id: 17
-  name: linked
-  description:

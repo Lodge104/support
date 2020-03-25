@@ -20,13 +20,12 @@ if (($users=$thread->getCollaborators())) {?>
 <?php
 $options = array();
 
-if ($manage)
-    $options[] = sprintf(
-            '<a class="collaborators" id="managecollab" href="#thread/%d/collaborators/1">%s</a>',
-            $thread->getId(),
-            $thread->getNumCollaborators()
-            ? __('Manage Collaborators') : __('Add Collaborator')
-            );
+$options[] = sprintf(
+        '<a class="collaborators" id="managecollab" href="#thread/%d/collaborators">%s</a>',
+        $thread->getId(),
+        $thread->getNumCollaborators()
+        ? __('Manage Collaborators') : __('Add Collaborator')
+        );
 
 if ($options) {
     echo '<ul class="tip_menu">';

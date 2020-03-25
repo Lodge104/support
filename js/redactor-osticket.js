@@ -1,3 +1,5 @@
+if (typeof RedactorPlugins === 'undefined') var RedactorPlugins = {};
+
 /* Generic draft support for osTicket. The plugins supports draft retrieval
  * automatically, along with draft autosave, and image uploading.
  *
@@ -10,111 +12,80 @@
  * uploads. Furthermore, the id of the staff is considered for the drafts,
  * so one user will not retrieve drafts for another user.
  */
-(function(R$) {
-  // Monkey patch incorrect code in the inpection module
-  var stockInspectorParser = $R[$R.env['class']]['inspector.parser'];
-  R$.add('class', 'inspector.parser', $R.extend(stockInspectorParser.prototype, {
-    _getClosestUpNode: function(selector)
-    {
-        var $el = this.$el.parents(selector, '.redactor-in-' + this.uuid).last();
-        return ($el.length !== 0) ? $el.get() : false;
-    },
-    _getClosestNode: function(selector)
-    {
-        var $el = this.$el.closest(selector, '.redactor-in-' + this.uuid);
-        return ($el.length !== 0) ? $el.get() : false;
-    },
-    _getClosestElement: function(selector)
-    {
-        var $el = this.$el.closest(selector, '.redactor-in-' + this.uuid);
-        return ($el.length !== 0) ? $el : false;
-    },
-  }));
-
-  R$.add('plugin', 'draft', {
-    init: function (app) {
-        this.app = app;
-        this.$textarea = $(this.app.rootElement);
-        this.toolbar = this.app.toolbar;
-        this.opts = app.opts;
-        this.lastUpdate = 0;
-        this.statusbar = app.statusbar;
-    },
-
-    start: function() {
+RedactorPlugins.draft = function() {
+  return {
+    init: function() {
         if (!this.opts.draftNamespace)
             return;
 
+        this.opts.changeCallback = this.draft.hideDraftSaved;
         var autosave_url = 'ajax.php/draft/' + this.opts.draftNamespace;
         if (this.opts.draftObjectId)
             autosave_url += '.' + this.opts.draftObjectId;
-        this.opts.autosave = this.autoCreateUrl = autosave_url;
-        this.opts.autosaveDelay = 10000;
+        this.opts.autosave = this.opts.autoCreateUrl = autosave_url;
+        this.opts.autosaveInterval = 30;
+        this.opts.autosaveCallback = this.draft.afterUpdateDraft;
+        this.opts.autosaveErrorCallback = this.draft.autosaveFailed;
+        this.opts.imageUploadErrorCallback = this.draft.displayError;
         if (this.opts.draftId) {
-            this.statusbar.add('draft', __('all changes saved'));
-            this._setup(this.opts.draftId);
+            this.opts.autosave = 'ajax.php/draft/'+this.opts.draftId;
+            this.opts.clipboardUploadUrl =
+            this.opts.imageUpload =
+                'ajax.php/draft/'+this.opts.draftId+'/attach';
         }
         else if (this.$textarea.hasClass('draft')) {
             // Just upload the file. A draft will be created automatically
             // and will be configured locally in the afterUpateDraft()
-            this.opts.clipboardUpload =
-            this.opts.imageUpload = this.autoCreateUrl + '/attach';
+            this.opts.clipboardUploadUrl =
+            this.opts.imageUpload = this.opts.autoCreateUrl + '/attach';
+            this.opts.imageUploadCallback = this.afterUpdateDraft;
         }
-        this.opts.autosaveData = {
-            '__CSRFToken__': $("meta[name=csrf_token]").attr("content")
-        };
+
+        // FIXME: Monkey patch Redactor's autosave enable method to disable first
+        var oldAse = this.autosave.enable;
+        this.autosave.enable = function() {
+            this.autosave.disable();
+            oldAse.call(this);
+        }.bind(this);
 
         if (autosave_url)
-            this.app.api('module.autosave.enable');
+            this.autosave.enable();
 
-        if (this.app.source.getCode())
-            this.app.broadcast('draft.recovered');
-    },
+        if (this.$textarea.hasClass('draft')) {
+            this.$draft_saved = $('<span>')
+                .addClass("pull-right draft-saved")
+                .hide()
+                .append($('<span>')
+                    .text(__('Draft Saved')));
+            // Float the [Draft Saved] box with the toolbar
+            this.$toolbar.append(this.$draft_saved);
 
-    stop: function() {
-        this.app.statusbar.remove('draft');
-    },
-
-    _setup: function (draft_id) {
-        this.opts.draftId = draft_id;
-        this.opts.autosave = 'ajax.php/draft/' + draft_id;
-        this.opts.clipboardUpload =
-        this.opts.imageUpload =
-            'ajax.php/draft/' + draft_id + '/attach';
-
-        // Add [Delete Draft] button to the toolbar
-        if (this.opts.draftDelete) {
-            this.opts.draftSave = true;
-            var trash = this.deleteButton =
-                this.toolbar.addButton('deletedraft', {
-                    title: __('Delete Draft'),
-                    api: 'plugin.draft.deleteDraft',
-                    icon: 'icon-trash',
-                });
-            trash.addClass('pull-right icon-trash');
-
+            // Add [Delete Draft] button to the toolbar
+            if (this.opts.draftDelete) {
+                var trash = this.draft.deleteButton =
+                    this.button.add('deleteDraft', __('Delete Draft'))
+                this.button.addCallback(trash, this.draft.deleteDraft);
+                this.button.setAwesome('deleteDraft', 'icon-trash');
+                trash.parent().addClass('pull-right');
+                trash.addClass('delete-draft');
+                if (!this.opts.draftId)
+                    trash.hide();
+            }
         }
-
-        // Add [Save Draft] button to the toolbar
-        if (this.opts.draftSave) {
-            var save = this.saveButton =
-                this.toolbar.addButton('savedraft', {
-                    title: __('Save Draft'),
-                    api: 'plugin.draft.saveDraft',
-                    icon: 'icon-save',
-                });
-            save.addClass('pull-right icon-save');
-        }
+        if (this.code.get())
+            this.$box.trigger('draft:recovered');
     },
-
-    onautosave: function(name, _, data) {
+    afterUpdateDraft: function(name, data) {
         // If the draft was created, a draft_id will be sent back — update
         // the URL to send updates in the future
         if (!this.opts.draftId && data.draft_id) {
 <<<<<<< HEAD
+<<<<<<< HEAD
             this._setup(data.draft_id);
             $(this.app.rootElement).attr('data-draft-id', this.opts.draftId);
 =======
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
             this.opts.draftId = data.draft_id;
             this.opts.autosave = 'ajax.php/draft/' + data.draft_id;
             this.opts.clipboardUploadUrl =
@@ -122,6 +93,7 @@
                 'ajax.php/draft/'+this.opts.draftId+'/attach';
             if (!this.code.get())
                 this.code.set(' ', false);
+<<<<<<< HEAD
         }
         // Only show the [Draft Saved] notice if there is content in the
         // field that has been touched
@@ -133,36 +105,35 @@
         if (data && this.code.get()) {
             this.$draft_saved.show().delay(5000).fadeOut();
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         }
-
-        this.statusbar.add('draft', __('all changes saved'));
-        this.app.broadcast('draft.saved');
-
+        // Only show the [Draft Saved] notice if there is content in the
+        // field that has been touched
+        if (!this.draft.firstSave) {
+            this.draft.firstSave = true;
+            // No change yet — dont't show the button
+            return;
+        }
+        this.$box.find('textarea').attr('data-draft-id', this.opts.draftId);
+        if (data && this.code.get()) {
+            this.$draft_saved.show().delay(5000).fadeOut();
+        }
+        // Show the button if there is a draft to delete
+        if (this.opts.draftId && this.opts.draftDelete)
+            this.draft.deleteButton.show();
+        this.$box.trigger('draft:saved');
     },
-
-    onautosaveSend: function() {
-        this.statusbar.add('draft', __('saving...'));
-    },
-
-    onautosaveError: function(error) {
+    autosaveFailed: function(error) {
         if (error.code == 422)
             // Unprocessable request (Empty message)
             return;
 
-        this.displayError(error);
+        this.draft.displayError(error);
         // Cancel autosave
-        this.app.api('module.autosave.disable');
-        this.statusbar.add('draft', '<span style="color:red">{}</span>'.replace('{}', __('save error')));
-        this.app.broadcast('draft.failed');
-    },
-
-    onimage: {
-        uploaded: function(image, response) {
-            this.onautosave(null, null, response);
-        },
-        uploadError: function (response) {
-            this.displayError(response);
-        }
+        this.autosave.disable();
+        this.hideDraftSaved();
+        this.$box.trigger('draft:failed');
     },
 
     displayError: function(json) {
@@ -171,37 +142,8 @@
           + __('Refresh the current page to restore and continue your draft.'));
     },
 
-    onchanged: function() {
-        this.statusbar.add('draft', __('unsaved'));
-    },
-
-    showDraftSaved: function() {
-        this.$draft_saved.show();
-    },
-
-    saveDraft: function() {
-        if (!this.opts.draftId)
-            return;
-
-        response = $(".draft").val()
-        if (response) {
-            var data = {
-                name: 'response',
-                response: response,
-            };
-
-            var self = this;
-            $.ajax('ajax.php/draft/'+this.opts.draftId, {
-                type: 'POST',
-                data: data,
-                dataType: 'json',
-                success: function() {
-                    self.draft_id = self.opts.draftId;
-                    self.opts.autosave = self.autoCreateUrl;
-                    self.app.statusbar.add('draft', __('all changes saved'));
-                }
-            });
-        }
+    hideDraftSaved: function() {
+        this.$draft_saved.hide();
     },
 
     deleteDraft: function() {
@@ -211,112 +153,66 @@
         var self = this;
         $.ajax('ajax.php/draft/'+this.opts.draftId, {
             type: 'delete',
+            async: false,
             success: function() {
                 self.draft_id = self.opts.draftId = undefined;
-                self.app.statusbar.remove('draft');
-                self.app.source.setCode(self.opts.draftOriginal || '');
-                self.opts.autosave = self.autoCreateUrl;
-                self.opts.clipboardUpload =
-                self.opts.imageUpload = self.autoCreateUrl + '/attach';
-                self.deleteButton.hide();
-                self.saveButton.hide();
-                self.app.broadcast('draft.deleted');
+                self.draft.hideDraftSaved();
+                self.code.set(self.opts.draftOriginal || '', false, false);
+                self.opts.autosave = self.opts.autoCreateUrl;
+                self.draft.deleteButton.hide();
+                self.draft.firstSave = false;
+                self.$box.trigger('draft:deleted');
             }
         });
     }
-  });
+  };
+};
 
-  // Monkey patch the autosave module to include an `autosaveBefore` signal
-  // and an delay option to limit calls to the backend.
-  var stockAutosave = $R[$R.env['module']]['autosave'];
-  R$.add('module', 'autosave', $R.extend(stockAutosave.prototype, {
-    onsynced: function() {
-        if (this.opts.autosave) {
-            // Don't send to backend if empty
-            if (!this.source.getCode())
-                return;
-            if (this.opts.autosaveDelay) {
-                if (this.delayTimer)
-                    clearInterval(this.delayTimer);
-                this.delayTimer = setTimeout(this._sendDelayed.bind(this),
-                    this.opts.autosaveDelay);
-            }
-            else {
-                this._sendDelayed();
-            }
-        }
-    },
-    _sendDelayed: function() {
-        this.app.broadcast('autosaveSend');
-        this._send.call(this);
-    },
-  }));
-
-  // Monkey patch the toolbar server to support adding buttons in an automatic
-  // position based on the `buttons` setting
-  var stockToolbar = $R[$R.env['service']]['toolbar'];
-  R$.add('service', 'toolbar', $R.extend(stockToolbar.prototype, {
-      addButtonAuto: function(name, btnObj) {
-          var pos = this.opts.buttons.indexOf(name);
-
-          if (pos === -1)
-              return this.addButton(name, btnObj);
-          if (pos === 0)
-              return this.addButtonFirst(name, btnObj);
-          return this.addButtonAfter(this.opts.buttons[pos - 1], name, btnObj);
-      },
-  }));
-
-  R$.add('plugin', 'autolock', {
-    init: function (app) {
-        this.app = app;
-    },
-    start: function () {
-        var root = $(this.app.rootElement),
-            code = root.closest('form').find('[name=lockCode]');
-        if (code.length)
-            this.lock = root.closest('[data-lock-object-id]');
-    },
-    onchanged: function(e) {
-        if (this.lock)
-            this.lock.exclusive('acquire');
+RedactorPlugins.autolock = function() {
+  return {
+    init: function() {
+      var code = this.$box.closest('form').find('[name=lockCode]'),
+          self = this;
+      if (code.length)
+        this.opts.keydownCallback = function(e) {
+          self.$box.closest('[data-lock-object-id]').exclusive('acquire');
+        };
     }
-  });
+  };
+}
 
-  R$.add('plugin', 'signature', {
-    init: function (app) {
-        this.app = app;
-    },
-    start: function() {
-        var $el = $R.dom(this.app.rootElement),
-            $box = this.app.editor.getElement(),
-            inner = $R.dom('<div class="inner"></div>'),
-            $form = $el.closest('form'),
-            signatureField = $el.data('signature-field');
-        if (signatureField) {
-            this.$signatureBox = $R.dom('<div class="selected-signature"></div>')
-                .append(inner);
-            this.app.editor.getElement().parent().find('.redactor-statusbar').before(this.$signatureBox);
+RedactorPlugins.signature = function() {
+  return {
+    init: function() {
+        var $el = $(this.$element.get(0)),
+            inner = $('<div class="inner"></div>');
+        if ($el.data('signatureField')) {
+            this.$signatureBox = $('<div class="selected-signature"></div>')
+                .append(inner)
+                .appendTo(this.$box);
             if ($el.data('signature'))
                 inner.html($el.data('signature'));
             else
                 this.$signatureBox.hide();
-            $R.dom('input[name='+signatureField+']', $form)
-                .on('change', this.updateSignature.bind(this));
+            $('input[name='+$el.data('signatureField')+']', $el.closest('form'))
+                .on('change', false, false, $.proxy(this.signature.updateSignature, this));
+            if ($el.data('deptField'))
+                $(':input[name='+$el.data('deptField')+']', $el.closest('form'))
+                    .on('change', false, false, $.proxy(this.signature.updateSignature, this));
             // Expand on hover
             var outer = this.$signatureBox,
                 inner = $('.inner', this.$signatureBox).get(0),
                 originalHeight = outer.height(),
                 hoverTimeout = undefined,
                 originalShadow = this.$signatureBox.css('box-shadow');
-            this.$signatureBox.on('hover', function() {
-                hoverTimeout = setTimeout(function() {
+            this.$signatureBox.hover(function() {
+                hoverTimeout = setTimeout($.proxy(function() {
                     originalHeight = Math.max(originalHeight, outer.height());
                     $(this).animate({
                         'height': inner.offsetHeight
                     }, 'fast');
                     $(this).css('box-shadow', 'none', 'important');
-                }.bind(this), 250);
+                }, this), 250);
             }, function() {
                 clearTimeout(hoverTimeout);
                 $(this).stop().animate({
@@ -324,44 +220,37 @@
                 }, 'fast');
                 $(this).css('box-shadow', originalShadow);
             });
-            $el.find('.redactor-box').css('border-bottom-style', 'none', true);
+            this.$box.find('.redactor_editor').css('border-bottom-style', 'none', true);
         }
     },
     updateSignature: function(e) {
-        var $el = $(this.app.rootElement),
-            signatureField = $el.data('signature-field'),
-            $form = $el.closest('form'),
-            selected = $(':input:checked[name='+signatureField+']', $form).val(),
-            type = $R.dom(e.target).val(),
-            dept = $R.dom(':input[name='+$el.data('dept-field')+']', $form).val(),
+        var $el = $(this.$element.get(0));
+            selected = $(':input:checked[name='+$el.data('signatureField')+']', $el.closest('form')).val(),
+            type = $(e.target).val(),
+            dept = $(':input[name='+$el.data('deptField')+']', $el.closest('form')).val(),
             url = 'ajax.php/content/signature/',
-            inner = $R.dom('.inner', this.$signatureBox);
+            inner = $('.inner', this.$signatureBox);
         e.preventDefault && e.preventDefault();
-        if (selected == 'dept' && $el.data('dept-id'))
-            url += 'dept/' + $el.data('dept-id');
-        else if (selected == 'dept' && $el.data('dept-field')) {
+        if (selected == 'dept' && $el.data('deptId'))
+            url += 'dept/' + $el.data('deptId');
+        else if (selected == 'dept' && $el.data('deptField')) {
             if (dept)
                 url += 'dept/' + dept;
             else
                 return inner.empty().parent().hide();
         }
-        else if (selected == 'theirs' && $el.data('poster-id')) {
-            url += 'agent/' + $el.data('poster-id');
+        else if (selected == 'theirs' && $el.data('posterId')) {
+            url += 'agent/' + $el.data('posterId');
         }
         else if (type == 'none')
            return inner.empty().parent().hide();
         else
             url += selected;
 
-        $R.ajax.get({
-            url: url,
-            success: function(html) {
-                inner.html(html).parent().show();
-            }
-        });
+        inner.load(url).parent().show();
     }
-  });
-})(Redactor);
+  }
+};
 
 /* Redactor richtext init */
 $(function() {
@@ -377,9 +266,9 @@ $(function() {
         });
         return html;
     },
-    redact = $.fn.redact = function(el, options) {
+    redact = $.redact = function(el, options) {
         var el = $(el),
-            sizes = {'small': '75px', 'medium': '150px', 'large': '225px'},
+            sizes = {'small': 75, 'medium': 150, 'large': 225},
             selectedSize = sizes['medium'];
         $.each(sizes, function(k, v) {
             if (el.hasClass(k)) selectedSize = v;
@@ -387,28 +276,26 @@ $(function() {
         var options = $.extend({
                 'air': el.hasClass('no-bar'),
                 'buttons': el.hasClass('no-bar')
-                  ? ['format', '|', 'bold', 'italic', 'underline', 'deleted', 'lists', 'link', 'image']
-                  : ['html', 'format', 'fontcolor', 'fontfamily', 'bold',
-                    'italic', 'underline', 'deleted', 'lists', 'image', 'video',
-                    'file', 'table', 'link', 'line', 'fullscreen'],
+                  ? ['formatting', '|', 'bold', 'italic', 'underline', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'link', 'image']
+                  : ['html', '|', 'formatting', '|', 'bold',
+                    'italic', 'underline', 'deleted', '|', 'unorderedlist',
+                    'orderedlist', 'outdent', 'indent', '|', 'image', 'video',
+                    'file', 'table', 'link', '|', 'alignment', '|',
+                    'horizontalrule'],
                 'buttonSource': !el.hasClass('no-bar'),
                 'autoresize': !el.hasClass('no-bar') && !el.closest('.dialog').length,
                 'maxHeight': el.closest('.dialog').length ? selectedSize : false,
                 'minHeight': selectedSize,
-                'maxWidth': el.hasClass('fullscreen') ? '950px' : false,
                 'focus': false,
                 'plugins': el.hasClass('no-bar')
                   ? ['imagemanager','definedlinks']
-                  : ['imagemanager','table','video','definedlinks','autolock', 'fontcolor', 'fontfamily'],
+                  : ['imagemanager','imageannotate','table','video','definedlinks','autolock'],
                 'imageUpload': el.hasClass('draft'),
                 'imageManagerJson': 'ajax.php/draft/images/browse',
-                'imagePosition': true,
-                'imageUploadData': {
-                    '__CSRFToken__': $("meta[name=csrf_token]").attr("content")
-                },
-                'imageResizable': true,
                 'syncBeforeCallback': captureImageSizes,
+                'linebreaks': true,
                 'tabFocus': false,
+<<<<<<< HEAD
 <<<<<<< HEAD
                 'toolbarFixed': true,
                 'callbacks': {
@@ -427,6 +314,9 @@ $(function() {
                     },
 =======
                 'toolbarFixedBox': true,
+=======
+                'toolbarFixed': false,
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
                 'focusCallback': function() { this.$box.addClass('no-pjax'); },
                 'initCallback': function() {
                     if (this.$element.data('width'))
@@ -435,10 +325,13 @@ $(function() {
                     var lang = this.$editor.closest('[lang]').attr('lang');
                     if (lang)
                         this.$editor.attr('lang', lang);
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
                 },
                 'linkSize': 100000,
-                'definedlinks': 'ajax.php/config/links'
+                'definedLinks': 'ajax.php/config/links'
             }, options||{});
         if (el.data('redactor')) return;
         var reset = $('input[type=reset]', el.closest('form'));
@@ -448,21 +341,20 @@ $(function() {
                 var file = $('.file', el.closest('form'));
                 if (file)
                     file.remove();
-                if (el.attr('data-draft-id')) {
-                    el.redactor('plugin.draft.deleteDraft');
-                    el.attr('data-draft-id', '');
-                }
+                if (el.attr('data-draft-id'))
+                    el.redactor('draft.deleteDraft').attr('data-draft-id', '');
                 else {
                     try {
-                        el.redactor('source.setCode', '');
+                        el.redactor('insert.set', '', false, false);
                     }
                     catch (error) {
                         el.redactor(); //reinitialize redactor
-                        el.redactor('source.setCode', '');
+                        el.redactor('insert.set', '', false, false);
                     }
                 }
             });
         }
+<<<<<<< HEAD
 =======
                 if (el.hasClass('draft'))
                     el.redactor('deleteDraft');
@@ -470,23 +362,36 @@ $(function() {
                     el.redactor('set', '', false, false);
             });
         }
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         $('input[type=submit]', el.closest('form')).on('click', function() {
             // Some setups (IE v10 on Windows 7 at least) seem to have a bug
             // where Redactor does not sync properly after adding an image.
             // Therefore, the ::get() call will not include text added after
             // the image was inserted.
+<<<<<<< HEAD
             el.redactor('code.sync');
         });
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+            try {
+                el.redactor('code.sync');
+            }
+            catch (error) {
+                el.redactor(); //reinitialize redactor
+                el.redactor('code.sync');
+            }
+        });
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         if (!$.clientPortal) {
-            options['plugins'].push('signature');
+            options['plugins'] = options['plugins'].concat(
+                    'fontcolor', 'fontfamily', 'signature');
         }
         if (el.hasClass('draft')) {
             el.closest('form').append($('<input type="hidden" name="draft_id"/>'));
             options['plugins'].push('draft');
-            options['plugins'].push('imageannotate');
+            options['plugins'].push('imagepaste');
             options.draftDelete = el.hasClass('draft-delete');
-            options.draftSave = el.hasClass('draft-save');
         }
         if (true || 'scp') { // XXX: Add this to SCP only
             options['plugins'].push('contexttypeahead');
@@ -499,13 +404,13 @@ $(function() {
             options['imageManagerJson'] += '?threadId=' + $('#thread-items').data('threadId');
         getConfig().then(function(c) {
             if (c.lang && c.lang.toLowerCase() != 'en_us' &&
-                    Redactor.lang[c.short_lang])
+                    $.Redactor.opts.langs[c.short_lang])
                 options['lang'] = c.short_lang;
-            if (c.has_rtl)
-                options['plugins'].push('textdirection');
+            //if (c.has_rtl)
+              //  options['plugins'].push('textdirection');
             if (el.find('rtl').length)
                 options['direction'] = 'rtl';
-            el.data('redactor', el.redactor(options));
+            el.redactor(options);
         });
     },
     findRichtextBoxes = function() {
@@ -526,7 +431,7 @@ $(function() {
         $('.richtext').each(function() {
             var redactor = $(this).data('redactor');
             if (redactor)
-                redactor.stop();
+                redactor.core.destroy();
         });
     };
     findRichtextBoxes();
@@ -536,7 +441,6 @@ $(function() {
 });
 
 $(document).on('focusout.redactor', 'div.redactor_richtext', function (e) {
-    alert('focusout.redactor');
     $(this).siblings('textarea').trigger('change');
 });
 
@@ -547,9 +451,14 @@ $(document).ajaxError(function(event, request, settings) {
             var redactor = $(this).data('redactor');
             if (redactor) {
                 redactor.autosave.disable();
+                clearInterval(redactor.autosaveInterval);
             }
         });
         $.sysAlert(__('Unable to save draft.'),
             __('Refresh the current page to restore and continue your draft.'));
     }
 });
+
+// .size() is deprecated as of jQuery 1.8 and should move to .length, but
+// the packed Redactor code uses the deprecated function
+$.fn.size = function() { return this.length; }

@@ -42,15 +42,6 @@ default_department:
         Ticket can be routed base on help topic, incoming email and ticket
         filter settings.
 
-default_schedule:
-    title: Default Schedule
-    content: >
-        Choose the default Schedule to be used by SLA when rendering tickets
-        Overdue.
-    links:
-      - title: Manage Schedules
-        href: /scp/schedules.php
-
 default_page_size:
     title: Default Page Size
     content: >
@@ -104,9 +95,9 @@ collision_avoidance:
 
 <<<<<<< HEAD
 allow_iframes:
-    title: Allow System iFrame
+    title: Allow iFrames
     content: >
-        Enter comma separated list of urls/domains for the system to be framed
+        Enter comma separated list of domains for the system to be framed
         in. If left empty, the system will default to 'self'. This accepts
         domain wildcards, HTTP/HTTPS URL scheme, and port numbers.
         <br><br>
@@ -137,6 +128,7 @@ acl:
                 <td>Applies ACL to only Staff Panel and Admin Panel.</td></tr>
         </tbody></table>
 
+<<<<<<< HEAD
 embedded_domain_whitelist:
     title: Embedded Domain Whitelist
     content: >
@@ -154,6 +146,8 @@ embedded_domain_whitelist:
 
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 # Date and time options
 date_time_options:
     title: Date &amp; Time Options

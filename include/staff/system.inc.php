@@ -41,10 +41,6 @@ $extensions = array(
             'name' => 'fileinfo',
             'desc' => __('Used to detect file types for uploads')
             ),
-        'zip' => array(
-            'name' => 'zip',
-            'desc' => __('Used for ticket and task exporting')
-            ),
         'apcu' => array(
             'name' => 'APCu',
             'desc' => __('Improves overall performance')
@@ -78,7 +74,7 @@ else {
     $cv = $tv[0] == 'v' ? $tv : $gv;
 ?>
       <a class="green button action-button pull-right"
-         href="https://osticket.com/download?cv=<?php echo $cv; ?>"><i class="icon-rocket"></i>
+         href="http://osticket.com/download?cv=<?php echo $cv; ?>"><i class="icon-rocket"></i>
         <?php echo __('Upgrade'); ?></a>
 <?php if ($lv) { ?>
       <strong> — <?php echo str_replace(

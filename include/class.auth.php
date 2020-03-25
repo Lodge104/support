@@ -488,9 +488,6 @@ abstract class StaffAuthenticationBackend  extends AuthenticationBackend {
             sprintf(_S("%s logged in [%s], via %s"), $staff->getUserName(),
                 $_SERVER['REMOTE_ADDR'], get_class($bk))); //Debug.
 
-        $agent = Staff::lookup($staff->getId());
-        $type = array('type' => 'login');
-        Signal::send('person.login', $agent, $type);
         // Tag the authkey.
         $authkey = $bk::$id.':'.$authkey;
 
@@ -531,9 +528,6 @@ abstract class StaffAuthenticationBackend  extends AuthenticationBackend {
                     $staff->getUserName(),
                     $_SERVER['REMOTE_ADDR'])); //Debug.
 
-        $agent = Staff::lookup($staff->getId());
-        $type = array('type' => 'logout');
-        Signal::send('person.logout', $agent, $type);
         Signal::send('auth.logout', $staff);
     }
 
@@ -683,10 +677,6 @@ abstract class UserAuthenticationBackend  extends AuthenticationBackend {
                 $user->getUserName(), $user->getId(), $_SERVER['REMOTE_ADDR']);
         $ost->logDebug(_S('User login'), $msg);
 
-        $u = $user->getSessionUser()->getUser();
-        $type = array('type' => 'login');
-        Signal::send('person.login', $u, $type);
-
         if ($bk->supportsInteractiveAuthentication() && ($acct=$user->getAccount()))
             $acct->cancelResetTokens();
 
@@ -722,10 +712,6 @@ abstract class UserAuthenticationBackend  extends AuthenticationBackend {
         $ost->logDebug(_S('User logout'),
             sprintf(_S("%s logged out [%s]" /* Tokens are <username> and <ip> */),
                 $user->getUserName(), $_SERVER['REMOTE_ADDR']));
-
-        $u = $user->getSessionUser()->getUser();
-        $type = array('type' => 'logout');
-        Signal::send('person.logout', $u, $type);
     }
 
     protected function getAuthKey($user) {
@@ -904,6 +890,7 @@ class StaffAuthStrikeBackend extends  AuthStrikeBackend {
             $ost->logWarning(sprintf(_S('Excessive login attempts (%s)'),$username),
 <<<<<<< HEAD
                     $alert, $admin_alert);
+<<<<<<< HEAD
 
               if ($username) {
                 $agent = Staff::lookup($username);
@@ -914,6 +901,8 @@ class StaffAuthStrikeBackend extends  AuthStrikeBackend {
 =======
                     $alert, $cfg->alertONLoginError());
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
             return new AccessDenied(__('Forgot your login info? Contact Admin.'));
         //Log every other third failed login attempt as a warning.
         } elseif($authsession['strikes']%3==0) {
@@ -975,6 +964,7 @@ class UserAuthStrikeBackend extends  AuthStrikeBackend {
 <<<<<<< HEAD
             $admin_alert = ($cfg->alertONLoginError() == 1 ? TRUE : FALSE);
             $ost->logError(_S('Excessive login attempts (user)'), $alert, $admin_alert);
+<<<<<<< HEAD
 
             if ($username) {
               $account = UserAccount::lookupByUsername($username);
@@ -993,6 +983,8 @@ class UserAuthStrikeBackend extends  AuthStrikeBackend {
 =======
             $ost->logError(_S('Excessive login attempts (user)'), $alert, ($cfg->alertONLoginError()));
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
             return new AccessDenied(__('Access denied'));
         } elseif($authsession['strikes']%3==0) { //Log every third failed login attempt as a warning.
             $alert=_S('Username').": {$username}\n".
@@ -1106,8 +1098,7 @@ class AuthTokenAuthentication extends UserAuthenticationBackend {
             if (($ticket = Ticket::lookupByNumber($_GET['t'], $_GET['e']))
                     // Using old ticket auth code algo - hardcoded here because it
                     // will be removed in ticket class in the upcoming rewrite
-                    && strcasecmp((string) $_GET['a'], md5($ticket->getId()
-                            .  strtolower($_GET['e']) . SECRET_SALT)) === 0
+                    && !strcasecmp($_GET['a'], md5($ticket->getId() .  strtolower($_GET['e']) . SECRET_SALT))
                     && ($owner = $ticket->getOwner()))
                 $user = new ClientSession($owner);
         }

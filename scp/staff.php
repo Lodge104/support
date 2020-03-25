@@ -47,8 +47,6 @@ if($_POST){
             if ($staff->update($_POST,$errors)) {
                 unset($_SESSION['new-agent-passwd']);
                 $msg=sprintf(__('Successfully added %s.'),Format::htmlchars($_POST['firstname']));
-                $type = array('type' => 'created');
-                Signal::send('object.created', $staff, $type);
                 $_REQUEST['a']=null;
             }elseif(!$errors['err']){
                 $errors['err']=sprintf('%s %s',
@@ -103,10 +101,8 @@ if($_POST){
                     case 'delete':
                         $i = 0;
                         foreach($members as $s) {
-                            if ($s->staff_id != $thisstaff->getId()) {
-                              $s->delete();
-                              $i++;
-                            }
+                            if ($s->staff_id != $thisstaff->getId() && $s->delete())
+                                $i++;
                         }
 
                         if($i && $i==$count)
@@ -177,12 +173,20 @@ $page='staffmembers.inc.php';
 $tip_namespace = 'staff.agent';
 if($staff || ($_REQUEST['a'] && !strcasecmp($_REQUEST['a'],'add'))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
   if ($staff && ($pdept=$staff->getDept()) && !$pdept->isActive())
     $warn = sprintf(__('%s is assigned a %s that is not active.'), __('Agent'), __('Primary Department'));
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+
+  if ($staff && ($pdept=$staff->getDept()) && !$pdept->isActive())
+    $warn = sprintf(__('%s is assigned a %s that is not active.'), __('Agent'), __('Primary Department'));
+
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
     $page='staff.inc.php';
 }
+
 $nav->setTabActive('staff');
 $ost->addExtraHeader('<meta name="tip-namespace" content="' . $tip_namespace . '" />',
     "$('#content').data('tipNamespace', '".$tip_namespace."');");

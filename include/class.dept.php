@@ -57,15 +57,12 @@ implements TemplateVariable {
     var $_groupids;
     var $config;
 
-    var $schedule;
-
     var $template;
     var $autorespEmail;
 
     const ALERTS_DISABLED = 2;
     const ALERTS_DEPT_AND_EXTENDED = 1;
     const ALERTS_DEPT_ONLY = 0;
-    const ALERTS_ADMIN_ONLY = 3;
 
     const FLAG_ASSIGN_MEMBERS_ONLY = 0x0001;
     const FLAG_DISABLE_AUTO_CLAIM  = 0x0002;
@@ -73,9 +70,12 @@ implements TemplateVariable {
     const FLAG_ACTIVE = 0x0004;
     const FLAG_ARCHIVED = 0x0008;
     const FLAG_ASSIGN_PRIMARY_ONLY = 0x0010;
+<<<<<<< HEAD
     const FLAG_DISABLE_REOPEN_AUTO_ASSIGN = 0x0020;
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 
     function asVar() {
         return $this->getName();
@@ -264,28 +264,12 @@ implements TemplateVariable {
         return $rv;
     }
 
-    function getNumMembersForAlerts() {
-        return count($this->getMembersForAlerts());
-    }
-
     function getSLAId() {
         return $this->sla_id;
     }
 
     function getSLA() {
         return $this->sla;
-    }
-
-    function getScheduleId() {
-        return $this->schedule_id;
-    }
-
-    function getSchedule() {
-        if (!isset($this->schedule) && $this->getScheduleId())
-            $this->schedule = BusinessHoursSchedule::lookup(
-                        $this->getScheduleId());
-
-        return $this->schedule;
     }
 
     function getTemplateId() {
@@ -375,10 +359,6 @@ implements TemplateVariable {
         return $this->flags & self::FLAG_DISABLE_AUTO_CLAIM;
     }
 
-    function disableReopenAutoAssign() {
-        return $this->flags & self::FLAG_DISABLE_REOPEN_AUTO_ASSIGN;
-    }
-
     function isGroupMembershipEnabled() {
         return $this->group_membership;
     }
@@ -394,9 +374,13 @@ implements TemplateVariable {
 <<<<<<< HEAD
         $ht['status'] = $this->getStatus();
         $ht['assignment_flag'] = $this->getAssignmentFlag();
+<<<<<<< HEAD
         $ht['disable_reopen_auto_assign'] =  $this->disableReopenAutoAssign();
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         return $ht;
     }
 
@@ -418,9 +402,6 @@ implements TemplateVariable {
 
         $id = $this->getId();
         if (parent::delete()) {
-            $type = array('type' => 'deleted');
-            Signal::send('object.deleted', $this, $type);
-
             // DO SOME HOUSE CLEANING
             //Move tickets to default Dept. TODO: Move one ticket at a time and send alerts + log notes.
             Ticket::objects()
@@ -508,6 +489,7 @@ implements TemplateVariable {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function hasFlag($flag) {
         return ($this->get('flags', 0) & $flag) != 0;
     }
@@ -518,6 +500,8 @@ implements TemplateVariable {
                 return true;
     }
 
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
     function export($dept, $criteria=null, $filename='') {
         include_once(INCLUDE_DIR.'class.error.php');
         $members = $dept->getMembers();
@@ -688,33 +672,12 @@ implements TemplateVariable {
         if ($errors)
             return false;
 
-        $vars['disable_auto_claim'] = isset($vars['disable_auto_claim']) ? 1 : 0;
-        if ($this->getId()) {
-            //flags
-            $disableAutoClaim = $this->flagChanged(self::FLAG_DISABLE_AUTO_CLAIM, $vars['disable_auto_claim']);
-            $disableAutoAssign = $this->flagChanged(self::FLAG_DISABLE_REOPEN_AUTO_ASSIGN, $vars['disable_reopen_auto_assign']);
-            $ticketAssignment = ($this->getAssignmentFlag() != $vars['assignment_flag']);
-            foreach ($vars as $key => $value) {
-                if ($key == 'status' && $this->getStatus() && strtolower($this->getStatus()) != $value) {
-                    $type = array('type' => 'edited', 'status' => ucfirst($value));
-                    Signal::send('object.edited', $this, $type);
-                } elseif ((isset($this->$key) && ($this->$key != $value) && $key != 'members') ||
-                         ($disableAutoClaim && $key == 'disable_auto_claim') ||
-                          $ticketAssignment && $key == 'assignment_flag' ||
-                          $disableAutoAssign && $key == 'disable_reopen_auto_assign') {
-                    $type = array('type' => 'edited', 'key' => $key);
-                    Signal::send('object.edited', $this, $type);
-                }
-            }
-        }
-
         $this->pid = $vars['pid'] ?: null;
 <<<<<<< HEAD
         $this->ispublic = isset($vars['ispublic']) ? (int) $vars['ispublic'] : 0;
         $this->email_id = isset($vars['email_id']) ? (int) $vars['email_id'] : 0;
         $this->tpl_id = isset($vars['tpl_id']) ? (int) $vars['tpl_id'] : 0;
         $this->sla_id = isset($vars['sla_id']) ? (int) $vars['sla_id'] : 0;
-        $this->schedule_id = isset($vars['schedule_id']) ? (int) $vars['schedule_id'] : 0;
         $this->autoresp_email_id = isset($vars['autoresp_email_id']) ? (int) $vars['autoresp_email_id'] : 0;
 =======
         $this->ispublic = isset($vars['ispublic'])?$vars['ispublic']:0;
@@ -732,7 +695,6 @@ implements TemplateVariable {
         $this->flags = 0;
         $this->setFlag(self::FLAG_ASSIGN_MEMBERS_ONLY, isset($vars['assign_members_only']));
         $this->setFlag(self::FLAG_DISABLE_AUTO_CLAIM, isset($vars['disable_auto_claim']));
-        $this->setFlag(self::FLAG_DISABLE_REOPEN_AUTO_ASSIGN, isset($vars['disable_reopen_auto_assign']));
 
 <<<<<<< HEAD
         $filter_actions = FilterAction::objects()->filter(array('type' => 'dept', 'configuration' => '{"dept_id":'. $this->getId().'}'));
@@ -756,6 +718,8 @@ implements TemplateVariable {
             $this->setFlag(self::FLAG_ACTIVE, false);
             $this->setFlag(self::FLAG_ARCHIVED, true);
         }
+
+        $this->setFlag(self::FLAG_DISABLE_AUTO_CLAIM, isset($vars['disable_auto_claim']));
 
         switch ($vars['assignment_flag']) {
           case 'all':
@@ -823,8 +787,6 @@ implements TemplateVariable {
                   'staff_id' => $staff_id, 'role_id' => $role_id
               ));
               $this->extended->add($da);
-              $type = array('type' => 'edited', 'key' => 'Staff Added');
-              Signal::send('object.edited', $this, $type);
           }
           else {
               $da->role_id = $role_id;
@@ -837,8 +799,6 @@ implements TemplateVariable {
           return false;
 
       if ($dropped) {
-          $type = array('type' => 'edited', 'key' => 'Staff Removed');
-          Signal::send('object.edited', $this, $type);
           $this->extended->saveAll();
           $this->extended
               ->filter(array('staff_id__in' => array_keys($dropped)))

@@ -32,10 +32,10 @@ if($_REQUEST['id'] || $_REQUEST['number']) {
          $errors['err']=sprintf(__('%s: Unknown or invalid ID.'), __('ticket'));
     elseif($_REQUEST['number'] && !($ticket=Ticket::lookup(['number' => $_REQUEST['number']])))
          $errors['err']=sprintf(__('%s: Unknown or invalid number.'), __('ticket'));
-     elseif(!$ticket->checkStaffPerm($thisstaff)) {
-         $errors['err']=__('Access denied. Contact admin if you believe this is in error');
-         $ticket=null; //Clear ticket obj.
-     }
+    elseif(!$ticket->checkStaffPerm($thisstaff)) {
+        $errors['err']=__('Access denied. Contact admin if you believe this is in error');
+        $ticket=null; //Clear ticket obj.
+    }
 }
 
 if ($_REQUEST['uid']) {
@@ -444,12 +444,17 @@ if ($thisstaff->hasPerm(TicketModel::PERM_CREATE, false)) {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 $ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?f1e9e88"></script>');
 $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?f1e9e88"></script>');
 =======
 $ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?901e5ea"></script>');
 $ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?901e5ea"></script>');
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+$ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?a076918"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?a076918"></script>');
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 $ost->addExtraHeader('<meta name="tip-namespace" content="tickets.queue" />',
     "$('#content').data('tipNamespace', 'tickets.queue');");
 
@@ -466,6 +471,7 @@ if($ticket) {
             $f->filterFields(function($f) { return !$f->isStorable(); });
             $f->addMissingFields();
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
     } elseif($_REQUEST['a'] == 'print') {
         if (!extension_loaded('mbstring'))
@@ -492,12 +498,26 @@ if($ticket) {
     } elseif($_REQUEST['a'] == 'print' && !$ticket->pdfExport($_REQUEST['psize'], $_REQUEST['notes']))
         $errors['err'] = __('Internal error: Unable to export the ticket to PDF for print.');
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+    } elseif($_REQUEST['a'] == 'print' && !$ticket->pdfExport($_REQUEST['psize'], $_REQUEST['notes']))
+        $errors['err'] = __('Unable to export the ticket to PDF for print.')
+            .' '.__('Internal error occurred');
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 } else {
 	$inc = 'tickets.inc.php';
     if ($_REQUEST['a']=='open' &&
 <<<<<<< HEAD
+<<<<<<< HEAD
             $thisstaff->hasPerm(Ticket::PERM_CREATE, false)) {
+=======
+            $thisstaff->hasPerm(Ticket::PERM_CREATE, false))
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         $inc = 'ticket-open.inc.php';
+    elseif ($_REQUEST['a'] == 'export' && $queue) {
+        // XXX: Check staff access?
+        if (!$queue->export())
+            $errors['err'] = __('Unable to export results.')
+                .' '.__('Internal error occurred');
     } elseif ($queue) {
         // XXX: Check staff access?
         $quick_filter = @$_REQUEST['filter'];

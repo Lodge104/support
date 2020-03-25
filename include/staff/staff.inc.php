@@ -33,8 +33,6 @@ else {
     $info['id'] = $staff->getId();
     $qs += array('id' => $staff->getId());
 }
-
-$extras = new ArrayObject();
 ?>
 
 <form action="staff.php?<?php echo Http::build_query($qs); ?>" method="post" class="save" autocomplete="off">
@@ -54,7 +52,6 @@ $extras = new ArrayObject();
     <li><a href="#access"><?php echo __('Access'); ?></a></li>
     <li><a href="#permissions"><?php echo __('Permisions'); ?></a></li>
     <li><a href="#teams"><?php echo __('Teams'); ?></a></li>
-    <?php Signal::send('agenttab.audit', $staff, $extras); ?>
   </ul>
 
   <div class="tab_content" id="account">
@@ -434,9 +431,6 @@ foreach ($staff->teams as $TM) {
       </tbody>
     </table>
   </div>
-
-  <!-- ============== Audits =================== -->
-<?php Signal::send('agent.audit', $staff, $extras); ?>
 
   <p style="text-align:center;">
       <input type="submit" name="submit" value="<?php echo $submit_text; ?>">

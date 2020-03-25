@@ -91,16 +91,6 @@ $action = $info['action'] ?: ('#tickets/status/'. $state);
                     </td>
                 </tr>
             </tbody>
-           <?php if ($info['children']) { ?>
-            <tbody>
-                <tr>
-                    <td>
-                        <input type="checkbox" name="children">
-                        <?php echo __('Set status for all children.'); ?>
-                    </td>
-                </tr>
-            </tbody>
-           <?php } ?>
         </table>
         <hr>
         <p class="full-width">

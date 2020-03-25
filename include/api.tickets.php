@@ -16,6 +16,7 @@ class TicketApiController extends ApiController {
             ),
 <<<<<<< HEAD
             "message", "ip", "priorityId",
+<<<<<<< HEAD
             "system_emails" => array(
                 "*" => "*"
             ),
@@ -25,6 +26,9 @@ class TicketApiController extends ApiController {
 =======
             "message", "ip", "priorityId"
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+            "system_emails", "thread_entry_recipients"
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         );
         # Fetch dynamic form field names for the given help topic and add
         # the names to the supported request structure
@@ -95,9 +99,7 @@ class TicketApiController extends ApiController {
                     $file['id'] = $F->getId();
                 }
                 catch (FileUploadError $ex) {
-                    $name = $file['name'];
-                    $file = array();
-                    $file['error'] = Format::htmlchars($name) . ': ' . $ex->getMessage();
+                    $file['error'] = $file['name'] . ': ' . $ex->getMessage();
                 }
             }
             unset($file);

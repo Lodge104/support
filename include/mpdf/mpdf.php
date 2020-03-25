@@ -1453,7 +1453,11 @@ function StartProgressBarOutput($mode=1) {
 	<head>
 	<title>mPDF File Progress</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<<<<<<< HEAD
 	<link rel="stylesheet" type="text/css" href="'._MPDF_URI.'progbar.css?901e5ea" />
+=======
+	<link rel="stylesheet" type="text/css" href="'._MPDF_URI.'progbar.css?9ae093d" />
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 		</head>
 	<body>
 	<div class="main">

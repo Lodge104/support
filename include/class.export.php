@@ -30,7 +30,7 @@ class Export {
             'json' => JsonResultsExporter
         );
         $exp = new $exporters[$how]($sql, $headers, $options);
-        return $exp->dump($options['tmp'] ? true : false);
+        return $exp->dump();
     }
 
     # XXX: Think about facilitated exporting. For instance, we might have a
@@ -325,6 +325,7 @@ static function departmentMembers($dept, $agents, $filename='', $how='csv') {
             );
     exit;
   }
+<<<<<<< HEAD
 
   static function audits($type, $filename='', $tableInfo='', $object='', $how='csv', $show_viewed=true, $data=array(), CsvExporter $exporter) {
       $headings = array('Description', 'Timestamp', 'IP');
@@ -628,11 +629,10 @@ class CsvExporter extends Exporter {
 
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 }
 
-/*
- * Given SQL query export results based on subclass.
- */
 class ResultSetExporter {
     var $output;
 
@@ -718,9 +718,11 @@ class CsvResultsExporter extends ResultSetExporter {
         return Internationalization::getCSVDelimiter();
     }
 
-    function dump($tmp=false) {
+    function dump() {
+
         if (!$this->output)
              $this->output = fopen('php://output', 'w');
+
 
         $delimiter = $this->getDelimiter();
 =======
@@ -746,16 +748,9 @@ class CsvResultsExporter extends ResultSetExporter {
         fputs($this->output, chr(0xEF) . chr(0xBB) . chr(0xBF));
         fputcsv($this->output, $this->getHeaders(), $delimiter);
         while ($row=$this->next())
-            fputcsv($this->output, array_map(
-                function($v){
-                    if (preg_match('/^[=\-+@].*/', $v))
-                        return "'".$v;
-                    return $v;
-                }, $row),
-            $delimiter);
+            fputcsv($this->output, $row, $delimiter);
 
-        if (!$tmp)
-            fclose($this->output);
+        fclose($this->output);
     }
 }
 
@@ -788,9 +783,8 @@ class DatabaseExporter {
         FAQ_TOPIC_TABLE, FAQ_CATEGORY_TABLE, DRAFT_TABLE,
         CANNED_TABLE, TICKET_TABLE, ATTACHMENT_TABLE,
         THREAD_TABLE, THREAD_ENTRY_TABLE, THREAD_ENTRY_EMAIL_TABLE,
-        THREAD_ENTRY_MERGE_TABLE, LOCK_TABLE, THREAD_EVENT_TABLE,
-        TICKET_PRIORITY_TABLE, EMAIL_TABLE, EMAIL_TEMPLATE_TABLE,
-        EMAIL_TEMPLATE_GRP_TABLE,
+        LOCK_TABLE, THREAD_EVENT_TABLE, TICKET_PRIORITY_TABLE,
+        EMAIL_TABLE, EMAIL_TEMPLATE_TABLE, EMAIL_TEMPLATE_GRP_TABLE,
         FILTER_TABLE, FILTER_RULE_TABLE, SLA_TABLE, API_KEY_TABLE,
         TIMEZONE_TABLE, SESSION_TABLE, PAGE_TABLE,
         FORM_SEC_TABLE, FORM_FIELD_TABLE, LIST_TABLE, LIST_ITEM_TABLE,
@@ -883,105 +877,5 @@ class DatabaseExporter {
             $this->write_block(array_values($row));
         }
         $this->write_block(array('end-table'));
-    }
-}
-
-class TicketZipExporter {
-    var $ticket;
-    var $tmpfiles;
-
-    function __construct(Ticket $ticket) {
-        $this->ticket = $ticket;
-        $this->tmpfiles = array();
-    }
-
-    function addTicket($ticket, $zip, $prefix, $notes=true, $psize=null) {
-        require_once(INCLUDE_DIR.'class.pdf.php');
-
-        $pdf_file = $this->tmpfiles[] = tempnam(sys_get_temp_dir(), 'zip');
-        $pdf = new Ticket2PDF($ticket, $psize, $notes);
-        $pdf->output($pdf_file, 'F');
-
-        $zip->addFile($pdf_file, "{$ticket->getNumber()}.pdf");
-
-        // Include all the (non-inline) attachments
-        // XXX: Handle attachments with duplicate filenames between entry posts
-        $attachments = Attachment::objects()
-            ->filter([
-                'thread_entry__thread' => $ticket->getThread(),
-                'inline' => 0
-            ])
-            ->order_by('thread_entry__created')
-            ->select_related('file');
-
-        foreach ($attachments as $att) {
-            $zip->addFromString("{$prefix}/{$att->getFilename()}",
-                $att->getFile()->getData());
-        }
-    }
-
-    function addTask($task, $zip, $prefix, $notes=true, $psize=null) {
-        require_once(INCLUDE_DIR.'class.pdf.php');
-
-        $pdf_file = $this->tmpfiles[] = tempnam(sys_get_temp_dir(), 'zip');
-        $pdf = new Task2PDF($task, ['psize' => $psize]);
-        $pdf->output($pdf_file, 'F');
-
-        $zip->addFile($pdf_file, "{$prefix}/{$task->getNumber()}.pdf");
-
-        // Include all the (non-inline) attachments
-        // XXX: Handle attachments with duplicate filenames between entry posts
-        $attachments = Attachment::objects()
-            ->filter([
-                'thread_entry__thread' => $task->getThread(),
-                'inline' => 0
-            ])
-            ->order_by('thread_entry__created')
-            ->select_related('file');
-
-        foreach ($attachments as $att) {
-            $zip->addFromString("{$prefix}/{$task->getNumber()}/{$att->getFilename()}",
-                $att->getFile()->getData());
-        }
-    }
-
-    function download($options = array()) {
-        global $thisstaff;
-
-        $notes = isset($options['notes']) ? $options['notes'] : false;
-        $tasks = isset($options['tasks']) ? $options['tasks'] : false;
-
-        // TODO: Use a streaming ZIP library
-        $zipfile = tempnam(sys_get_temp_dir(), 'zip');
-        try {
-            $zip = new ZipArchive();
-            if (!$zip->open($zipfile, ZipArchive::CREATE))
-                return;
-
-            $prefix = "{$this->ticket->getNumber()}";
-
-            // Include a PDF of the ticket thread (with optional notes)
-            if (!$thisstaff || !($psize = $thisstaff->getDefaultPaperSize()))
-                $psize = 'Letter';
-
-            $this->addTicket($this->ticket, $zip, $prefix, $notes, $psize);
-
-            if ($tasks) {
-                foreach ($this->ticket->tasks as $task)
-                    $this->addTask($task, $zip, "{$prefix}/tasks", $notes, $psize);
-            }
-
-            $zip->close();
-            Http::download("ticket-{$this->ticket->getNumber()}.zip", "application/zip",
-                null, 'attachment');
-            $fp = fopen($zipfile, 'r');
-            fpassthru($fp);
-            fclose($fp);
-        }
-        finally {
-            foreach ($this->tmpfiles as $T)
-                @unlink($T);
-            unlink($zipfile);
-        }
     }
 }

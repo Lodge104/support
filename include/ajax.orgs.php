@@ -17,7 +17,6 @@ if(!defined('INCLUDE_DIR')) die('403');
 
 require_once INCLUDE_DIR . 'class.organization.php';
 include_once(INCLUDE_DIR.'class.ticket.php');
-require_once INCLUDE_DIR.'ajax.tickets.php';
 
 class OrgsAjaxAPI extends AjaxController {
 
@@ -25,8 +24,8 @@ class OrgsAjaxAPI extends AjaxController {
 
         if(!isset($_REQUEST['q'])) {
             Http::response(400, 'Query argument is required');
-        }
-
+        } 
+        
         if (!$_REQUEST['q'])
             return $this->json_encode(array());
 
@@ -94,10 +93,14 @@ class OrgsAjaxAPI extends AjaxController {
 
         $errors = array();
 <<<<<<< HEAD
+<<<<<<< HEAD
         if ($profile) {
             if ($org->updateProfile($_POST, $errors))
                 Http::response(201, $org->to_json(), 'application/json');
         } elseif ($org->update($_POST, $errors))
+=======
+        if($org->update($_POST, $errors))
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
              Http::response(201, $org->to_json(), 'application/json');
 =======
         if($org->update($_POST, $errors))
@@ -337,30 +340,6 @@ class OrgsAjaxAPI extends AjaxController {
         }
 
         Http::response(201, 'Successfully managed');
-    }
-
-    function exportTickets($id) {
-        global $thisstaff;
-
-        if (!$thisstaff)
-            Http::response(403, 'Agent login is required');
-        elseif (!$id)
-            Http::response(403, __('Organization ID Required'));
-
-        $org = Organization::lookup($id);
-        if (!$org)
-            Http::response(403, __('Organization Not Found'));
-
-        $queue = $org->getTicketsQueue();
-
-        if ($_POST) {
-            $api = new TicketsAjaxAPI();
-            return $api->queueExport($queue);
-        }
-
-        $info = array('action' => "#orgs/$id/tickets/export");
-
-        include STAFFINC_DIR . 'templates/queue-export.tmpl.php';
     }
 }
 ?>

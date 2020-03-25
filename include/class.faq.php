@@ -300,10 +300,8 @@ class FAQ extends VerySimpleModel {
     function delete() {
         try {
             parent::delete();
-            $type = array('type' => 'deleted');
-            Signal::send('object.deleted', $this, $type);
             // Cleanup help topics.
-            $this->topics->expunge();
+            $this->topics->delete();
             // Cleanup attachments.
             $this->attachments->deleteAll();
         }
@@ -393,10 +391,10 @@ class FAQ extends VerySimpleModel {
         $this->notes = Format::sanitize($vars['notes']);
         $this->keywords = ' ';
 
+        $this->updateTopics($vars['topics']);
+
         if (!$this->save())
             return false;
-
-        $this->updateTopics($vars['topics']);
 
         // General attachments (for all languages)
         // ---------------------

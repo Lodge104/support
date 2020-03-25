@@ -34,11 +34,6 @@ $queue_columns = array(
             'width' => '8%',
             'heading' => __('Number'),
             ),
-        'ticket' => array(
-            'width' => '16%',
-            'heading' => __('Ticket'),
-            'sort_col'  => 'ticket__number',
-            ),
         'date' => array(
             'width' => '20%',
             'heading' => __('Date Created'),
@@ -165,7 +160,7 @@ $tasks->annotate(array(
 
 $tasks->values('id', 'number', 'created', 'staff_id', 'team_id',
         'staff__firstname', 'staff__lastname', 'team__name',
-        'dept__name', 'cdata__title', 'flags', 'ticket__number', 'ticket__ticket_id');
+        'dept__name', 'cdata__title', 'flags');
 // Apply requested quick filter
 
 $queue_sort_key = sprintf(':Q%s:%s:sort', ObjectModel::OBJECT_TYPE_TASK, $queue_name);
@@ -414,11 +409,6 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
                     href="tasks.php?id=<?php echo $T['id']; ?>"
                     data-preview="#tasks/<?php echo $T['id']; ?>/preview"
                     ><?php echo $number; ?></a></td>
-                <td nowrap>
-                  <a class="preview"
-                    href="tickets.php?id=<?php echo $T['ticket__ticket_id']; ?>"
-                    data-preview="#tickets/<?php echo $T['ticket__ticket_id']; ?>/preview"
-                    ><?php echo $T['ticket__number']; ?></a></td>
                 <td align="center" nowrap><?php echo
                 Format::datetime($T[$date_col ?: 'created']); ?></td>
                 <td><a <?php if ($flag) { ?> class="Icon <?php echo $flag; ?>Ticket" title="<?php echo ucfirst($flag); ?> Ticket" <?php } ?>
@@ -445,7 +435,7 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
     </tbody>
     <tfoot>
      <tr>
-        <td colspan="7">
+        <td colspan="6">
             <?php if($total && $thisstaff->canManageTickets()){ ?>
             <?php echo __('Select');?>:&nbsp;
             <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;

@@ -70,10 +70,13 @@ class Internationalization {
             'queue_column.yaml' =>  'QueueColumn::__create',
             'queue_sort.yaml' =>    'QueueSort::__create',
             'queue.yaml' =>         'CustomQueue::__create',
+<<<<<<< HEAD
             // Schedule
             'schedule.yaml' =>      'Schedule::__create',
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         );
 
         $errors = array();

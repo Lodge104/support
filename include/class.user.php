@@ -195,7 +195,6 @@ implements TemplateVariable {
 
     var $_entries;
     var $_forms;
-    var $_queue;
 
     static function fromVars($vars, $create=true, $update=false) {
         // Try and lookup by email address
@@ -231,8 +230,6 @@ implements TemplateVariable {
             catch (OrmException $e) {
                 return null;
             }
-            $type = array('type' => 'created');
-            Signal::send('object.created', $user, $type);
             Signal::send('user.created', $user);
         }
         elseif ($update) {
@@ -251,7 +248,7 @@ implements TemplateVariable {
         //Validate the form
         $valid = true;
         $filter = function($f) use ($thisstaff) {
-            return !isset($thisstaff) || $f->isRequiredForStaff() || $f->isVisibleToStaff();
+            return !isset($thisstaff) || $f->isRequiredForStaff();
         };
         if (!$form->isValid($filter))
             $valid  = false;
@@ -477,6 +474,11 @@ implements TemplateVariable {
 
     function updateInfo($vars, &$errors, $staff=false) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         $isEditable = function ($f) use($staff) {
             return ($staff ? $f->isEditableToStaff() :
                     $f->isEditableToUsers());
@@ -511,25 +513,12 @@ implements TemplateVariable {
 
         // Save the entries
         foreach ($forms as $entry) {
-            $fields = $entry->getFields();
-            foreach ($fields as $field) {
-                $changes = $field->getChanges();
-                if ((is_array($changes) && $changes[0]) || $changes && !is_array($changes)) {
-                    $type = array('type' => 'edited', 'key' => $field->getLabel());
-                    Signal::send('object.edited', $this, $type);
-                }
-            }
-
             if ($entry->getDynamicForm()->get('type') == 'U') {
                 //  Name field
                 if (($name = $entry->getField('name'))) {
                     $name = $name->getClean();
                     if (is_array($name))
                         $name = implode(', ', $name);
-                    if ($this->name != $name) {
-                        $type = array('type' => 'edited', 'key' => 'Name');
-                        Signal::send('object.edited', $this, $type);
-                    }
                     $this->name = $name;
                 }
 
@@ -537,6 +526,7 @@ implements TemplateVariable {
 <<<<<<< HEAD
                 if (($email = $entry->getField('email'))
                         && $isEditable($email)) {
+<<<<<<< HEAD
                     if ($this->default_email->address != $email->getClean()) {
                         $type = array('type' => 'edited', 'key' => 'Email');
                         Signal::send('object.edited', $this, $type);
@@ -544,6 +534,8 @@ implements TemplateVariable {
 =======
                 if (($email = $entry->getField('email'))) {
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
                     $this->default_email->address = $email->getClean();
                     $this->default_email->save();
                 }
@@ -590,6 +582,7 @@ implements TemplateVariable {
     }
 
     function delete() {
+
         // Refuse to delete a user with tickets
         if ($this->tickets->count())
             return false;
@@ -605,9 +598,6 @@ implements TemplateVariable {
         foreach ($this->getDynamicData() as $entry) {
             $entry->delete();
         }
-
-        $type = array('type' => 'deleted');
-        Signal::send('object.deleted', $this, $type);
 
         // Delete user
         return parent::delete();
@@ -643,6 +633,7 @@ implements TemplateVariable {
 
         return ROOT_PATH . sprintf('scp/users.php?id=%s', $id);
     }
+<<<<<<< HEAD
 
     function getTicketsQueue($collabs=true) {
         global $thisstaff;
@@ -670,6 +661,8 @@ implements TemplateVariable {
     }
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 }
 
 class EmailAddress
@@ -973,12 +966,6 @@ class UserAccount extends VerySimpleModel {
         return $this->_status;
     }
 
-    function statusChanged($flag, $var) {
-        if (($this->hasStatus($flag) && !$var) ||
-            (!$this->hasStatus($flag) && $var))
-                return true;
-    }
-
     protected function hasStatus($flag) {
         return $this->getStatus()->check($flag);
     }
@@ -1041,10 +1028,6 @@ class UserAccount extends VerySimpleModel {
 
     function getUser() {
         return $this->user;
-    }
-
-    function getUserName() {
-        return $this->getUser()->getName();
     }
 
     function getExtraAttr($attr=false, $default=null) {
@@ -1167,6 +1150,7 @@ class UserAccount extends VerySimpleModel {
      */
     function update($vars, &$errors) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         global $thisstaff;
 
@@ -1177,6 +1161,9 @@ class UserAccount extends VerySimpleModel {
         }
 
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         // TODO: Make sure the username is unique
 
         // Timezone selection is not required. System default is a valid
@@ -1199,28 +1186,12 @@ class UserAccount extends VerySimpleModel {
 
         if ($errors) return false;
 
-        //flags
-        $pwreset = $this->statusChanged(UserAccountStatus::REQUIRE_PASSWD_RESET, $vars['pwreset-flag']);
-        $locked = $this->statusChanged(UserAccountStatus::LOCKED, $vars['locked-flag']);
-        $forbidPwChange = $this->statusChanged(UserAccountStatus::FORBID_PASSWD_RESET, $vars['forbid-pwchange-flag']);
-
-        $info = $this->getInfo();
-        foreach ($vars as $key => $value) {
-            if (($key != 'id' && $info[$key] && $info[$key] != $value) || ($pwreset && $key == 'pwreset-flag' ||
-                    $locked && $key == 'locked-flag' || $forbidPwChange && $key == 'forbid-pwchange-flag')) {
-                $type = array('type' => 'edited', 'key' => $key);
-                Signal::send('object.edited', $this, $type);
-            }
-        }
-
         $this->set('timezone', $vars['timezone']);
         $this->set('username', $vars['username']);
 
         if ($vars['passwd1']) {
             $this->setPassword($vars['passwd1']);
             $this->setStatus(UserAccountStatus::CONFIRMED);
-            $type = array('type' => 'edited', 'key' => 'password');
-            Signal::send('object.edited', $this, $type);
         }
 
         // Set flags
@@ -1231,14 +1202,8 @@ class UserAccount extends VerySimpleModel {
         ) as $ck=>$flag) {
             if ($vars[$ck])
                 $this->setStatus($flag);
-            else {
-                if (($pwreset && $ck == 'pwreset-flag') || ($locked && $ck == 'locked-flag') ||
-                    ($forbidPwChange && $ck == 'forbid-pwchange-flag')) {
-                        $type = array('type' => 'edited', 'key' => $ck);
-                        Signal::send('object.edited', $this, $type);
-                }
+            else
                 $this->clearStatus($flag);
-            }
         }
 
         return $this->save(true);

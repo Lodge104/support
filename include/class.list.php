@@ -398,6 +398,7 @@ class DynamicList extends VerySimpleModel implements CustomList {
     }
 
     function update($vars, &$errors) {
+
         $required = array();
         if ($this->isEditable())
             $required = array('name');
@@ -405,14 +406,8 @@ class DynamicList extends VerySimpleModel implements CustomList {
         foreach (static::$fields as $f) {
             if (in_array($f, $required) && !$vars[$f])
                 $errors[$f] = sprintf(__('%s is required'), mb_convert_case($f, MB_CASE_TITLE));
-            elseif (isset($vars[$f])) {
-                if ($vars[$f] != $this->get($f)) {
-                    $type = array('type' => 'edited', 'key' => $f);
-                    Signal::send('object.edited', $this, $type);
-                    $this->set($f, $vars[$f]);
-                }
-            }
-
+            elseif (isset($vars[$f]))
+                $this->set($f, $vars[$f]);
         }
 
         if ($errors)
@@ -440,9 +435,6 @@ class DynamicList extends VerySimpleModel implements CustomList {
 
         if (!parent::delete())
             return false;
-
-            $type = array('type' => 'deleted');
-            Signal::send('object.deleted', $this, $type);
 
         if (($form = $this->getForm(false))) {
             $form->delete(false);
@@ -812,10 +804,7 @@ class DynamicListItem extends VerySimpleModel implements CustomListItem {
                     'sort' => 'sort',
                     'value' => 'value',
                     'abbrev' => 'extra') as $k => $v) {
-            if ($k == 'abbrev' && empty($vars[$k])) {
-                $vars[$k] = NULL;
-                $this->set($v, $vars[$k]);
-            } elseif (isset($vars[$k]))
+            if (isset($vars[$k]))
                 $this->set($v, $vars[$k]);
         }
 

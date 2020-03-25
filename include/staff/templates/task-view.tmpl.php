@@ -13,7 +13,6 @@ $thread = $task->getThread();
 $iscloseable = $task->isCloseable();
 $canClose = ($role->hasPerm(TaskModel::PERM_CLOSE) && $iscloseable === true);
 $actions = array();
-$object = $task->ticket;
 
 if ($task->isOpen() && $role->hasPerm(Task::PERM_ASSIGN)) {
 
@@ -86,8 +85,6 @@ if ($role->hasPerm(Task::PERM_DELETE)) {
 }
 
 $info=($_POST && $errors)?Format::input($_POST):array();
-$type = array('type' => 'viewed');
-Signal::send('object.view', $task, $type);
 
 if ($task->isOverdue())
     $warn.='&nbsp;&nbsp;<span class="Icon overdueTicket">'.__('Marked overdue!').'</span>';
@@ -122,17 +119,9 @@ if ($task->isOverdue())
                     href="tasks.php?id=<?php echo $task->getId(); ?>"><i
                     class="icon-refresh"></i>&nbsp;<?php
                     echo sprintf(__('Task #%s'), $task->getNumber()); ?></a>
-                <?php if ($object) { ?>
-                    &nbsp;/&nbsp;
-                    <a class="preview"
-                      href="tickets.php?id=<?php echo $object->getId(); ?>"
-                      data-preview="#tickets/<?php echo $object->getId(); ?>/preview"
-                      ><?php echo sprintf(__('Ticket #%s'), $object->getNumber()); ?></a>
-                <?php } ?>
                 </h2>
             <?php
-            }
-            ?>
+            } ?>
         </div>
         <div class="flush-right">
             <?php
@@ -389,7 +378,7 @@ if (!$ticket) { ?>
                                         $task->getThread()->getNumCollaborators());
 
                             echo sprintf('<span><a class="collaborators preview"
-                                    href="#thread/%d/collaborators/1"><span
+                                    href="#thread/%d/collaborators"><span
                                     id="t%d-collaborators">%s</span></a></span>',
                                     $task->getThreadId(),
                                     $task->getThreadId(),
@@ -498,6 +487,7 @@ else
                         >
                     <?php
 <<<<<<< HEAD
+<<<<<<< HEAD
                     if ($thread->getNumCollaborators())
                         $recipients = sprintf(__('(%d of %d)'),
 =======
@@ -505,13 +495,17 @@ else
                     if ($thread->getNumCollaborators())
                         $recipients = sprintf(__('Recipients (%d of %d)'),
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+                    $recipients = __('Collaborators');
+                    if ($thread->getNumCollaborators())
+                        $recipients = sprintf(__('Collaborators (%d of %d)'),
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
                                 $thread->getNumActiveCollaborators(),
                                 $thread->getNumCollaborators());
 
                     echo sprintf('<span><a class="collaborators preview"
-                            href="#thread/%d/collaborators/1"> %s &nbsp;<span id="t%d-recipients">%s</span></a></span>',
+                            href="#thread/%d/collaborators"><span id="t%d-recipients">%s</span></a></span>',
                             $thread->getId(),
-                            __('Collaborators'),
                             $thread->getId(),
                             $recipients);
                    ?>
@@ -530,7 +524,7 @@ else
                         placeholder="<?php echo __( 'Start writing your update here.'); ?>"
                         rows="9" wrap="soft"
                         class="<?php if ($cfg->isRichTextEnabled()) echo 'richtext';
-                            ?> draft draft-delete fullscreen" <?php
+                            ?> draft draft-delete" <?php
     list($draft, $attrs) = Draft::getDraftAndDataAttrs('task.response', $task->getId(), $info['task.response']);
     echo $attrs; ?>><?php echo $draft ?: $info['task.response'];
                     ?></textarea>
@@ -591,7 +585,7 @@ else
                         placeholder="<?php echo __('Internal Note details'); ?>"
                         rows="9" wrap="soft" data-draft-namespace="task.note"
                         data-draft-object-id="<?php echo $task->getId(); ?>"
-                        class="richtext ifhtml draft draft-delete fullscreen"><?php
+                        class="richtext ifhtml draft draft-delete"><?php
                         echo $info['note'];
                         ?></textarea>
                     <div class="attachments">

@@ -301,6 +301,7 @@ if ($avatar->isChangeable()) { ?>
                 <div class="error"><?php echo $errors['reply_redirect']; ?></div>
             </td>
         </tr>
+<<<<<<< HEAD
         <tr>
             <td><?php echo __('Image Attachment View'); ?>:
                 <div class="faded"><?php echo __('Open image attachments in new tab or directly download. (CTRL + Right Click)');?></div>
@@ -320,6 +321,8 @@ if ($avatar->isChangeable()) { ?>
         </tr>
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
       </tbody>
       <tbody>
         <tr class="header">

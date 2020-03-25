@@ -16,6 +16,7 @@
 class ObjectModel {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     const OBJECT_TYPE_TICKET       = 'T';
     const OBJECT_TYPE_THREAD       = 'H';
     const OBJECT_TYPE_USER         = 'U';
@@ -28,6 +29,8 @@ class ObjectModel {
     const OBJECT_TYPE_STAFF        = 'S';
     const OBJECT_TYPE_CHILD_TICKET = 'C';
 =======
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
     const OBJECT_TYPE_TICKET = 'T';
     const OBJECT_TYPE_THREAD = 'H';
     const OBJECT_TYPE_USER   = 'U';
@@ -35,12 +38,19 @@ class ObjectModel {
     const OBJECT_TYPE_FAQ    = 'K';
     const OBJECT_TYPE_FILE   = 'F';
     const OBJECT_TYPE_TASK   = 'A';
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+    const OBJECT_TYPE_TEAM   = 'E';
+    const OBJECT_TYPE_DEPT   = 'D';
+    const OBJECT_TYPE_STAFF  = 'S';
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 
     private function objects() {
         static $objects = false;
         if ($objects == false) {
             $objects = array(
+<<<<<<< HEAD
 <<<<<<< HEAD
                 self::OBJECT_TYPE_TICKET        => 'Ticket',
                 self::OBJECT_TYPE_THREAD        => 'ThreadEntry',
@@ -55,6 +65,8 @@ class ObjectModel {
                 self::OBJECT_TYPE_CHILD_TICKET  => 'Ticket',
             );
 =======
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
                     self::OBJECT_TYPE_TICKET  => 'Ticket',
                     self::OBJECT_TYPE_THREAD  => 'ThreadEntry',
                     self::OBJECT_TYPE_USER    => 'User',
@@ -62,8 +74,15 @@ class ObjectModel {
                     self::OBJECT_TYPE_FAQ     => 'FAQ',
                     self::OBJECT_TYPE_FILE    => 'AttachmentFile',
                     self::OBJECT_TYPE_TASK    => 'Task',
+<<<<<<< HEAD
                     );
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+                    self::OBJECT_TYPE_TEAM    => 'Team',
+                    self::OBJECT_TYPE_DEPT    => 'Dept',
+                    self::OBJECT_TYPE_STAFF   => 'Staff',
+                    );
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         }
 
         return $objects;

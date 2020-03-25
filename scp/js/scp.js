@@ -198,7 +198,7 @@ var scp_prep = function() {
     $('form select#cannedResp').on('select2:opening', function (e) {
         var redactor = $('.richtext', $(this).closest('form')).data('redactor');
         if (redactor)
-            redactor.api('selection.save');
+            redactor.selection.save();
     });
 
 =======
@@ -222,12 +222,18 @@ var scp_prep = function() {
                 success: function(canned){
                     //Canned response.
 <<<<<<< HEAD
+<<<<<<< HEAD
                     var box = $('#response', fObj),
                         redactor = $R('#response');
                     if (canned.response) {
+=======
+                    var box = $('#response',fObj),
+                        redactor = box.data('redactor');
+                    if(canned.response) {
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
                         if (redactor) {
-                            redactor.api('selection.restore');
-                            redactor.insertion.insertHtml(canned.response);
+                            redactor.selection.restore();
+                            redactor.insert.html(canned.response);
                         } else
 =======
                     var box = $('#response',fObj),
@@ -238,6 +244,9 @@ var scp_prep = function() {
                         else
 >>>>>>> parent of 7093d97... 2020 Update
                             box.val(box.val() + canned.response);
+
+                        if (redactor)
+                            redactor.observe.load();
                     }
                     //Canned attachments.
                     var ca = $('.attachments', fObj);
@@ -262,7 +271,7 @@ var scp_prep = function() {
             showButtonPanel: true,
             buttonImage: './images/cal.png',
             showOn:'both',
-            dateFormat: c.date_format || 'm/d/Y'
+            dateFormat: $.translate_format(c.date_format||'m/d/Y')
         });
 
     });
@@ -502,7 +511,10 @@ var fixupDatePickers = function() {
         var $e = $(e),
             d = $e.datepicker('getDate');
         if (!d || $e.data('fixed')) return;
-        $e.val(d.toISOString());
+        var day = ('0'+d.getDate()).substr(-2),
+            month = ('0'+(d.getMonth()+1)).substr(-2),
+            year = d.getFullYear();
+        $e.val(year+'-'+month+'-'+day);
         $e.data('fixed', true);
         $e.on('change', function() { $(this).data('fixed', false); });
     });
@@ -543,7 +555,10 @@ jQuery.fn.exists = function() { return this.length>0; };
 
 <<<<<<< HEAD
 $.pjax.defaults.timeout = 30000;
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 $.translate_format = function(str) {
     var translation = {
         'DD':   'oo',
@@ -568,7 +583,10 @@ $.translate_format = function(str) {
     });
     return str;
 };
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 $(document).keydown(function(e) {
 
     if (e.keyCode == 27 && !$('#overlay').is(':hidden')) {
@@ -687,7 +705,7 @@ $.dialog = function (url, codes, cb, options) {
                         $('#msg_notice, #msg_error', $popup).delay(5000).slideUp();
                         $('div.tab_content[id] div.error:not(:empty)', $popup).each(function() {
                           var div = $(this).closest('.tab_content');
-                          $('a[href^="#'+div.attr('id')+'"]').parent().addClass('error');
+                          $('a[href^=#'+div.attr('id')+']').parent().addClass('error');
                         });
                     }
                 }
@@ -994,38 +1012,6 @@ $.changeHash = function(hash, quiet) {
   }
 };
 
-// Exports
-$(document).on('click', 'a.export', function(e) {
-    e.preventDefault();
-    var url = 'ajax.php/'+$(this).attr('href').substr(1)
-    $.dialog(url, 201, function (xhr) {
-        var resp = $.parseJSON(xhr.responseText);
-        var checker = 'ajax.php/export/'+resp.eid+'/check';
-        $.dialog(checker, 201, function (xhr) { });
-        return false;
-     });
-    return false;
-});
-
-$(document).on('click', 'a.nomodalexport', function(e) {
-    e.preventDefault();
-    var url = 'ajax.php/'+$(this).attr('href').substr(1);
-
-     $.ajax({
-          type: "GET",
-          url: url,
-          dataType: 'json',
-          error:function(XMLHttpRequest, textStatus, errorThrown) {
-          },
-          success: function(resp) {
-              var checker = 'ajax.php/export/'+resp.eid+'/check';
-              $.dialog(checker, 201, function (xhr) { });
-              return false;
-          }
-    });
-    return false;
-});
-
 // Forms — submit, stay on same tab
 $(document).on('submit', 'form', function() {
     if (!!$(this).attr('action') && $(this).attr('action').indexOf('#') == -1)
@@ -1046,20 +1032,6 @@ $(document).on('click', 'a.collaborator, a.collaborators', function(e) {
     });
     return false;
  });
-
- //Merge
- $(document).on('click', 'a.merge, a.merge:not(.noclick)', function(e) {
-     e.preventDefault();
-     var url = 'ajax.php/'+$(this).attr('href').substr(1);
-     $.dialog(url, 201, function (xhr) {
-        var resp = $.parseJSON(xhr.responseText);
-        $('#t'+resp.id+'-recipients').text(resp.text);
-        $('.tip_box').remove();
-     }, {
-         onshow: function() { $('#user-search').focus(); }
-     });
-     return false;
-  });
 
 // NOTE: getConfig should be global
 getConfig = (function() {
@@ -1121,11 +1093,14 @@ $(document).on('pjax:complete', function() {
 if ($.support.pjax) {
   $(document).on('click', 'a', function(event) {
     var $this = $(this);
-    var href = $this.attr('href');
     if (!$this.hasClass('no-pjax')
         && !$this.closest('.no-pjax').length
 <<<<<<< HEAD
+<<<<<<< HEAD
         && href && href.charAt(0) != '#')
+=======
+        && $this.attr('href').charAt(0) != '#')
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
       $.pjax.click(event, {container: $this.data('pjaxContainer') || '#pjax-container', timeout: 30000});
 =======
         && $this.attr('href').charAt(0) != '#')
@@ -1174,11 +1149,15 @@ $(document).on('click.note', '.quicknote .action.edit-note', function() {
         T.addClass('no-bar small');
     body.replaceWith(T);
 <<<<<<< HEAD
+<<<<<<< HEAD
     T.redactor({ focusEnd: true });
 =======
     $.redact(T);
     $(T).redactor('focus.setStart');
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+    $.redact(T, { focusEnd: true });
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
     note.find('.action.edit-note').hide();
     note.find('.action.save-note').show();
     note.find('.action.cancel-edit').show();
@@ -1190,7 +1169,7 @@ $(document).on('click.note', '.quicknote .action.cancel-edit', function() {
         T = note.find('textarea'),
         body = $('<div class="body">');
     body.load('ajax.php/note/' + note.data('id'), function() {
-      try { T.redactor('stop'); } catch (e) {}
+      try { T.redactor('core.destroy'); } catch (e) {}
       T.replaceWith(body);
       note.find('.action.save-note').hide();
       note.find('.action.cancel-edit').hide();
@@ -1203,10 +1182,10 @@ $(document).on('click.note', '.quicknote .action.save-note', function() {
     var note = $(this).closest('.quicknote'),
         T = note.find('textarea');
     $.post('ajax.php/note/' + note.data('id'),
-      { note: T.redactor('source.getCode') },
+      { note: T.redactor('code.get') },
       function(html) {
         var body = $('<div class="body">').html(html);
-        try { T.redactor('stop'); } catch (e) {}
+        try { T.redactor('core.destroy'); } catch (e) {}
         T.replaceWith(body);
         note.find('.action.save-note').hide();
         note.find('.action.cancel-edit').hide();
@@ -1237,10 +1216,9 @@ $(document).on('click', '#new-note', function() {
     button = $('<input type="button">').val(__('Create'));
     button.click(function() {
       $.post('ajax.php/' + note.data('url'),
-        { note: T.redactor('source.getCode'), no_options: note.hasClass('no-options') },
+        { note: T.redactor('code.get'), no_options: note.hasClass('no-options') },
         function(response) {
-          T.redactor('stop');
-          T.replaceWith(note);
+          $(T).redactor('core.destroy').replaceWith(note);
           $(response).show('highlight').insertBefore(note.parent());
           $('.submit', note.parent()).remove();
         },
@@ -1253,11 +1231,15 @@ $(document).on('click', '#new-note', function() {
     $('<p>').addClass('submit').css('text-align', 'center')
         .append(button).appendTo(T.parent());
 <<<<<<< HEAD
+<<<<<<< HEAD
     T.redactor({ focusEnd: true });
 =======
     $.redact(T);
     $(T).redactor('focus.setStart');
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+    $.redact(T, { focusEnd: true });
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
     return false;
 });
 

@@ -35,14 +35,12 @@ class StaffAjaxAPI extends AjaxController {
 
       if ($_POST && $form->isValid()) {
           $clean = $form->getClean();
+          if ($id == 0) {
+              // Stash in the session later when creating the user
+              $_SESSION['new-agent-passwd'] = $clean;
+              Http::response(201, 'Carry on');
+          }
           try {
-              // Validate password
-              PasswordPolicy::checkPassword($clean['passwd1'], null);
-              if ($id == 0) {
-                  // Stash in the session later when creating the user
-                  $_SESSION['new-agent-passwd'] = $clean;
-                  Http::response(201, 'Carry on');
-              }
               if ($clean['welcome_email']) {
                   $staff->sendResetEmail();
               }
@@ -147,7 +145,7 @@ class StaffAjaxAPI extends AjaxController {
         $form = new ResetAgentPermissionsForm($_POST);
 
         if (@is_array($_GET['ids'])) {
-            $perms = new RolePermission(null);
+            $perms = new RolePermission();
             $selected = Staff::objects()->filter(array('staff_id__in' => $_GET['ids']));
             foreach ($selected as $staff)
                 // XXX: This maybe should be intersection rather than union

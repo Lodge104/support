@@ -153,10 +153,14 @@ class Mail_Parse {
      * occurance of the header is retained.
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
     static function splitHeaders($headers_text, $as_array=false) {
 =======
     /* static */ function splitHeaders($headers_text, $as_array=false) {
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+    static  function splitHeaders($headers_text, $as_array=false) {
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         $headers = preg_split("/\r?\n/", $headers_text);
         for ($i=0, $k=count($headers); $i<$k; $i++) {
             // first char might be whitespace (" " or "\t")

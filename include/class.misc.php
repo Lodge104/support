@@ -93,10 +93,7 @@ class Misc {
             return $timestamp - $tz->getOffset($date);
         }
 
-        $date = Format::parseDateTime($timestamp ?: 'now');
-        if ($tz)
-            $date->setTimezone($tz);
-
+        $date = new DateTime($timestamp ?: 'now', $tz);
         return $date ? $date->getTimestamp() : $timestamp;
     }
 
@@ -146,17 +143,16 @@ class Misc {
 
 <<<<<<< HEAD
     // Date range for the period in a given time
-    function date_range($period, $time=false, $tz=null) {
+    function date_range($period, $time=false) {
         $time = $time ?: self::gmtime();
         if (!($dt = Format::parseDateTime($time)))
             return null;
-        // Force UTC if timezone is not provided
-        $tz = $tz ?: new DateTimeZone('UTC');
-        $dt->setTimezone($tz);
+        // Force UTC
+        $dt->setTimezone(new DateTimeZone('UTC'));
 
         // Make dt Immutable.
         $dt = DateTimeImmutable::createFromMutable($dt);
-	 switch ($period) {
+        switch ($period) {
             case 'td':
             case 'today':
                 $start = $end = $dt->modify('today');
@@ -231,7 +227,7 @@ class Misc {
     function currentURL() {
 
         $str = 'http';
-        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+        if ($_SERVER['HTTPS'] == 'on') {
             $str .='s';
         }
         $str .= '://';
@@ -250,6 +246,7 @@ class Misc {
         return $str;
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
     function timeDropdown($hr=null, $min =null,$name='time') {
@@ -272,14 +269,44 @@ class Misc {
             $min=15;
         else
             $min=0;
+=======
+    function timeDropdown($hr=null, $min =null,$name='time') {
+        global $cfg;
+
+        //normalize;
+        if ($hr >= 24)
+            $hr = $hr%24;
+        elseif ($hr < 0)
+            $hr = 0;
+        elseif ($hr)
+            $hr = (int) $hr;
+        else  // Default to 5pm
+            $hr = 17;
+
+        if ($min >= 45)
+            $min = 45;
+        elseif ($min >= 30)
+            $min = 30;
+        elseif ($min >= 15)
+            $min = 15;
+        else
+            $min = 0;
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 
         $time = Misc::user2gmtime(mktime(0,0,0));
         ob_start();
         echo sprintf('<select name="%s" id="%s" style="display:inline-block;width:auto">',$name,$name);
+<<<<<<< HEAD
         echo '<option value="" selected>'.__('Time').'</option>';
         for($i=23; $i>=0; $i--) {
             for ($minute=45; $minute>=0; $minute-=15) {
                 $sel=($hr==$i && $min==$minute)?'selected="selected"':'';
+=======
+        echo '<option value="" selected="selected">&mdash;'.__('Time').'&mdash;</option>';
+        for($i=23; $i>=0; $i--) {
+            for ($minute=45; $minute>=0; $minute-=15) {
+                $sel=($hr===$i && $min===$minute) ? 'selected="selected"' : '';
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
                 $_minute=str_pad($minute, 2, '0',STR_PAD_LEFT);
                 $_hour=str_pad($i, 2, '0',STR_PAD_LEFT);
                 $disp = Format::time($time + ($i*3600 + $minute*60 + 1), false);
@@ -293,7 +320,10 @@ class Misc {
         return $output;
     }
 
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
     function realpath($path) {
         $rp = realpath($path);
         return $rp ? $rp : $path;

@@ -41,16 +41,12 @@ if($_POST){
                     sprintf(__('Unable to update %s.'), __('this category')),
                     __('Correct any errors below and try again.'));
             }
-            $type = array('type' => 'edited');
-            Signal::send('object.edited', $category, $type);
             break;
         case 'create':
             $category = Category::create();
             if ($category->update($_POST, $errors)) {
                 $msg=sprintf(__('Successfully added %s.'), Format::htmlchars($_POST['name']));
                 $_REQUEST['a']=null;
-                $type = array('type' => 'created');
-                Signal::send('object.created', $category, $type);
             } elseif(!$errors['err']) {
                 $errors['err'] = sprintf('%s %s',
                     sprintf(__('Unable to add %s.'), __('this category')),
@@ -100,40 +96,19 @@ if($_POST){
                         }
                         break;
                     case 'delete':
-                        $categories = Category::objects()->filter(array(
+                        $i = Category::objects()->filter(array(
                             'category_id__in'=>$_POST['ids']
-                        ));
-                        foreach ($categories as $c) {
-                            if ($faqs = FAQ::objects()
-                                  ->filter(array('category_id'=>$c->getId()))) {
-                                      foreach ($faqs as $key => $faq)
-                                          $faq->delete();
-                                  }
-                             $c->delete();
-                        }
+                        ))->delete();
 
-                        if (count($categories)==$count)
+                        if ($i==$count)
                             $msg = sprintf(__('Successfully deleted %s.'),
                                 _N('selected category', 'selected categories', $count));
-                        elseif ($categories > 0)
-                            $warn = sprintf(__('%1$d of %2$d %3$s deleted'), $categories, $count,
+                        elseif ($i > 0)
+                            $warn = sprintf(__('%1$d of %2$d %3$s deleted'), $i, $count,
                                 _N('selected category', 'selected categories', $count));
                         elseif (!$errors['err'])
                             $errors['err'] = sprintf(__('Unable to delete %s.'),
                                 _N('selected category', 'selected categories', $count));
-                        if (count($categories)==$count || $categories>0) {
-                            $data = array();
-                            foreach ($_POST['ids'] as $id) {
-                                if ($data = AuditEntry::getDataById($id, 'C'))
-                                    $name = json_decode($data[2], true);
-                                else {
-                                    $name = __('NA');
-                                    $data = array('C', $id);
-                                }
-                                $type = array('type' => 'deleted');
-                                Signal::send('object.deleted', $data, $type);
-                            }
-                        }
                         break;
                     default:
                         $errors['err']=__('Unknown action - get technical help.');

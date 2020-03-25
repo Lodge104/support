@@ -8,7 +8,7 @@ if($info && $info['msg']) {
 <?php
 if(($users=$thread->getCollaborators())) {?>
 <div id="manage_collaborators">
-<form method="post" class="collaborators" action="#thread/<?php echo $thread->getId(); ?>/collaborators">
+<form method="post" class="collaborators" onsubmit="refreshAndClose(<?php echo $thread->object_id; ?>, <?php echo $type; ?>);" action="#thread/<?php echo $thread->getId(); ?>/collaborators">
     <table border="0" cellspacing="1" cellpadding="1" width="100%">
     <?php
     foreach($users as $user) {
@@ -16,6 +16,7 @@ if(($users=$thread->getCollaborators())) {?>
         echo sprintf('<tr>
                         <td>
                             <label class="inline checkbox">
+                            <input type="checkbox" class="hidden" name="uid[]" id="%d" value="%d" checked="checked">
                             <input type="checkbox" name="cid[]" id="c%d" value="%d" %s>
                             </label>
                             <a class="collaborator" href="#thread/%d/collaborators/%d/view">%s%s</a>
@@ -23,7 +24,8 @@ if(($users=$thread->getCollaborators())) {?>
                             <div align="left">
                                 <span class="faded"><em>%s</em></span>
                             </div>
-                        </td>',
+                        </td>', $user->getId(),
+                        $user->getId(),
                         $user->getId(),
                         $user->getId(),
                         $checked,
@@ -73,7 +75,7 @@ if(($users=$thread->getCollaborators())) {?>
     <p class="full-width">
         <span class="buttons pull-left">
             <input type="reset" value="<?php echo __('Reset'); ?>">
-            <input type="button" value="<?php echo __('Done'); ?>" class="close">
+            <input type="button" value="<?php echo __('Cancel'); ?>" class="close">
         </span>
         <span class="buttons pull-right">
         <input type="submit" value="<?php echo __('Save Changes'); ?>">
@@ -87,6 +89,7 @@ if(($users=$thread->getCollaborators())) {?>
     echo __("Bro, not sure how you got here!");
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 if ($_POST && $thread) {
     $collabs = $thread->getCollaborators();
@@ -106,14 +109,24 @@ if ($_POST && $thread && $thread->getNumCollaborators()) {
 
     $recipients = sprintf(__('Recipients (%d of %d)'),
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+if ($_POST && $thread && $thread->getNumCollaborators()) {
+
+    $collaborators = sprintf('Collaborators (%d)',
+            $thread->getNumCollaborators());
+
+    $recipients = sprintf(__('Collaborators (%d of %d)'),
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
           $thread->getNumActiveCollaborators(),
           $thread->getNumCollaborators());
     ?>
     <script type="text/javascript">
         $(function() {
-            $('#t<?php echo $thread->getId(); ?>-recipients').html('<?php echo $recipients; ?>');
-            $('#t<?php echo $thread->getId(); ?>-collaborators').html('<?php echo $thread->getNumCollaborators(); ?>');
-            $('#collabselection').html('<?php echo $options; ?>');
+            $('#emailcollab').show();
+            $('#t<?php echo $thread->getId(); ?>-recipients')
+            .html('<?php echo $recipients; ?>');
+            $('#t<?php echo $thread->getId(); ?>-collaborators')
+            .html('<?php echo $collaborators; ?>');
             });
     </script>
 <?php
@@ -172,4 +185,8 @@ $(function() {
     });
 
 });
+
+function refreshAndClose(tid, type) {
+  window.location.href = type + '.php?id=' + tid;
+}
 </script>

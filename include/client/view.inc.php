@@ -3,9 +3,6 @@ if(!defined('OSTCLIENTINC') || !$thisclient || !$ticket || !$ticket->checkUserAc
 
 $info=($_POST && $errors)?Format::htmlchars($_POST):array();
 
-$type = array('type' => 'viewed');
-Signal::send('object.view', $ticket, $type);
-
 $dept = $ticket->getDept();
 
 if ($ticket->isClosed() && !$ticket->isReopenable())
@@ -159,9 +156,6 @@ if ($thisclient && $thisclient->isGuest()
                     'mode' => Thread::MODE_CLIENT,
                     'html-id' => 'ticketThread')
                 );
-    if ($blockReply = $ticket->isChild() && $ticket->getMergeType() != 'visual')
-    $warn = sprintf(__('This Ticket is Merged into another Ticket. Please go to the %s%d%s to reply.'),
-        '<a href="tickets.php?id=', $ticket->getPid(), '" style="text-decoration:underline">Parent</a>');
   ?>
 =======
     $ticket->getThread()->render(array('M', 'R'), array(
@@ -181,9 +175,13 @@ if ($thisclient && $thisclient->isGuest()
 <?php } 
 
 
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 if ((!$ticket->isClosed() || $ticket->isReopenable()) && !$blockReply){ ?>
+=======
+if (!$ticket->isClosed() || $ticket->isReopenable()) { ?>
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 <form id="reply" action="tickets.php?id=<?php echo $ticket->getId();
 ?>#reply" name="reply" method="post" enctype="multipart/form-data">
     <?php csrf_token(); ?>

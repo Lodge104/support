@@ -181,13 +181,6 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
             </td>
         </tr>
         <tr>
-            <td><?php echo __('Collaborator Tickets Visibility'); ?>:</td>
-            <td>
-                <input type="checkbox" name="collaborator_ticket_visibility" <?php echo $config['collaborator_ticket_visibility']?'checked="checked"':''; ?>>
-                <?php echo __('Enable'); ?>&nbsp;<i class="help-tip icon-question-sign" href="#collaborator_ticket_visibility"></i>
-            </td>
-        </tr>
-        <tr>
             <td><?php echo __('Claim on Response'); ?>:</td>
             <td>
                 <input type="checkbox" name="auto_claim_tickets" <?php echo $config['auto_claim_tickets']?'checked="checked"':''; ?>>
@@ -195,6 +188,7 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
             </td>
         </tr>
         <tr>
+<<<<<<< HEAD
 <<<<<<< HEAD
             <td><?php echo __('Auto-refer on Close'); ?>:</td>
             <td>
@@ -209,6 +203,12 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                 <?php echo __('Exclude assigned tickets from open queue.'); ?>
                 <i class="help-tip icon-question-sign" href="#assigned_tickets"></i>
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+            <td><?php echo __('Collaborator Tickets Visibility'); ?>:</td>
+            <td>
+                <input type="checkbox" name="collaborator_ticket_visibility" <?php echo $config['collaborator_ticket_visibility']?'checked="checked"':''; ?>>
+                <?php echo __('Enable'); ?>&nbsp;<i class="help-tip icon-question-sign" href="#collaborator_ticket_visibility"></i>
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
             </td>
         </tr>
         <tr>

@@ -29,15 +29,13 @@ if ($info['error']) {
     <div>
     <?php
     if ($forms) {
-        foreach ($forms as $form) {
-            $form->addMissingFields();
+        foreach ($forms as $form)
             echo $form->getForm(false, array('mode' => 'edit'))->asTable(
                     __('Task Information'),
                     array(
                         'draft-namespace' => $namespace,
                         )
                     );
-        }
     }
     ?>
     </div>

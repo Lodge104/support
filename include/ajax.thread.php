@@ -185,7 +185,7 @@ class ThreadAjaxAPI extends AjaxController {
         return self::_addcollaborator($thread);
     }
 
-    function previewCollaborators($tid, $manage=true) {
+    function previewCollaborators($tid) {
         global $thisstaff;
 
         if (!($thread=Thread::lookup($tid))
@@ -230,6 +230,7 @@ class ThreadAjaxAPI extends AjaxController {
 
         $errors = $info = array();
 <<<<<<< HEAD
+<<<<<<< HEAD
         $thread->updateCollaborators($_POST, $errors);
 =======
         if ($thread->updateCollaborators($_POST, $errors))
@@ -241,6 +242,22 @@ class ThreadAjaxAPI extends AjaxController {
                             )
                         ));
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+        if ($thread->updateCollaborators($_POST, $errors))
+            $users = array();
+            foreach ($thread->getCollaborators() as $c)
+                $users[] = array('id' => $c->getUserId(),
+                        'name' => $c->getName(),
+                        'email' => $c->getEmail());
+
+            Http::response(201, $this->json_encode(array(
+                            'id' => $thread->getId(),
+                            'users' => $users,
+                            'text' => sprintf('(%d)',
+                                $thread->getNumCollaborators())
+                            )
+                        ));
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 
         if($errors && $errors['err'])
             $info +=array('error' => $errors['err']);

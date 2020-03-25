@@ -92,7 +92,6 @@ class Bootstrap {
         define('THREAD_TABLE', $prefix.'thread');
         define('THREAD_ENTRY_TABLE', $prefix.'thread_entry');
         define('THREAD_ENTRY_EMAIL_TABLE', $prefix.'thread_entry_email');
-        define('THREAD_ENTRY_MERGE_TABLE', $prefix.'thread_entry_merge');
 
         define('LOCK_TABLE',$prefix.'lock');
 
@@ -134,9 +133,6 @@ class Bootstrap {
         define('SEQUENCE_TABLE', $prefix.'sequence');
         define('TRANSLATION_TABLE', $prefix.'translation');
         define('QUEUE_TABLE', $prefix.'queue');
-
-        define('SCHEDULE_TABLE', $prefix.'schedule');
-        define('SCHEDULE_ENTRY_TABLE', $prefix.'schedule_entry');
 
         define('API_KEY_TABLE',$prefix.'api_key');
         define('TIMEZONE_TABLE',$prefix.'timezone');
@@ -319,6 +315,7 @@ define('CLI_DIR', INCLUDE_DIR.'cli/');
 
 #Current version && schema signature (Changes from version to version)
 <<<<<<< HEAD
+<<<<<<< HEAD
 define('GIT_VERSION', 'f1e9e88'); // Set by installer
 define('MAJOR_VERSION', '1.14');
 define('THIS_VERSION', 'v1.14.1'); // Set by installer
@@ -327,6 +324,11 @@ define('THIS_VERSION', 'v1.10'); // Set by installer
 define('GIT_VERSION', '901e5ea'); // Set by installer
 define('MAJOR_VERSION', '1.10');
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+define('THIS_VERSION', 'v1.12'); // Set by installer
+define('GIT_VERSION', 'a076918'); // Set by installer
+define('MAJOR_VERSION', '1.10');
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 //Path separator
 if(!defined('PATH_SEPARATOR')){
     if(strpos($_ENV['OS'],'Win')!==false || !strcasecmp(substr(PHP_OS, 0, 3),'WIN'))

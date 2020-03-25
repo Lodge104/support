@@ -83,10 +83,14 @@ $nav->addSubMenu(array('desc'=>__('Upgrader'),
                            'iconclass'=>'preferences'),
                         true);
 <<<<<<< HEAD
+<<<<<<< HEAD
 $ost->addExtraHeader('<script type="text/javascript" src="./js/upgrader.js?f1e9e88"></script>');
 =======
 $ost->addExtraHeader('<script type="text/javascript" src="./js/upgrader.js?901e5ea"></script>');
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+$ost->addExtraHeader('<script type="text/javascript" src="./js/upgrader.js?a076918"></script>');
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 require(STAFFINC_DIR.'header.inc.php');
 require(UPGRADE_DIR.$inc);
 require(STAFFINC_DIR.'footer.inc.php');

@@ -621,12 +621,6 @@ class VerySimpleModel {
         else {
             $data = array('dirty' => $this->dirty);
             Signal::send('model.updated', $this, $data);
-            foreach ($this->dirty as $key => $value) {
-                if ($key != 'value' && $key != 'updated') {
-                    $type = array('type' => 'edited', 'key' => $key, 'orm_audit' => true);
-                    Signal::send('object.edited', $this, $type);
-                }
-            }
         }
         # Refetch row from database
         if ($refetch) {
@@ -665,11 +659,9 @@ class VerySimpleModel {
 
 <<<<<<< HEAD
     private function refetch() {
-        try {
-            $this->ht =
-                static::objects()->filter($this->getPk())->values()->one()
-                + $this->ht;
-        } catch (DoesNotExist $ex) {}
+        $this->ht =
+            static::objects()->filter($this->getPk())->values()->one()
+            + $this->ht;
     }
 
 =======
@@ -2307,6 +2299,7 @@ class SqlCompiler {
                     }
                 }
 <<<<<<< HEAD
+<<<<<<< HEAD
                 // New criteria here is joined with AND, so if the outer
                 // criteria is joined with OR, then parentheses are
                 // necessary
@@ -2314,6 +2307,10 @@ class SqlCompiler {
 =======
                 $filter[] = $this->compileQ(new Q($criteria), $model, $slot);
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+                $filter[] = $this->compileQ(new Q($criteria), $model,
+                    $Q->ored || $Q->negated);
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
             }
             // Handle simple field = <value> constraints
             else {
@@ -2346,7 +2343,16 @@ class SqlCompiler {
 
     function compileConstraints($where, $model) {
         $constraints = array();
+        $prev = $parens = false;
         foreach ($where as $Q) {
+            if ($prev && !$prev->isCompatibleWith($Q)) {
+                $parens = true;
+                break;
+            }
+            $prev = $Q;
+        }
+        foreach ($where as $Q) {
+<<<<<<< HEAD
 <<<<<<< HEAD
             // Constraints are joined by AND operators, so if they have
             // internal OR operators, then they need to be parenthesized
@@ -2354,6 +2360,9 @@ class SqlCompiler {
 =======
             $constraints[] = $this->compileQ($Q, $model);
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+            $constraints[] = $this->compileQ($Q, $model, $parens);
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         }
         return $constraints;
     }

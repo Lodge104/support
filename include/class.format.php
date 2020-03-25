@@ -42,16 +42,7 @@ class Format {
         return $size;
     }
 
-    function filename($filename) {
-        return preg_replace('/[^a-zA-Z0-9\-\._]/', '-', $filename);
-    }
-
     function mimedecode($text, $encoding='UTF-8') {
-        // Handle poorly or completely un-encoded header values (
-        if (function_exists('mb_detect_encoding'))
-            if (($src_enc = mb_detect_encoding($text))
-                    && (strcasecmp($src_enc, 'ASCII') !== 0))
-                return Charset::transcode($text, $src_enc, $encoding);
 
         if(function_exists('imap_mime_header_decode')
                 && ($parts = imap_mime_header_decode($text))) {
@@ -147,7 +138,7 @@ class Format {
             $xpath = new DOMXPath($doc);
             static $eE = array('area'=>1, 'br'=>1, 'col'=>1, 'embed'=>1,
                     'iframe' => 1, 'hr'=>1, 'img'=>1, 'input'=>1,
-                    'isindex'=>1, 'param'=>1, 'div'=>1);
+                    'isindex'=>1, 'param'=>1);
             do {
                 $done = true;
                 $nodes = $xpath->query('//*[not(text()) and not(node())]');
@@ -295,7 +286,6 @@ class Format {
     }
 
     function safe_html($html, $options=array()) {
-        global $cfg;
 
         $options = array_merge(array(
                     // Balance html tags
@@ -330,22 +320,18 @@ class Format {
             'schemes' => 'href: aim, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, telnet; *:file, http, https; src: cid, http, https, data',
             'hook_tag' => function($e, $a=0) { return Format::__html_cleanup($e, $a); },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             'elements' => '*+iframe',
             'spec' =>
             'iframe=-*,height,width,type,style,src(match="`^(https?:)?//(www\.)?(youtube|dailymotion|vimeo)\.com/`i"),frameborder'.($options['spec'] ? '; '.$options['spec'] : ''),
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+            'elements' => '*+iframe',
+            'spec' =>
+            'iframe=-*,height,width,type,style,src(match="`^(https?:)?//(www\.)?(youtube|dailymotion|vimeo|player.vimeo)\.com/`i"),frameborder'.($options['spec'] ? '; '.$options['spec'] : '').',allowfullscreen',
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         );
-
-        // iFrame Whitelist
-        if ($cfg)
-            $whitelist = $cfg->getIframeWhitelist();
-        if (!empty($whitelist)) {
-            $config['elements'] = '*+iframe';
-            $config['spec'] = 'iframe=-*,height,width,type,style,src(match="`^(https?:)?//(www\.)?('
-                .implode('|', $whitelist)
-                .')/?`i"),frameborder'.($options['spec'] ? '; '.$options['spec'] : '').',allowfullscreen';
-        }
 
         return Format::html($html, $config);
     }
@@ -449,7 +435,11 @@ class Format {
                 // Scan for things that look like URLs
                 return preg_replace_callback(
 <<<<<<< HEAD
+<<<<<<< HEAD
                     '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w\[\]\/]*)?)'
+=======
+                    '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w]*)?)'
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
                    .'|(\b[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,63})`',
 =======
                     '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w]*)?)'
@@ -487,9 +477,13 @@ class Format {
         $cids = $images = array();
 <<<<<<< HEAD
         $options +=array(
+<<<<<<< HEAD
                 'disposition' => 'inline');
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+                'deposition' => 'inline');
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         return preg_replace_callback('/"cid:([\w._-]{32})"/',
         function($match) use ($script, $images) {
             if (!($file = AttachmentFile::lookup($match[1])))
@@ -542,6 +536,7 @@ class Format {
         return number_format((int) $number);
     }
 
+<<<<<<< HEAD
     /*
      * Add ORDINAL suffix to a number e.g 1st, 2nd, 3rd etc.
      * TODO: Combine this routine with Format::number and pass in type of
@@ -575,6 +570,8 @@ class Format {
 
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
     /* elapsed time */
     function elapsedTime($sec) {
 
@@ -647,6 +644,14 @@ class Format {
 
         if (class_exists('IntlDateFormatter')) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+            if ($cfg && $cfg->isForce24HourTime())
+                $format = str_replace(array('a', 'h'), array('', 'H'),
+                        $format);
+
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
             $options += array(
                     'pattern' => $format,
                     'timezone' => $timezone->getName());
@@ -663,9 +668,6 @@ class Format {
         // Change format to strftime format otherwise us a fallback format
         $format = self::getStrftimeFormat($format) ?: $options['strftime']
             ?:  '%x %X';
-        if ($cfg && $cfg->isForce24HourTime())
-            $format = str_replace('X', 'R', $format);
-
         return strftime($format, $timestamp);
     }
 
@@ -717,8 +719,6 @@ class Format {
             $tz = $datetime->getTimezone()->getName();
             if ($tz && $tz[0] == '+' || $tz[0] == '-')
                 $tz = (int) $datetime->format('Z');
-            elseif ($tz == 'Z')
-                $tz = 'UTC';
             $timezone =  new DateTimeZone(Format::timezone($tz) ?: 'UTC');
             $datetime->setTimezone($timezone);
         } catch (Exception $ex) {
@@ -843,36 +843,6 @@ class Format {
             },
             $format
         );
-    }
-
-    // Translate php date / time formats to js equivalent
-    function dtfmt_php2js($format) {
-
-        $codes = array(
-        // Date
-        'DD' => 'oo',
-        'D' => 'o',
-        'EEEE' => 'DD',
-        'EEE' => 'D',
-        'MMMM' => '||',
-        'MMM' => '|',
-        'MM' => 'mm',
-        'M' =>  'm',
-        '||' => 'MM',
-        '|' => 'M',
-        'yyyy' => 'YY',
-        'yyy' => 'YY',
-        'yy' =>  'Y',
-        'y' => 'yy',
-        'YY' =>  'yy',
-        'Y' => 'y',
-        // Time
-        'a' => 'tt',
-        'HH' => 'H',
-        'H' => 'HH',
-        );
-
-        return str_replace(array_keys($codes), array_values($codes), $format);
     }
 
     // Thanks, http://stackoverflow.com/a/2955878/1025836

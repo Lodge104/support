@@ -192,8 +192,6 @@ class DynamicForm extends VerySimpleModel {
 
         // Soft Delete: Mark the form as deleted.
         $this->setFlag(self::FLAG_DELETED);
-        $type = array('type' => 'deleted');
-        Signal::send('object.deleted', $this, $type);
         return $this->save();
     }
 
@@ -1166,7 +1164,8 @@ class DynamicFormEntry extends VerySimpleModel {
 
 <<<<<<< HEAD
     function render($options=array()) {
-        $options += array('staff' => true);
+        if (is_array($options))
+            $options += array('staff' => true);
         return $this->getForm()->render($options);
 =======
     function render($staff=true, $title=false, $options=array()) {
@@ -1773,8 +1772,7 @@ class SelectionField extends FormField {
             // Add in the properties for all selected list items in sub
             // labeled by their field id
             foreach ($v as $id=>$L) {
-                if (!($li = DynamicListItem::lookup($id))
-                      || !$li->getListId())
+                if (!($li = DynamicListItem::lookup($id)))
                     continue;
                 foreach ($li->getFilterData() as $prop=>$value) {
                     if (!isset($data[$prop]))

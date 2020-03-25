@@ -205,24 +205,8 @@ class TaskModel extends VerySimpleModel {
         return $this->setFlag(self::ISOPEN);
     }
 
-    function isAssigned($to=null) {
-        if (!$this->isOpen())
-            return false;
-
-        if (is_null($to))
-            return ($this->getStaffId() || $this->getTeamId());
-
-        switch (true) {
-        case $to instanceof Staff:
-            return ($to->getId() == $this->getStaffId() ||
-                    $to->isTeamMember($this->getTeamId()));
-            break;
-        case $to instanceof Team:
-            return ($to->getId() == $this->getTeamId());
-            break;
-        }
-
-        return false;
+    function isAssigned() {
+        return ($this->isOpen() && ($this->getStaffId() || $this->getTeamId()));
     }
 
     function isOverdue() {
@@ -554,7 +538,10 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             $ecb = function ($t) {
                 $t->logEvent('reopened', false, null, 'closed');
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
                 if ($t->ticket) {
                     $t->ticket->reopen();
                     $vars = array(
@@ -585,7 +572,10 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             $ecb = function($t) {
                 $t->logEvent('closed');
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
                 if ($t->ticket) {
                     $vars = array(
                             'title' => sprintf('Task %s Closed',
@@ -656,20 +646,6 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
     /* util routines */
 
     function logEvent($state, $data=null, $user=null, $annul=null) {
-        switch ($state) {
-            case 'transferred':
-            case 'edited':
-                $type = $data;
-                $type['type'] = $state;
-                break;
-            case 'assigned':
-                break;
-            default:
-                $type = array('type' => $state);
-                break;
-        }
-        if ($type)
-            Signal::send('object.created', $this, $type);
         $this->getThread()->getEvents()->log($this, $state, $data, $user, $annul);
     }
 
@@ -690,9 +666,6 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
         if ($errors)
             return false;
-
-        $type = array('type' => 'assigned', 'claim' => true);
-        Signal::send('object.edited', $this, $type);
 
         return $this->assignToStaff($assignee, $form->getComments(), false);
     }
@@ -729,7 +702,6 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         global $thisstaff;
 
         $evd = array();
-        $audit = array();
         $assignee = $form->getAssignee();
         if ($assignee instanceof Staff) {
             if ($this->getStaffId() == $assignee->getId()) {
@@ -745,7 +717,6 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                     $evd['claim'] = true;
                 else
                     $evd['staff'] = array($assignee->getId(), $assignee->getName());
-                    $audit = array('staff' => $assignee->getName()->name);
             }
         } elseif ($assignee instanceof Team) {
             if ($this->getTeamId() == $assignee->getId()) {
@@ -756,7 +727,6 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             } else {
                 $this->team_id = $assignee->getId();
                 $evd = array('team' => $assignee->getId());
-                $audit = array('team' => $assignee->getName());
             }
         } else {
             $errors['assignee'] = __('Unknown assignee');
@@ -766,10 +736,6 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             return false;
 
         $this->logEvent('assigned', $evd);
-
-        $type = array('type' => 'assigned');
-        $type += $audit;
-        Signal::send('object.edited', $this, $type);
 
         $this->onAssignment($assignee,
                 $form->getField('comments')->getClean(),
@@ -871,7 +837,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             return false;
 
         // Log transfer event
-        $this->logEvent('transferred', array('dept' => $dept->getName()));
+        $this->logEvent('transferred');
 
         // Post internal note if any
         $note = $form->getField('comments')->getClean();
@@ -968,9 +934,6 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             'assignee' => $assignee
         ), $alert);
 
-        $type = array('type' => 'note');
-        Signal::send('object.created', $this, $type);
-
         return $note;
     }
 
@@ -1025,9 +988,6 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                 array('signature' => $signature)
             );
         }
-
-        $type = array('type' => 'message');
-        Signal::send('object.created', $this, $type);
 
         return $response;
     }
@@ -1282,6 +1242,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
     function update($forms, $vars, &$errors) {
         global $thisstaff;
 
+
         if (!$forms || !$this->checkStaffPerm($thisstaff, Task::PERM_EDIT))
             return false;
 
@@ -1367,6 +1328,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         $thread = TaskThread::create($task);
         $thread->addDescription($vars);
 
+
         $task->logEvent('created', null, $thisstaff);
 
         // Get role for the dept
@@ -1399,12 +1361,17 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         if (!parent::delete())
             return false;
 
+<<<<<<< HEAD
         $thread->delete();
 <<<<<<< HEAD
         $this->logEvent('deleted');
 =======
 
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+        $this->logEvent('deleted');
+
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         Draft::deleteForNamespace('task.%.' . $this->getId());
 
         foreach (DynamicFormEntry::forObject($this->getId(), ObjectModel::OBJECT_TYPE_TASK) as $form)

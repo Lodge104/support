@@ -75,12 +75,12 @@ class AttachmentFile extends VerySimpleModel {
         return $this->type;
     }
 
-    function getMimeType() {
-        return $this->getType();
-    }
-
     function getBackend() {
         return $this->bk;
+    }
+
+    function getMime() {
+        return $this->getType();
     }
 
     function getSize() {
@@ -241,6 +241,7 @@ class AttachmentFile extends VerySimpleModel {
 
 <<<<<<< HEAD
     function download($name=false, $disposition=false, $expires=false) {
+<<<<<<< HEAD
         $thisstaff = StaffAuthenticationBackend::getUser();
         $inline = ($thisstaff ? ($thisstaff->getImageAttachmentView() === 'inline') : false);
         $disposition = ((($disposition && strcasecmp($disposition, 'inline') == 0)
@@ -251,6 +252,9 @@ class AttachmentFile extends VerySimpleModel {
     function download($disposition=false, $expires=false) {
         $disposition = $disposition ?: 'inline';
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+        $disposition = $disposition ?: 'inline';
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         $bk = $this->open();
         if ($bk->sendRedirectUrl($disposition))
             return;
@@ -258,6 +262,13 @@ class AttachmentFile extends VerySimpleModel {
         $this->makeCacheable($ttl);
         $type = $this->getType() ?: 'application/octet-stream';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        if (isset($_REQUEST['overridetype']))
+            $type = $_REQUEST['overridetype'];
+        elseif (!strcasecmp($disposition, 'attachment'))
+            $type = 'application/octet-stream';
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         Http::download($name ?: $this->getName(), $type, null, $disposition);
 =======
         if (isset($_REQUEST['overridetype']))
@@ -378,15 +389,12 @@ class AttachmentFile extends VerySimpleModel {
                 $file['data'] = base64_decode($file['data']);
             }
         }
-
-        if (!isset($file['data']) && isset($file['data_cbk'])
-                && is_callable($file['data_cbk'])) {
+        if (isset($file['data'])) {
             // Allow a callback function to delay or avoid reading or
             // fetching ihe file contents
-            $file['data'] = $file['data_cbk']();
-        }
+            if (is_callable($file['data']))
+                $file['data'] = $file['data']();
 
-        if (isset($file['data'])) {
             list($key, $file['signature'])
                 = self::_getKeyAndHash($file['data']);
             if (!$file['key'])
@@ -989,56 +997,4 @@ class OneSixAttachments extends FileStorageBackend {
     }
 }
 FileStorageBackend::register('6', 'OneSixAttachments');
-
-// FileObject - wrapper for SplFileObject class
-class FileObject extends SplFileObject {
-
-    protected $_filename;
-
-    function __construct($file, $mode='r') {
-        parent::__construct($file, $mode);
-    }
-
-    /* This allows us to set REAL file name as opposed to basename of the
-     * FS file in question
-     */
-    function setFilename($filename) {
-        $this->_filename = $filename;
-    }
-
-    function getFilename() {
-        return $this->_filename ?: parent::getFilename();
-    }
-
-    /*
-     * Set mime type - well formated mime is expected.
-     */
-    function setMimeType($type) {
-        $this->_mimetype = $type;
-    }
-
-    function getMimeType() {
-        if (!isset($this->_mimetype)) {
-            // Try to to auto-detect mime type
-            $finfo = new finfo(FILEINFO_MIME);
-            $this->_mimetype = $finfo->buffer($this->getContents(),
-                    FILEINFO_MIME_TYPE);
-        }
-
-        return $this->_mimetype;
-    }
-
-    function getContents() {
-        $this->fseek(0);
-        return $this->fread($this->getSize());
-    }
-
-    /*
-     * XXX: Needed for mailer attachments interface
-     */
-    function getData() {
-        return $this->getContents();
-    }
-}
-
 ?>

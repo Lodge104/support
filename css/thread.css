@@ -22,8 +22,6 @@
 .thread-body section,
 .thread-body summary {
   display: block;
-  margin: 0;
-  margin-bottom: 1em;
 }
 .thread-body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;

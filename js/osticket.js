@@ -172,6 +172,7 @@ getConfig = (function() {
 })();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 $.translate_format = function(str) {
     var translation = {
@@ -182,6 +183,25 @@ $.translate_format = function(str) {
         'F':'MM',
         'n':'m',
         'Y':'yy'
+=======
+$.translate_format = function(str) {
+    var translation = {
+        'DD':   'oo',
+        'D':    'o',
+        'EEEE': 'DD',
+        'EEE':  'D',
+        'MMMM': '||',   // Double replace necessary
+        'MMM':  '|',
+        'MM':   'mm',
+        'M':    'm',
+        '||':   'MM',
+        '|':    'M',
+        'yyyy': '`',
+        'yyy':  '`',
+        'yy':   'y',
+        'y':    'yy',
+        '`':    'yy'
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
     };
     // Change PHP formats to datepicker ones
     $.each(translation, function(php, jqdp) {
@@ -190,7 +210,10 @@ $.translate_format = function(str) {
     return str;
 };
 
+<<<<<<< HEAD
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
 $.sysAlert = function (title, msg, cb) {
     var $dialog =  $('.dialog#alert');
     if ($dialog.length) {
@@ -216,8 +239,11 @@ $(document).on('submit', 'form', function() {
     $('.dp', $(this)).each(function(i, e) {
         var $e = $(e),
             d = $e.datepicker('getDate');
-        if (d)
-            $e.val(d.toISOString());
+        if (!d) return;
+        var day = ('0'+d.getDate()).substr(-2),
+            month = ('0'+(d.getMonth()+1)).substr(-2),
+            year = d.getFullYear();
+        $e.val(year+'-'+month+'-'+day);
     });
 });
 

@@ -46,9 +46,6 @@ if ($_POST) {
                 $msg=sprintf(__('Successfully updated %s.'),
                     __('this canned response'));
 
-                $type = array('type' => 'edited');
-                Signal::send('object.edited', $canned, $type);
-
                 //Delete removed attachments.
                 //XXX: files[] shouldn't be changed under any circumstances.
                 // Upload NEW attachments IF ANY - TODO: validate attachment types??
@@ -80,8 +77,6 @@ if ($_POST) {
             $premade = Canned::create();
             if ($premade->update($_POST,$errors)) {
                 $msg=sprintf(__('Successfully added %s.'), Format::htmlchars($_POST['title']));
-                $type = array('type' => 'created');
-                Signal::send('object.created', $premade, $type);
                 $_REQUEST['a']=null;
                 //Upload attachments
                 $keepers = $canned_form->getField('attachments')->getClean();

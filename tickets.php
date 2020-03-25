@@ -69,6 +69,7 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
             if ($changes) {
               $user = User::lookup($thisclient->getId());
               $ticket->logEvent('edited', array('fields' => $changes), $user);
+<<<<<<< HEAD
               $type = array('type' => 'edited', 'fields' => $changes);
               Signal::send('object.edited', $ticket, $type);
 =======
@@ -76,6 +77,8 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
                 $changes += $f->getChanges();
                 $f->save();
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
             }
             if ($changes)
                 $ticket->logEvent('edited', array('fields' => $changes));

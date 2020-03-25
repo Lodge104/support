@@ -117,7 +117,7 @@ implements TemplateVariable {
 
     static function getTopicName($id) {
         $names = static::getHelpTopics(false, true);
-        return is_numeric($id) && isset($names[$id]) ? $names[$id] : '';
+        return $names[$id];
     }
 
     function getDeptId() {
@@ -411,15 +411,6 @@ implements TemplateVariable {
         if ($errors)
             return false;
 
-        $vars['noautoresp'] = isset($vars['noautoresp']) ? 1 : 0;
-
-        foreach ($vars as $key => $value) {
-            if ($key == 'status' && $this->getStatus() && strtolower($this->getStatus()) != $value && $this->topic) {
-                $type = array('type' => 'edited', 'status' => ucfirst($value));
-                Signal::send('object.edited', $this, $type);
-            }
-        }
-
         $this->topic = $vars['topic'];
         $this->topic_pid = $vars['topic_pid'] ?: 0;
         $this->dept_id = $vars['dept_id'];
@@ -433,11 +424,15 @@ implements TemplateVariable {
         $this->number_format = $vars['custom-numbers'] ? $vars['number_format'] : '';
 <<<<<<< HEAD
         $this->flags = $vars['custom-numbers'] ? self::FLAG_CUSTOM_NUMBERS : $this->flags;
+<<<<<<< HEAD
         $this->noautoresp = $vars['noautoresp'];
 =======
         $this->flags = $vars['custom-numbers'] ? self::FLAG_CUSTOM_NUMBERS : 0;
         $this->noautoresp = !!$vars['noautoresp'];
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+        $this->noautoresp = !!$vars['noautoresp'];
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
         $this->notes = Format::sanitize($vars['notes']);
 
         //Auto assign ID is overloaded...

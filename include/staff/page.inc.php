@@ -140,7 +140,7 @@ if ($page && count($langs) > 1) { ?>
 if ($info['type'] == 'landing')
     $width = '565px';
 else
-    $width = '';
+    $width = '100%';
 ?>
     <div id="translations_container">
       <div id="translation-<?php echo $cfg->getPrimaryLanguage(); ?>" class="tab_content"

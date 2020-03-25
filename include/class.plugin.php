@@ -211,20 +211,6 @@ class PluginManager {
         return static::$plugin_list;
     }
 
-    static function getPluginByName($name, $active=false) {
-        $sql = sprintf('SELECT * FROM %s WHERE name="%s"', PLUGIN_TABLE, $name);
-        if ($active)
-            $sql = sprintf('%s AND isactive = true', $sql);
-        if (!($res = db_query($sql)))
-            return false;
-        $ht = db_fetch_array($res);
-        return $ht['name'];
-    }
-
-    static function auditPlugin() {
-        return self::getPluginByName('Help Desk Audit', true);
-    }
-
     static function allActive() {
         $plugins = array();
         foreach (static::allInstalled() as $p)
@@ -548,7 +534,7 @@ abstract class Plugin {
     static function isVerified($phar) {
         static $pubkey = null;
 
-        if (!class_exists('Phar') || !extension_loaded('openssl'))
+        if (!class_exists('Phar'))
             return self::VERIFY_EXT_MISSING;
         elseif (!file_exists(INCLUDE_DIR . '/plugins/updates.pem'))
             return self::VERIFY_NO_KEY;

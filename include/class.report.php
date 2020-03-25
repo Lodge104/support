@@ -82,10 +82,14 @@ class OverviewReport {
         $res = db_query('SELECT DISTINCT(state) FROM '.THREAD_EVENT_TABLE
             .' WHERE timestamp BETWEEN '.$start.' AND '.$stop
 <<<<<<< HEAD
+<<<<<<< HEAD
             .' AND T.event_id IN ('.implode(",",$event_ids).') AND T.thread_type = "T"'
 =======
             .' AND state IN ("created", "closed", "reopened", "assigned", "overdue", "transferred")'
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+            .' AND T.event_id IN ('.implode(",",$event_ids).')'
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
             .' ORDER BY 1');
         $events = array();
         while ($row = db_fetch_row($res)) $events[] = $row[0];
@@ -94,10 +98,11 @@ class OverviewReport {
         # XXX: Implement annulled column from the %ticket_event table
 <<<<<<< HEAD
         $res = db_query('SELECT H.name, DATE_FORMAT(timestamp, \'%Y-%m-%d\'), '
-                .'COUNT(DISTINCT E.id)'
+                .'COUNT(DISTINCT T.id)'
             .' FROM '.THREAD_EVENT_TABLE. ' E '
             . ' LEFT JOIN '.EVENT_TABLE. ' H
                 ON (E.event_id = H.id)'
+<<<<<<< HEAD
 =======
         $res = db_query('SELECT state, DATE_FORMAT(timestamp, \'%Y-%m-%d\'), '
                 .'COUNT(DISTINCT T.id)'
@@ -105,6 +110,10 @@ class OverviewReport {
             .' JOIN '.THREAD_TABLE. ' T
                 ON (T.id = E.thread_id AND T.object_type = "T") '
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+            .' JOIN '.THREAD_TABLE. ' T
+                ON (T.id = E.thread_id AND T.object_type = "T") '
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
             .' WHERE E.timestamp BETWEEN '.$start.' AND '.$stop
             .' AND NOT annulled'
             .' AND E.state IN ("created", "closed", "reopened", "assigned", "overdue", "transferred")'
@@ -156,8 +165,6 @@ class OverviewReport {
         $event = function ($name) use ($event_ids) {
             return $event_ids[$name];
         };
-        $dash_headers = array(__('Opened'),__('Assigned'),__('Overdue'),__('Closed'),__('Reopened'),
-                              __('Deleted'),__('Service Time'),__('Response Time'));
 
 =======
 >>>>>>> parent of 7093d97... 2020 Update
@@ -212,7 +219,7 @@ class OverviewReport {
                 ->filter(array(
                         'annulled' => 0,
                         'timestamp__range' => array($start, $stop, true),
-                        'thread_type' => 'T',
+                        'thread__object_type' => 'T',
                    ))
                 ->aggregate(array(
                     'Opened' => SqlAggregate::COUNT(
@@ -261,11 +268,14 @@ class OverviewReport {
             $pk = 'topic_id';
 <<<<<<< HEAD
             $topics = Topic::getHelpTopics(false, Topic::DISPLAY_DISABLED);
+<<<<<<< HEAD
             if (empty($topics))
                 return array("columns" => array_merge($headers, $dash_headers),
                       "data" => array());
 =======
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
             $stats = $stats
                 ->values('topic_id', 'topic__topic')
                 ->filter(array('topic_id__gt' => 0));
@@ -309,12 +319,18 @@ class OverviewReport {
                 number_format($T['ResponseTime'], 1));
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
         return array("columns" => array_merge($headers, $dash_headers),
 =======
         return array("columns" => array_merge($headers,
                         array(__('Opened'),__('Assigned'),__('Overdue'),__('Closed'),__('Reopened'),
                               __('Service Time'),__('Response Time'))),
 >>>>>>> parent of 7093d97... 2020 Update
+=======
+        return array("columns" => array_merge($headers,
+                        array(__('Opened'),__('Assigned'),__('Overdue'),__('Closed'),__('Reopened'),
+                              __('Deleted'),__('Service Time'),__('Response Time'))),
+>>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
                      "data" => $rows);
     }
 }
