@@ -18,7 +18,8 @@ helpdesk_status:
     content: >
         If the status is changed to <span
         class="doc-desc-opt">Offline</span>, the client interface will be
-        disabled.  Only Admins will be able to access the system.
+        disabled.  This does not however affect any normal Agent interaction
+        with the Agent Panel.
 
 helpdesk_url:
     title: Helpdesk URL
@@ -101,6 +102,7 @@ collision_avoidance:
         <br><br>
         Enter <span class="doc-desc-opt">0</span> to disable the lockout feature.
 
+<<<<<<< HEAD
 allow_iframes:
     title: Allow System iFrame
     content: >
@@ -150,6 +152,8 @@ embedded_domain_whitelist:
         <br>
         domain.tld, sub.domain.tld
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 # Date and time options
 date_time_options:
     title: Date &amp; Time Options

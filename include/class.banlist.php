@@ -58,7 +58,7 @@ class Banlist {
 
     function ensureSystemBanList() {
 
-        if (!($id=Filter::getByName('SYSTEM BAN LIST')))
+        if (!($id=Filter::getIdByName('SYSTEM BAN LIST')))
             $id=self::createSystemBanList();
 
         return $id;
@@ -81,7 +81,7 @@ class Banlist {
     }
 
     function getSystemBanList() {
-        return self::ensureSystemBanList();
+        return new Filter(self::ensureSystemBanList());
     }
 
     static function getFilter() {

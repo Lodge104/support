@@ -1,9 +1,8 @@
-<div><?php
+<div class="form-inline"><?php
 foreach ($form->getFields() as $field) { ?>
-    <span style="display:inline-block;padding-right:5px;vertical-align:top">
-        <span class="<?php if ($field->get('required')) echo 'required'; ?>">
-            <?php echo Format::htmlchars($field->get('label')); ?></span>
-        <div><?php
+	<div class="form-group <?php if ($field->get('required')) echo 'required'; ?>">
+        <label><?php echo Format::htmlchars($field->get('label')); ?></abel>
+        <?php
         $field->render(); ?>
         <?php if ($field->get('required')) { ?>
             <span class="error">*</span>
@@ -18,7 +17,7 @@ foreach ($form->getFields() as $field) { ?>
             <br />
             <span class="error"><?php echo Format::htmlchars($e); ?></span>
         <?php } ?>
-        </div>
-    </span><?php
+    </div>
+<?php
 } ?>
 </div>

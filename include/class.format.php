@@ -316,11 +316,8 @@ class Format {
                   ':<!DOCTYPE[^>]+>:',          # <!DOCTYPE ... >
                   ':<\?[^>]+>:',                # <?xml version="1.0" ... >
                   ':<html[^>]+:i',              # drop html attributes
-                  ':<(a|span) (name|style)="(mso-bookmark\:)?_MailEndCompose">(.+)?<\/(a|span)>:', # Drop _MailEndCompose
-                  ':<div dir=(3D)?"ltr">(.*?)<\/div>(.*):is', # drop Gmail "ltr" attributes
-                  ':data-cid="[^"]*":',         # drop image cid attributes
             ),
-            array('', '', '', '', '<html', '$4', '$2 $3', ''),
+            array('', '', '', '', '<html'),
             $html);
 
         // HtmLawed specific config only
@@ -332,6 +329,12 @@ class Format {
             'deny_attribute' => 'id',
             'schemes' => 'href: aim, feed, file, ftp, gopher, http, https, irc, mailto, news, nntp, sftp, ssh, telnet; *:file, http, https; src: cid, http, https, data',
             'hook_tag' => function($e, $a=0) { return Format::__html_cleanup($e, $a); },
+<<<<<<< HEAD
+=======
+            'elements' => '*+iframe',
+            'spec' =>
+            'iframe=-*,height,width,type,style,src(match="`^(https?:)?//(www\.)?(youtube|dailymotion|vimeo)\.com/`i"),frameborder'.($options['spec'] ? '; '.$options['spec'] : ''),
+>>>>>>> parent of 7093d97... 2020 Update
         );
 
         // iFrame Whitelist
@@ -368,13 +371,8 @@ class Format {
     function htmlchars($var, $sanitize = false) {
         static $phpversion = null;
 
-        if (is_array($var)) {
-            $result = array();
-            foreach ($var as $k => $v)
-                $result[$k] = self::htmlchars($v, $sanitize);
-
-            return $result;
-        }
+        if (is_array($var))
+            return array_map(array('Format', 'htmlchars'), $var);
 
         if ($sanitize)
             $var = Format::sanitize($var);
@@ -441,33 +439,6 @@ class Format {
         return strip_tags($decode?Format::htmldecode($var):$var);
     }
 
-    // Strip all Emoticon/Emoji characters until we support them
-    function strip_emoticons($text) {
-        return preg_replace(array(
-                '/[\x{1F601}-\x{1F64F}]/u', # Emoticons
-                '/[\x{1F680}-\x{1F6C0}]/u', # Transport/Map
-                '/[\x{1F600}-\x{1F636}]/u', # Add. Emoticons
-                '/[\x{1F681}-\x{1F6C5}]/u', # Add. Transport/Map
-                '/[\x{1F30D}-\x{1F567}]/u', # Other
-                '/[\x{1F910}-\x{1F999}]/u', # Hands
-                '/[\x{1F9D0}-\x{1F9DF}]/u', # Fantasy
-                '/[\x{1F9E0}-\x{1F9EF}]/u', # Clothes
-                '/[\x{1F6F0}-\x{1F6FF}]/u', # Misc. Transport
-                '/[\x{1F6E0}-\x{1F6EF}]/u', # Planes/Boats
-                '/[\x{1F6C0}-\x{1F6CF}]/u', # Bed/Bath
-                '/[\x{1F9C0}-\x{1F9C2}]/u', # Misc. Food
-                '/[\x{1F6D0}-\x{1F6D2}]/u', # Sign/P.O.W./Cart
-                '/[\x{1F500}-\x{1F5FF}]/u', # Uncategorized
-                '/[\x{1F300}-\x{1F3FF}]/u', # Cyclone/Amphora
-                '/[\x{2702}-\x{27B0}]/u',   # Dingbats
-                '/[\x{00A9}-\x{00AE}]/u',   # Copyright/Registered
-                '/[\x{23F0}-\x{23FF}]/u',   # Clock/Buttons
-                '/[\x{23E0}-\x{23EF}]/u',   # More Buttons
-                '/[\x{2310}-\x{231F}]/u',   # Hourglass/Watch
-                '/[\x{2322}-\x{232F}]/u'    # Keyboard
-            ), '', $text);
-    }
-
     //make urls clickable. Mainly for display
     function clickableurls($text, $target='_blank') {
         global $ost;
@@ -477,8 +448,13 @@ class Format {
             function($match) {
                 // Scan for things that look like URLs
                 return preg_replace_callback(
+<<<<<<< HEAD
                     '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w\[\]\/]*)?)'
                    .'|(\b[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,63})`',
+=======
+                    '`(?<!>)(((f|ht)tp(s?)://|(?<!//)www\.)([-+~%/.\w]+)(?:[-?#+=&;%@.\w]*)?)'
+                   .'|(\b[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,4})`',
+>>>>>>> parent of 7093d97... 2020 Update
                     function ($match) {
                         if ($match[1]) {
                             while (in_array(substr($match[1], -1),
@@ -507,17 +483,19 @@ class Format {
     }
 
 
-    function viewableImages($html, $options=array()) {
+    function viewableImages($html, $script=false) {
         $cids = $images = array();
+<<<<<<< HEAD
         $options +=array(
                 'disposition' => 'inline');
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         return preg_replace_callback('/"cid:([\w._-]{32})"/',
-        function($match) use ($options, $images) {
+        function($match) use ($script, $images) {
             if (!($file = AttachmentFile::lookup($match[1])))
                 return $match[0];
-
             return sprintf('"%s" data-cid="%s"',
-                $file->getDownloadUrl($options), $match[1]);
+                $file->getDownloadUrl(false, 'inline', $script), $match[1]);
         }, $html);
     }
 
@@ -547,6 +525,7 @@ class Format {
         return implode( $separator, $string );
     }
 
+<<<<<<< HEAD
     function number($number, $locale=false) {
         if (is_array($number))
             return array_map(array('Format','number'), $number);
@@ -594,6 +573,8 @@ class Format {
         return $number.'th';
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     /* elapsed time */
     function elapsedTime($sec) {
 
@@ -614,52 +595,58 @@ class Format {
         global $cfg;
         static $cache;
 
-        if ($timestamp && $fromDb)
+        if (!$timestamp)
+            return '';
+
+        if ($fromDb)
             $timestamp = Misc::db2gmtime($timestamp);
 
-        // Make sure timestamp is valid for realz.
-        if (!$timestamp || !($datetime = DateTime::createFromFormat('U', $timestamp)))
-            return '';
-
-        // Normalize timezone
-        if ($timezone)
-            $timezone = Format::timezone($timezone);
-
-        // Set the desired timezone (caching since it will be mostly same
-        // for most date formatting.
-        $timezone = Format::timezone($timezone, $cfg->getTimezone());
-        if (isset($cache[$timezone]))
-            $tz =  $cache[$timezone];
-        else
-            $cache[$timezone] = $tz = new DateTimeZone($timezone);
-
-        $datetime->setTimezone($tz);
-
-        // Formmating options
-        $options = array(
-                'timezone' => $tz->getName(),
-                'locale' =>  Internationalization::getCurrentLocale($user),
-                'daytype' => $dayType,
-                'timetype' => $timeType,
-                'strftime' => $strftimeFallback,
+        if (class_exists('IntlDateFormatter')) {
+            $locale = Internationalization::getCurrentLocale($user);
+            $key = "{$locale}:{$dayType}:{$timeType}:{$timezone}:{$format}";
+            if (!isset($cache[$key])) {
+                // Setting up the IntlDateFormatter is pretty expensive, so
+                // cache it since there aren't many variations of the
+                // arguments passed to the constructor
+                $cache[$key] = $formatter = new IntlDateFormatter(
+                    $locale,
+                    $dayType,
+                    $timeType,
+                    $timezone,
+                    IntlDateFormatter::GREGORIAN,
+                    $format ?: null
                 );
+                if ($cfg->isForce24HourTime()) {
+                    $format = str_replace(array('a', 'h'), array('', 'H'),
+                        $formatter->getPattern());
+                    $formatter->setPattern($format);
+                }
+            }
+            else {
+                $formatter = $cache[$key];
+            }
+            return $formatter->format($timestamp);
+        }
+        // Fallback using strftime
+        static $user_timezone;
+        if (!isset($user_timezone))
+            $user_timezone = new DateTimeZone($cfg->getTimezone() ?: date_default_timezone_get());
 
-        return self::IntDateFormat($datetime, $format, $options);
+        $format = self::getStrftimeFormat($format);
+        // Properly convert to user local time
+        if (!($time = DateTime::createFromFormat('U', $timestamp, new DateTimeZone('UTC'))))
+           return '';
 
+        $offset = $user_timezone->getOffset($time);
+        $timestamp = $time->getTimestamp() + $offset;
+        return strftime($format ?: $strftimeFallback, $timestamp);
     }
 
-    // IntDateFormat
-    // Format datetime to desired format in accorrding to desired locale
-    function IntDateFormat(DateTime $datetime, $format, $options=array()) {
+    function parseDate($date, $format=false) {
         global $cfg;
 
-        if (!$datetime instanceof DateTime)
-            return '';
-
-        $format = $format ?: $cfg->getDateFormat();
-        $timezone = $datetime->getTimeZone();
-        // Use IntlDateFormatter if available
         if (class_exists('IntlDateFormatter')) {
+<<<<<<< HEAD
             $options += array(
                     'pattern' => $format,
                     'timezone' => $timezone->getName());
@@ -739,9 +726,25 @@ class Format {
             if (($time=strtotime($date)))
                 $datetime = DateTime::createFromFormat('U', $time);
 
+=======
+            $formatter = new IntlDateFormatter(
+                Internationalization::getCurrentLocale(),
+                null,
+                null,
+                null,
+                IntlDateFormatter::GREGORIAN,
+                $format ?: null
+            );
+            if ($cfg->isForce24HourTime()) {
+                $format = str_replace(array('a', 'h'), array('', 'H'),
+                    $formatter->getPattern());
+                $formatter->setPattern($format);
+            }
+            return $formatter->parse($date);
+>>>>>>> parent of 7093d97... 2020 Update
         }
-
-        return $datetime;
+        // Fallback using strtotime
+        return strtotime($date);
     }
 
     function time($timestamp, $fromDb=true, $format=false, $timezone=false, $user=false) {
@@ -762,20 +765,20 @@ class Format {
             '%x', $timezone ?: $cfg->getTimezone(), $user);
     }
 
-    function datetime($timestamp, $fromDb=true, $format=false,  $timezone=false, $user=false) {
+    function datetime($timestamp, $fromDb=true, $timezone=false, $user=false) {
         global $cfg;
 
         return self::__formatDate($timestamp,
-                $format ?: $cfg->getDateTimeFormat(), $fromDb,
+                $cfg->getDateTimeFormat(), $fromDb,
                 IDF_SHORT, IDF_SHORT,
                 '%x %X', $timezone ?: $cfg->getTimezone(), $user);
     }
 
-    function daydatetime($timestamp, $fromDb=true, $format=false,  $timezone=false, $user=false) {
+    function daydatetime($timestamp, $fromDb=true, $timezone=false, $user=false) {
         global $cfg;
 
         return self::__formatDate($timestamp,
-                $format ?: $cfg->getDayDateTimeFormat(), $fromDb,
+                $cfg->getDayDateTimeFormat(), $fromDb,
                 IDF_FULL, IDF_SHORT,
                 '%x %X', $timezone ?: $cfg->getTimezone(), $user);
     }
@@ -875,13 +878,6 @@ class Format {
     // Thanks, http://stackoverflow.com/a/2955878/1025836
     /* static */
     function slugify($text) {
-        // convert special characters to entities
-        $text = htmlentities($text, ENT_NOQUOTES, 'UTF-8');
-
-        // removes entity suffixes, leaving only un-accented characters
-        $text = preg_replace('~&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);~', '$1', $text);
-        $text = preg_replace('~&([A-za-z]{2})(?:lig);~', '$1', $text);
-
         // replace non letter or digits by -
         $text = preg_replace('~[^\p{L}\p{N}]+~u', '-', $text);
 
@@ -1033,10 +1029,17 @@ class Format {
           return sprintf($timeDiff >= 0 ? __('%d hours ago') : __('in %d hours'), $absTimeDiff / 3600);
         }
 
+        // within 2 days
+        $days2 = 2 * 86400;
+        if ($absTimeDiff < $days2) {
+            // XXX: yesterday / tomorrow?
+          return $absTimeDiff >= 0 ? __('yesterday') : __('tomorrow');
+        }
+
         // within 29 days
         $days29 = 29 * 86400;
         if ($absTimeDiff < $days29) {
-          return sprintf($timeDiff >= 0 ? __('%d days ago') : __('in %d days'), round($absTimeDiff / 86400));
+          return sprintf($timeDiff >= 0 ? __('%d days ago') : __('in %d days'), $absTimeDiff / 86400);
         }
 
         // within 60 days
@@ -1078,45 +1081,23 @@ else {
 
 class FormattedLocalDate
 implements TemplateVariable {
-
     var $date;
     var $timezone;
-    var $datetime;
     var $fromdb;
-    var $format;
 
-    function __construct($date,  $options=array()) {
-
-        // Date to be formatted
-        $this->datetime = Format::parseDateTime($date);
-        $this->date = $this->datetime->getTimestamp();
-        // Desired timezone
-        if (isset($options['timezone']))
-            $this->timezone = $options['timezone'];
-        else
-            $this->timezone = false;
-        // User
-        if (isset($options['user']))
-            $this->user = $options['user'];
-        else
-            $this->user = false;
-
-        // DB date or nah?
-        if (isset($options['fromdb']))
-            $this->fromdb = $options['fromdb'];
-        else
-            $this->fromdb = true;
-        // Desired format
-        if (isset($options['format']) && $options['format'])
-            $this->format = $options['format'];
-    }
-
-    function getDateTime() {
-        return $this->datetime;
+    function __construct($date, $timezone=false, $user=false, $fromdb=true) {
+        $this->date = $date;
+        $this->timezone = $timezone;
+        $this->user = $user;
+        $this->fromdb = $fromdb;
     }
 
     function asVar() {
-        return $this->getVar($this->format ?: 'long');
+        return $this->getVar('long');
+    }
+
+    function __toString() {
+        return $this->asVar();
     }
 
     function getVar($what) {
@@ -1126,16 +1107,12 @@ implements TemplateVariable {
         case 'short':
             return Format::date($this->date, $this->fromdb, false, $this->timezone, $this->user);
         case 'long':
-            return Format::datetime($this->date, $this->fromdb, false, $this->timezone, $this->user);
+            return Format::datetime($this->date, $this->fromdb, $this->timezone, $this->user);
         case 'time':
             return Format::time($this->date, $this->fromdb, false, $this->timezone, $this->user);
         case 'full':
-            return Format::daydatetime($this->date, $this->fromdb, false, $this->timezone, $this->user);
+            return Format::daydatetime($this->date, $this->fromdb, $this->timezone, $this->user);
         }
-    }
-
-    function __toString() {
-        return $this->asVar() ?: '';
     }
 
     static function getVarScope() {
@@ -1156,28 +1133,7 @@ extends FormattedLocalDate {
 
     function __toString() {
         global $cfg;
-
-        $timezone = new DatetimeZone($this->timezone ?:
-                $cfg->getTimezone());
-        $options = array(
-                'timezone'  => $timezone->getName(),
-                'fromdb'    => $this->fromdb,
-                'format'    => $this->format
-                );
-
-        $val = (string) new FormattedLocalDate($this->date, $options);
-        if ($this->timezone && $this->format == 'long') {
-            try {
-                $this->datetime->setTimezone($timezone);
-                $val = sprintf('%s %s',
-                        $val, $this->datetime->format('T'));
-
-            } catch(Exception $ex) {
-                // ignore
-            }
-        }
-
-        return $val;
+        return (string) new FormattedLocalDate($this->date, $cfg->getTimezone(), false, $this->fromdb);
     }
 
     function getVar($what, $context=null) {
@@ -1190,19 +1146,13 @@ extends FormattedLocalDate {
         case 'user':
             // Fetch $recipient from the context and find that user's time zone
             if ($context && ($recipient = $context->getObj('recipient'))) {
-                $options = array(
-                        'timezone' => $recipient->getTimezone() ?: $cfg->getDefaultTimezone(),
-                        'user' => $recipient
-                        );
-                return new FormattedLocalDate($this->date, $options);
+                $tz = $recipient->getTimezone() ?: $cfg->getDefaultTimezone();
+                return new FormattedLocalDate($this->date, $tz, $recipient);
             }
             // Don't resolve the variable until correspondance is sent out
             return false;
         case 'system':
-            return new FormattedLocalDate($this->date, array(
-                        'timezone' => $cfg->getDefaultTimezone()
-                        )
-                    );
+            return new FormattedLocalDate($this->date, $cfg->getDefaultTimezone());
         }
     }
 

@@ -184,43 +184,25 @@ class AttachmentFile extends VerySimpleModel {
         exit();
     }
 
-    function getDownloadUrl($options=array()) {
-        // Add attachment ref id if object type is set
-        if (isset($options['type'])
-                && !isset($options['id'])
-                && ($a=$this->attachments->findFirst(array(
-                            'type' => $options['type']))))
-            $options['id'] = $a->getId();
-
+    function getDownloadUrl($minage=false, $disposition=false, $handler=false) {
+        // XXX: Drop this when AttachmentFile goes to ORM
         return static::generateDownloadUrl($this->getId(),
-                strtolower($this->getKey()), $this->getSignature(),
-                $options);
+            strtolower($this->getKey()), $this->getSignature(), $minage,
+            $disposition, $handler);
     }
 
-    // Generates full download URL for external sources.
-    // e.g. https://domain.tld/file.php?args=123
-    function getExternalDownloadUrl($options=array()) {
-        global $cfg;
-
-        $download = self::getDownloadUrl($options);
-        // Separate URL handle and args
-        list($handle, $args) = explode('file.php?', $download);
-
-        return (string) rtrim($cfg->getBaseUrl(), '/').'/file.php?'.$args;
-    }
-
-    static function generateDownloadUrl($id, $key, $hash, $options = array()) {
-
-        // Expire at the nearest midnight, allow at least12 hrs access
-        $minage = @$options['minage'] ?: 43200;
-        $gmnow = Misc::gmtime() +  $options['minage'];
+    static function generateDownloadUrl($id, $key, $hash, $minage=false,
+        $disposition=false, $handler=false
+    ) {
+        // Expire at the nearest midnight, allowing at least 12 hours access
+        $minage = $minage ?: 43200;
+        $gmnow = Misc::gmtime() + $minage;
         $expires = $gmnow + 86400 - ($gmnow % 86400);
 
         // Generate a signature based on secret content
         $signature = static::_genUrlSignature($id, $key, $hash, $expires);
 
-        // Handler / base url
-        $handler = @$options['handler'] ?: ROOT_PATH . 'file.php';
+        $handler = $handler ?: ROOT_PATH . 'file.php';
 
         // Return sanitized query string
         $args = array(
@@ -229,13 +211,10 @@ class AttachmentFile extends VerySimpleModel {
             'signature' => $signature,
         );
 
-        if (isset($options['disposition']))
-            $args['disposition'] =  $options['disposition'];
+        if ($disposition)
+            $args['disposition'] = $disposition;
 
-        if (isset($options['id']))
-            $args['id'] =  $options['id'];
-
-        return sprintf('%s?%s', $handler, http_build_query($args));
+        return $handler . '?' . http_build_query($args);
     }
 
     function verifySignature($signature, $expires) {
@@ -260,6 +239,7 @@ class AttachmentFile extends VerySimpleModel {
         return hash_hmac('sha1', implode("\n", $pieces), SECRET_SALT);
     }
 
+<<<<<<< HEAD
     function download($name=false, $disposition=false, $expires=false) {
         $thisstaff = StaffAuthenticationBackend::getUser();
         $inline = ($thisstaff ? ($thisstaff->getImageAttachmentView() === 'inline') : false);
@@ -267,13 +247,23 @@ class AttachmentFile extends VerySimpleModel {
               || $inline)
               && strpos($this->getType(), 'image/') !== false)
             ? 'inline' : 'attachment';
+=======
+    function download($disposition=false, $expires=false) {
+        $disposition = $disposition ?: 'inline';
+>>>>>>> parent of 7093d97... 2020 Update
         $bk = $this->open();
         if ($bk->sendRedirectUrl($disposition))
             return;
         $ttl = ($expires) ? $expires - Misc::gmtime() : false;
         $this->makeCacheable($ttl);
         $type = $this->getType() ?: 'application/octet-stream';
+<<<<<<< HEAD
         Http::download($name ?: $this->getName(), $type, null, $disposition);
+=======
+        if (isset($_REQUEST['overridetype']))
+            $type = $_REQUEST['overridetype'];
+        Http::download($this->getName(), $type, null, 'inline');
+>>>>>>> parent of 7093d97... 2020 Update
         header('Content-Length: '.$this->getSize());
         $this->sendData(false);
         exit();
@@ -662,7 +652,7 @@ class AttachmentFile extends VerySimpleModel {
             ->filter(array(
                 'attachments__object_id__isnull' => true,
                 'ft' => 'T',
-                'created__lt' => SqlFunction::NOW()->minus(SqlInterval::DAY(1)),
+                'created__gt' => new DateTime('now -1 day'),
             ));
 
         foreach ($files as $f) {

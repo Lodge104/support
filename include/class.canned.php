@@ -138,7 +138,7 @@ extends VerySimpleModel {
 
                 $resp['files'] = array();
                 foreach ($this->getAttachedFiles(!$html) as $file) {
-                    $_SESSION[':cannedFiles'][$file->id] = $file->name;
+                    $_SESSION[':cannedFiles'][$file->id] = 1;
                     $resp['files'][] = array(
                         'id' => $file->id,
                         'name' => $file->name,
@@ -267,7 +267,7 @@ extends VerySimpleModel {
 
         $id = isset($this->canned_id) ? $this->canned_id : null;
         if ($id && $id != $vars['id'])
-            $errors['err']=sprintf('%s - %s', __('Internal error occurred'), __('Please try again!'));
+            $errors['err']=__('Internal error. Try again');
 
         if (!$vars['title'])
             $errors['title'] = __('Title required');

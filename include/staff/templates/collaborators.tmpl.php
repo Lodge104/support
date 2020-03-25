@@ -3,13 +3,7 @@
 <?php
 if($info && $info['msg']) {
     echo sprintf('<p id="msg_notice" style="padding-top:2px;">%s</p>', $info['msg']);
-}
-
-if ($thread->object_type == 'T')
-  $type = '\'tickets\'';
-if ($thread->object_type == 'A')
-  $type = '\'tasks\'';
-?>
+} ?>
 <hr/>
 <?php
 if(($users=$thread->getCollaborators())) {?>
@@ -19,14 +13,13 @@ if(($users=$thread->getCollaborators())) {?>
     <?php
     foreach($users as $user) {
         $checked = $user->isActive() ? 'checked="checked"' : '';
-        $cc = $user->isCc() ? 'selected="selected"' : '';
-
         echo sprintf('<tr>
                         <td>
                             <label class="inline checkbox">
                             <input type="checkbox" name="cid[]" id="c%d" value="%d" %s>
                             </label>
                             <a class="collaborator" href="#thread/%d/collaborators/%d/view">%s%s</a>
+<<<<<<< HEAD
                             <div align="left">
                                 <span class="faded"><em>%s</em></span>
                             </div>
@@ -49,15 +42,32 @@ if(($users=$thread->getCollaborators())) {?>
             </td>
             <td width="30">&nbsp;</td>
             </tr>',$user->getId(), $user->getId());
+=======
+                            <span class="faded"><em>%s</em></span></td>
+                        <td width="10">
+                            <input type="hidden" name="del[]" id="d%d" value="">
+                            <a class="remove" href="#d%d">&times;</a></td>
+                        <td width="30">&nbsp;</td>
+                    </tr>',
+                    $user->getId(),
+                    $user->getId(),
+                    $checked,
+                    $thread->getId(),
+                    $user->getId(),
+                    (($U = $user->getUser()) && ($A = $U->getAvatar()))
+                        ? $U->getAvatar()->getImageTag(24) : '',
+                    Format::htmlchars($user->getName()),
+                    $user->getEmail(),
+                    $user->getId(),
+                    $user->getId());
+>>>>>>> parent of 7093d97... 2020 Update
     }
     ?>
-    <td>
-      <div><a class="collaborator" id="addcollaborator"
-          href="#thread/<?php echo $thread->getId(); ?>/add-collaborator/addcc"
-          ><i class="icon-plus-sign"></i> <?php echo __('Add Collaborator'); ?></a></div>
-    </td>
     </table>
     <hr style="margin-top:1em"/>
+    <div><a class="collaborator"
+        href="#thread/<?php echo $thread->getId(); ?>/add-collaborator"
+        ><i class="icon-plus-sign"></i> <?php echo __('Add New Collaborator'); ?></a></div>
     <div id="savewarning" style="display:none; padding-top:2px;"><p
     id="msg_warning"><?php echo __('You have made changes that you need to save.'); ?></p></div>
     <p class="full-width">
@@ -77,6 +87,7 @@ if(($users=$thread->getCollaborators())) {?>
     echo __("Bro, not sure how you got here!");
 }
 
+<<<<<<< HEAD
 if ($_POST && $thread) {
     $collabs = $thread->getCollaborators();
     foreach ($collabs as $c) {
@@ -87,6 +98,14 @@ if ($_POST && $thread) {
                   $c->getName());
     }
     $recipients = sprintf(__('(%d of %d)'),
+=======
+if ($_POST && $thread && $thread->getNumCollaborators()) {
+
+    $collaborators = sprintf('Participants (%d)',
+            $thread->getNumCollaborators());
+
+    $recipients = sprintf(__('Recipients (%d of %d)'),
+>>>>>>> parent of 7093d97... 2020 Update
           $thread->getNumActiveCollaborators(),
           $thread->getNumCollaborators());
     ?>

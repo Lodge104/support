@@ -10,15 +10,12 @@ $users = User::objects()
 
 if ($_REQUEST['query']) {
     $search = $_REQUEST['query'];
-    $filter = Q::any(array(
+    $users->filter(Q::any(array(
         'emails__address__contains' => $search,
         'name__contains' => $search,
         'org__name__contains' => $search,
-    ));
-    if (UserForm::getInstance()->getField('phone'))
-        $filter->add(array('cdata__phone__contains' => $search));
-
-    $users->filter($filter);
+        // TODO: Add search for cdata
+    )));
     $qs += array('query' => $_REQUEST['query']);
 }
 
@@ -314,10 +311,5 @@ $(function() {
         goBaby($(this).attr('href').substr(1));
         return false;
     });
-
-    // Remove CSRF Token From GET Request
-    document.querySelector("form[action='users.php']").onsubmit = function() {
-        document.getElementsByName("__CSRFToken__")[0].remove();
-    };
 });
 </script>

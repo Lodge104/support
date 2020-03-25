@@ -52,14 +52,12 @@ class Misc {
     }
 
     /* Helper used to generate ticket IDs */
-    function randNumber($len=6) {
-        $number = '';
-        for ($i=0; $i<$len; $i++) {
-            $min = ($i == 0) ? 1 : 0;
-            $number .= mt_rand($min, 9);
-        }
+    function randNumber($len=6,$start=false,$end=false) {
 
-        return (int) $number;
+        $start=(!$len && $start)?$start:str_pad(1,$len,"0",STR_PAD_RIGHT);
+        $end=(!$len && $end)?$end:str_pad(9,$len,"9",STR_PAD_RIGHT);
+
+        return mt_rand($start,$end);
     }
 
     /* misc date helpers...this will go away once we move to php 5 */
@@ -146,6 +144,7 @@ class Misc {
         return ((float)$usec + (float)$sec);
     }
 
+<<<<<<< HEAD
     // Date range for the period in a given time
     function date_range($period, $time=false, $tz=null) {
         $time = $time ?: self::gmtime();
@@ -226,6 +225,8 @@ class Misc {
         return (object) array('start' => $start, 'end' => $end);
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     //Current page
     function currentURL() {
 
@@ -249,6 +250,50 @@ class Misc {
         return $str;
     }
 
+<<<<<<< HEAD
+=======
+    function timeDropdown($hr=null, $min =null,$name='time') {
+        global $cfg;
+
+        $hr =is_null($hr)?0:$hr;
+        $min =is_null($min)?0:$min;
+
+        //normalize;
+        if($hr>=24)
+            $hr=$hr%24;
+        elseif($hr<0)
+            $hr=0;
+
+        if($min>=45)
+            $min=45;
+        elseif($min>=30)
+            $min=30;
+        elseif($min>=15)
+            $min=15;
+        else
+            $min=0;
+
+        $time = Misc::user2gmtime(mktime(0,0,0));
+        ob_start();
+        echo sprintf('<select name="%s" id="%s" style="display:inline-block;width:auto">',$name,$name);
+        echo '<option value="" selected>'.__('Time').'</option>';
+        for($i=23; $i>=0; $i--) {
+            for ($minute=45; $minute>=0; $minute-=15) {
+                $sel=($hr==$i && $min==$minute)?'selected="selected"':'';
+                $_minute=str_pad($minute, 2, '0',STR_PAD_LEFT);
+                $_hour=str_pad($i, 2, '0',STR_PAD_LEFT);
+                $disp = Format::time($time + ($i*3600 + $minute*60 + 1), false);
+                echo sprintf('<option value="%s:%s" %s>%s</option>',$_hour,$_minute,$sel,$disp);
+            }
+        }
+        echo '</select>';
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        return $output;
+    }
+
+>>>>>>> parent of 7093d97... 2020 Update
     function realpath($path) {
         $rp = realpath($path);
         return $rp ? $rp : $path;

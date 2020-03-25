@@ -30,6 +30,10 @@ class Config {
     # new settings and the corresponding default values.
     var $defaults = array();                # List of default values
 
+
+    # Items
+    var $items = null;
+
     function __construct($section=null, $defaults=array()) {
         if ($section)
             $this->section = $section;
@@ -136,11 +140,18 @@ class Config {
 
     function destroy() {
         unset($this->session);
-        return $this->items()->delete() > 0;
+        if ($this->items)
+            $this->items->delete();
+
+        return true;
     }
 
     function items() {
-        return ConfigItem::items($this->section, $this->section_column);
+
+        if (!isset($this->items))
+            $this->items = ConfigItem::items($this->section, $this->section_column);
+
+        return $this->items;
     }
 }
 
@@ -172,20 +183,6 @@ extends VerySimpleModel {
             $this->updated = SqlFunction::NOW();
         return parent::save($this->dirty || $refetch);
     }
-
-    // Clean password reset tokens that have expired
-    static function cleanPwResets() {
-        global $cfg;
-
-        if (!$cfg || !($period = $cfg->getPwResetWindow())) // In seconds
-            return false;
-
-        return ConfigItem::objects()
-             ->filter(array(
-                'namespace' => 'pwreset',
-                'updated__lt' => SqlFunction::NOW()->minus(SqlInterval::SECOND($period)),
-            ))->delete();
-    }
 }
 
 class OsticketConfig extends Config {
@@ -208,9 +205,12 @@ class OsticketConfig extends Config {
         'agent_name_format' =>  'full', # First Last
         'client_name_format' => 'original', # As entered
         'auto_claim_tickets'=>  true,
+<<<<<<< HEAD
         'auto_refer_closed' => true,
         'collaborator_ticket_visibility' =>  true,
         'require_topic_to_close' =>  false,
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         'system_language' =>    'en_US',
         'default_storage_bk' => 'D',
         'message_autoresponder_collabs' => true,
@@ -456,6 +456,7 @@ class OsticketConfig extends Config {
         return $this->get('enable_richtext');
     }
 
+<<<<<<< HEAD
     function getAllowIframes() {
         return str_replace(array(', ', ','), array(' ', ' '), $this->get('allow_iframes')) ?: "'self'";
     }
@@ -486,13 +487,10 @@ class OsticketConfig extends Config {
         return $this->get('acl_backend') ?: 0;
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     function isAvatarsEnabled() {
         return $this->get('enable_avatars');
-    }
-
-    function isTicketLockEnabled() {
-        return (($this->getTicketLockMode() != Lock::MODE_DISABLED)
-                && $this->getLockTime());
     }
 
     function getClientTimeout() {
@@ -845,10 +843,6 @@ class OsticketConfig extends Config {
         return $sequence;
     }
 
-    function showTopLevelTicketCounts() {
-        return ($this->get('queue_bucket_counts'));
-    }
-
     function getDefaultTicketNumberFormat() {
         return $this->get('ticket_number_format');
     }
@@ -1006,20 +1000,21 @@ class OsticketConfig extends Config {
         return $this->get('auto_claim_tickets');
     }
 
+<<<<<<< HEAD
     function autoReferTicketsOnClose() {
          return $this->get('auto_refer_closed');
     }
 
     function collaboratorTicketsVisibility() {
         return $this->get('collaborator_ticket_visibility');
+=======
+    function showAssignedTickets() {
+        return ($this->get('show_assigned_tickets'));
+>>>>>>> parent of 7093d97... 2020 Update
     }
 
-    function requireTopicToClose() {
-        return $this->get('require_topic_to_close');
-    }
-
-    function getDefaultTicketQueueId() {
-        return $this->get('default_ticket_queue', 1);
+    function showAnsweredTickets() {
+        return ($this->get('show_answered_tickets'));
     }
 
     function hideStaffName() {
@@ -1189,7 +1184,7 @@ class OsticketConfig extends Config {
                 return $this->updateKBSettings($vars, $errors);
                 break;
             default:
-                $errors['err']=sprintf('%s - %s', __('Unknown setting option'), __('Get technical help!'));
+                $errors['err']=__('Unknown setting option. Get technical support.');
         }
 
         return false;
@@ -1202,9 +1197,12 @@ class OsticketConfig extends Config {
         $f['helpdesk_title']=array('type'=>'string',   'required'=>1, 'error'=>__('Helpdesk title is required'));
         $f['default_dept_id']=array('type'=>'int',   'required'=>1, 'error'=>__('Default Department is required'));
         $f['autolock_minutes']=array('type'=>'int',   'required'=>1, 'error'=>__('Enter lock time in minutes'));
+<<<<<<< HEAD
         $f['allow_iframes']=array('type'=>'cs-url',   'required'=>0, 'error'=>__('Enter comma separated list of urls'));
         $f['embedded_domain_whitelist']=array('type'=>'cs-domain',   'required'=>0, 'error'=>__('Enter comma separated list of domains'));
         $f['acl']=array('type'=>'ipaddr',   'required'=>0, 'error'=>__('Enter comma separated list of IP addresses'));
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         //Date & Time Options
         $f['time_format']=array('type'=>'string',   'required'=>1, 'error'=>__('Time format is required'));
         $f['date_format']=array('type'=>'string',   'required'=>1, 'error'=>__('Date format is required'));
@@ -1213,6 +1211,7 @@ class OsticketConfig extends Config {
         $f['default_timezone']=array('type'=>'string',   'required'=>1, 'error'=>__('Default Timezone is required'));
         $f['system_language']=array('type'=>'string',   'required'=>1, 'error'=>__('A primary system language is required'));
 
+<<<<<<< HEAD
         $vars = Format::htmlchars($vars, true);
 
         // ACL Checks
@@ -1227,6 +1226,8 @@ class OsticketConfig extends Config {
         } elseif ((int) $vars['acl_backend'] !== 0)
             $errors['acl'] = __('IP address required when selecting panel');
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         // Make sure the selected backend is valid
         $storagebk = null;
         if (isset($vars['default_storage_bk'])) {
@@ -1276,10 +1277,13 @@ class OsticketConfig extends Config {
             'enable_avatars' => isset($vars['enable_avatars']) ? 1 : 0,
             'enable_richtext' => isset($vars['enable_richtext']) ? 1 : 0,
             'files_req_auth' => isset($vars['files_req_auth']) ? 1 : 0,
+<<<<<<< HEAD
             'allow_iframes' => Format::sanitize($vars['allow_iframes']),
             'embedded_domain_whitelist' => Format::sanitize($vars['embedded_domain_whitelist']),
             'acl' => Format::sanitize($vars['acl']),
             'acl_backend' => Format::sanitize((int) $vars['acl_backend']) ?: 0,
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         ));
     }
 
@@ -1360,30 +1364,15 @@ class OsticketConfig extends Config {
         if (!preg_match('`(?!<\\\)#`', $vars['ticket_number_format']))
             $errors['ticket_number_format'] = 'Ticket number format requires at least one hash character (#)';
 
-        if (!isset($vars['default_ticket_queue']))
-            $errors['default_ticket_queue'] = __("Select a default ticket queue");
-        elseif (!CustomQueue::lookup($vars['default_ticket_queue']))
-            $errors['default_ticket_queue'] = __("Select a default ticket queue");
-
         $this->updateAutoresponderSettings($vars, $errors);
         $this->updateAlertsSettings($vars, $errors);
 
         if(!Validator::process($f, $vars, $errors) || $errors)
             return false;
 
-        // Sort ticket queues
-        $queues = CustomQueue::queues()->getIterator();
-        foreach ($vars['qsort'] as $queue_id => $sort) {
-            if ($q = $queues->findFirst(array('id' => $queue_id))) {
-                $q->sort = $sort;
-                $q->save();
-            }
-        }
-
         return $this->updateAll(array(
             'ticket_number_format'=>$vars['ticket_number_format'] ?: '######',
             'ticket_sequence_id'=>$vars['ticket_sequence_id'] ?: 0,
-            'queue_bucket_counts'=>isset($vars['queue_bucket_counts'])?1:0,
             'default_priority_id'=>$vars['default_priority_id'],
             'default_help_topic'=>$vars['default_help_topic'],
             'default_ticket_status_id'=>$vars['default_ticket_status_id'],
@@ -1391,13 +1380,17 @@ class OsticketConfig extends Config {
             'max_open_tickets'=>$vars['max_open_tickets'],
             'enable_captcha'=>isset($vars['enable_captcha'])?1:0,
             'auto_claim_tickets'=>isset($vars['auto_claim_tickets'])?1:0,
+<<<<<<< HEAD
             'auto_refer_closed' => isset($vars['auto_refer_closed']) ? 1 : 0,
             'collaborator_ticket_visibility'=>isset($vars['collaborator_ticket_visibility'])?1:0,
             'require_topic_to_close'=>isset($vars['require_topic_to_close'])?1:0,
+=======
+            'show_assigned_tickets'=>isset($vars['show_assigned_tickets'])?0:1,
+            'show_answered_tickets'=>isset($vars['show_answered_tickets'])?0:1,
+>>>>>>> parent of 7093d97... 2020 Update
             'show_related_tickets'=>isset($vars['show_related_tickets'])?1:0,
             'allow_client_updates'=>isset($vars['allow_client_updates'])?1:0,
             'ticket_lock' => $vars['ticket_lock'],
-            'default_ticket_queue'=>$vars['default_ticket_queue'],
         ));
     }
 

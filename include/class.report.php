@@ -77,29 +77,38 @@ class OverviewReport {
 
     function getPlotData() {
         list($start, $stop) = $this->getDateRange();
-        $states = array("created", "closed", "reopened", "assigned", "overdue", "transferred");
-        $event_ids = Event::getIds();
 
         # Fetch all types of events over the timeframe
-        $res = db_query('SELECT DISTINCT(E.name) FROM '.THREAD_EVENT_TABLE
-            .' T JOIN '.EVENT_TABLE . ' E ON E.id = T.event_id'
+        $res = db_query('SELECT DISTINCT(state) FROM '.THREAD_EVENT_TABLE
             .' WHERE timestamp BETWEEN '.$start.' AND '.$stop
+<<<<<<< HEAD
             .' AND T.event_id IN ('.implode(",",$event_ids).') AND T.thread_type = "T"'
+=======
+            .' AND state IN ("created", "closed", "reopened", "assigned", "overdue", "transferred")'
+>>>>>>> parent of 7093d97... 2020 Update
             .' ORDER BY 1');
         $events = array();
         while ($row = db_fetch_row($res)) $events[] = $row[0];
 
         # TODO: Handle user => db timezone offset
         # XXX: Implement annulled column from the %ticket_event table
+<<<<<<< HEAD
         $res = db_query('SELECT H.name, DATE_FORMAT(timestamp, \'%Y-%m-%d\'), '
                 .'COUNT(DISTINCT E.id)'
             .' FROM '.THREAD_EVENT_TABLE. ' E '
             . ' LEFT JOIN '.EVENT_TABLE. ' H
                 ON (E.event_id = H.id)'
+=======
+        $res = db_query('SELECT state, DATE_FORMAT(timestamp, \'%Y-%m-%d\'), '
+                .'COUNT(DISTINCT T.id)'
+            .' FROM '.THREAD_EVENT_TABLE. ' E '
+            .' JOIN '.THREAD_TABLE. ' T
+                ON (T.id = E.thread_id AND T.object_type = "T") '
+>>>>>>> parent of 7093d97... 2020 Update
             .' WHERE E.timestamp BETWEEN '.$start.' AND '.$stop
             .' AND NOT annulled'
-            .' AND E.event_id IN ('.implode(",",$event_ids).')'
-            .' GROUP BY E.event_id, DATE_FORMAT(E.timestamp, \'%Y-%m-%d\')'
+            .' AND E.state IN ("created", "closed", "reopened", "assigned", "overdue", "transferred")'
+            .' GROUP BY E.state, DATE_FORMAT(E.timestamp, \'%Y-%m-%d\')'
             .' ORDER BY 2, 1');
         # Initialize array of plot values
         $plots = array();
@@ -142,6 +151,7 @@ class OverviewReport {
     function getTabularData($group='dept') {
         global $thisstaff;
 
+<<<<<<< HEAD
         $event_ids = Event::getIds();
         $event = function ($name) use ($event_ids) {
             return $event_ids[$name];
@@ -149,32 +159,55 @@ class OverviewReport {
         $dash_headers = array(__('Opened'),__('Assigned'),__('Overdue'),__('Closed'),__('Reopened'),
                               __('Deleted'),__('Service Time'),__('Response Time'));
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         list($start, $stop) = $this->getDateRange();
-        $times = ThreadEvent::objects()
+        $times = Ticket::objects()
             ->constrain(array(
                 'thread__entries' => array(
-                    'thread__entries__type' => 'R',
-                    ),
-               ))
-            ->constrain(array(
-                'thread__events' => array(
-                    'thread__events__event_id' => $event('created'),
-                    'event_id' => $event('closed'),
-                    'annulled' => 0,
-                    ),
-                ))
-            ->filter(array(
-                    'timestamp__range' => array($start, $stop, true),
-               ))
-            ->aggregate(array(
-                'ServiceTime' => SqlAggregate::AVG(SqlFunction::timestampdiff(
-                  new SqlCode('HOUR'), new SqlField('thread__events__timestamp'), new SqlField('timestamp'))
+                    'thread__entries__type' => 'R'
                 ),
-                'ResponseTime' => SqlAggregate::AVG(SqlFunction::timestampdiff(
-                    new SqlCode('HOUR'),new SqlField('thread__entries__parent__created'), new SqlField('thread__entries__created')
+            ))
+            ->aggregate(array(
+                'ServiceTime' => SqlAggregate::AVG(SqlFunction::DATEDIFF(
+                    new SqlField('closed'), new SqlField('created')
+                )),
+                'ResponseTime' => SqlAggregate::AVG(SqlFunction::DATEDIFF(
+                    new SqlField('thread__entries__created'), new SqlField('thread__entries__parent__created')
                 )),
             ));
 
+        $stats = Ticket::objects()
+            ->constrain(array(
+                'thread__events' => array(
+                    'thread__events__annulled' => 0,
+                    'thread__events__timestamp__range' => array($start, $stop),
+                ),
+            ))
+            ->aggregate(array(
+                'Opened' => SqlAggregate::COUNT(
+                    SqlCase::N()
+                        ->when(new Q(array('thread__events__state' => 'created')), 1)
+                ),
+                'Assigned' => SqlAggregate::COUNT(
+                    SqlCase::N()
+                        ->when(new Q(array('thread__events__state' => 'assigned')), 1)
+                ),
+                'Overdue' => SqlAggregate::COUNT(
+                    SqlCase::N()
+                        ->when(new Q(array('thread__events__state' => 'overdue')), 1)
+                ),
+                'Closed' => SqlAggregate::COUNT(
+                    SqlCase::N()
+                        ->when(new Q(array('thread__events__state' => 'closed')), 1)
+                ),
+                'Reopened' => SqlAggregate::COUNT(
+                    SqlCase::N()
+                        ->when(new Q(array('thread__events__state' => 'reopened')), 1)
+                ),
+            ));
+
+<<<<<<< HEAD
             $stats = ThreadEvent::objects()
                 ->filter(array(
                         'annulled' => 0,
@@ -208,48 +241,45 @@ class OverviewReport {
                     ),
                 ));
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         switch ($group) {
         case 'dept':
             $headers = array(__('Department'));
             $header = function($row) { return Dept::getLocalNameById($row['dept_id'], $row['dept__name']); };
-            $pk = 'dept__id';
+            $pk = 'dept_id';
             $stats = $stats
                 ->filter(array('dept_id__in' => $thisstaff->getDepts()))
-                ->values('dept__id', 'dept__name', 'dept__flags')
-                ->distinct('dept__id');
+                ->values('dept__id', 'dept__name');
             $times = $times
                 ->filter(array('dept_id__in' => $thisstaff->getDepts()))
-                ->values('dept__id')
-                ->distinct('dept__id');
+                ->values('dept__id');
             break;
         case 'topic':
             $headers = array(__('Help Topic'));
             $header = function($row) { return Topic::getLocalNameById($row['topic_id'], $row['topic__topic']); };
             $pk = 'topic_id';
+<<<<<<< HEAD
             $topics = Topic::getHelpTopics(false, Topic::DISPLAY_DISABLED);
             if (empty($topics))
                 return array("columns" => array_merge($headers, $dash_headers),
                       "data" => array());
+=======
+>>>>>>> parent of 7093d97... 2020 Update
             $stats = $stats
-                ->values('topic_id', 'topic__topic', 'topic__flags')
-                ->filter(array('dept_id__in' => $thisstaff->getDepts(), 'topic_id__gt' => 0, 'topic_id__in' => array_keys($topics)))
-                ->distinct('topic_id');
+                ->values('topic_id', 'topic__topic')
+                ->filter(array('topic_id__gt' => 0));
             $times = $times
                 ->values('topic_id')
-                ->filter(array('topic_id__gt' => 0))
-                ->distinct('topic_id');
+                ->filter(array('topic_id__gt' => 0));
             break;
         case 'staff':
             $headers = array(__('Agent'));
             $header = function($row) { return new AgentsName(array(
                 'first' => $row['staff__firstname'], 'last' => $row['staff__lastname'])); };
             $pk = 'staff_id';
-            $staff = Staff::getStaffMembers();
-            $stats = $stats
-                ->values('staff_id', 'staff__firstname', 'staff__lastname')
-                ->filter(array('staff_id__in' => array_keys($staff)))
-                ->distinct('staff_id');
-            $times = $times->values('staff_id')->distinct('staff_id');
+            $stats = $stats->values('staff_id', 'staff__firstname', 'staff__lastname');
+            $times = $times->values('staff_id');
             $depts = $thisstaff->getManagedDepartments();
             if ($thisstaff->hasPerm(ReportModel::PERM_AGENTS))
                 $depts = array_merge($depts, $thisstaff->getDepts());
@@ -269,32 +299,22 @@ class OverviewReport {
         foreach ($times as $T) {
             $timings[$T[$pk]] = $T;
         }
+
         $rows = array();
         foreach ($stats as $R) {
-          if (isset($R['dept__flags'])) {
-            if ($R['dept__flags'] & Dept::FLAG_ARCHIVED)
-              $status = ' - '.__('Archived');
-            elseif ($R['dept__flags'] & Dept::FLAG_ACTIVE)
-              $status = '';
-            else
-              $status = ' - '.__('Disabled');
-          }
-          if (isset($R['topic__flags'])) {
-            if ($R['topic__flags'] & Topic::FLAG_ARCHIVED)
-              $status = ' - '.__('Archived');
-            elseif ($R['topic__flags'] & Topic::FLAG_ACTIVE)
-              $status = '';
-            else
-              $status = ' - '.__('Disabled');
-          }
-
             $T = $timings[$R[$pk]];
-            $rows[] = array($header($R) . $status, $R['Opened'], $R['Assigned'],
-                $R['Overdue'], $R['Closed'], $R['Reopened'], $R['Deleted'],
+            $rows[] = array($header($R), $R['Opened'], $R['Assigned'],
+                $R['Overdue'], $R['Closed'], $R['Reopened'],
                 number_format($T['ServiceTime'], 1),
                 number_format($T['ResponseTime'], 1));
         }
+<<<<<<< HEAD
         return array("columns" => array_merge($headers, $dash_headers),
+=======
+        return array("columns" => array_merge($headers,
+                        array(__('Opened'),__('Assigned'),__('Overdue'),__('Closed'),__('Reopened'),
+                              __('Service Time'),__('Response Time'))),
+>>>>>>> parent of 7093d97... 2020 Update
                      "data" => $rows);
     }
 }

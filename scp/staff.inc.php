@@ -15,15 +15,11 @@
 **********************************************************************/
 if(basename($_SERVER['SCRIPT_NAME'])==basename(__FILE__)) die('Access denied'); //Say hi to our friend..
 
-if(!file_exists('../main.inc.php')) die('Fatal error... Get technical help!');
+if(!file_exists('../main.inc.php')) die('Fatal error... get technical support');
 
 require_once('../main.inc.php');
 
 if(!defined('INCLUDE_DIR')) die('Fatal error... invalid setting.');
-
-// Enforce ACL (if applicable)
-if (!Validator::check_acl('staff'))
-    die(__('Access Denied'));
 
 /*Some more include defines specific to staff only */
 define('STAFFINC_DIR',INCLUDE_DIR.'staff/');
@@ -82,7 +78,7 @@ if (!$thisstaff || !$thisstaff->getId() || !$thisstaff->isValid()) {
 //2) if not super admin..check system status and group status
 if(!$thisstaff->isAdmin()) {
     //Check for disabled staff or group!
-    if (!$thisstaff->isActive()) {
+    if (!$thisstaff->isactive()) {
         staffLoginPage(__('Access Denied. Contact Admin'));
         exit;
     }

@@ -22,19 +22,13 @@ class PageNate {
     var $total;
     var $page;
     var $pages;
-    var $approx=false;
 
 
     function __construct($total,$page,$limit=20,$url='') {
+        $this->total = intval($total);
         $this->limit = max($limit, 1 );
         $this->page  = max($page, 1 );
         $this->start = max((($page-1)*$this->limit),0);
-        $this->setURL($url);
-        $this->setTotal($total);
-    }
-
-    function setTotal($total, $approx=false) {
-        $this->total = intval($total);
         $this->pages = ceil( $this->total / $this->limit );
 
         if (($this->limit > $this->total) || ($this->page>ceil($this->total/$this->limit))) {
@@ -43,7 +37,7 @@ class PageNate {
         if (($this->limit-1)*$this->start > $this->total) {
             $this->start -= $this->start % $this->limit;
         }
-        $this->approx = $approx;
+        $this->setURL($url);
     }
 
     function setURL($url='',$vars='') {
@@ -99,12 +93,8 @@ class PageNate {
         }
         $html=__('Showing')."&nbsp;";
         if ($this->total > 0) {
-            if ($this->approx)
-                $html .= sprintf(__('%1$d - %2$d of about %3$d' /* Used in pagination output */),
-                   $start, $end, $this->total);
-            else
-                $html .= sprintf(__('%1$d - %2$d of %3$d' /* Used in pagination output */),
-                   $start, $end, $this->total);
+            $html .= sprintf(__('%1$d - %2$d of %3$d' /* Used in pagination output */),
+               $start, $end, $this->total);
         }else{
             $html .= " 0 ";
         }
@@ -168,10 +158,6 @@ class PageNate {
         $start = $this->getStart();
         $end = min($start + $this->getLimit() + $this->slack + ($start > 0 ? $this->slack : 0), $this->total);
         return $qs->limit($end-$start)->offset($start);
-    }
-
-    function paginateSimple(QuerySet $qs) {
-        return $qs->limit($this->getLimit() + $this->slack)->offset($this->getStart());
     }
 
 }

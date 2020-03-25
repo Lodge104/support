@@ -13,10 +13,9 @@
 
     vim: expandtab sw=4 ts=4 sts=4:
 **********************************************************************/
-require_once INCLUDE_DIR . 'class.search.php';
 
 class Dept extends VerySimpleModel
-implements TemplateVariable, Searchable {
+implements TemplateVariable {
 
     static $meta = array(
         'table' => DEPT_TABLE,
@@ -64,17 +63,19 @@ implements TemplateVariable, Searchable {
     var $autorespEmail;
 
     const ALERTS_DISABLED = 2;
-    const DISPLAY_DISABLED = 2;
     const ALERTS_DEPT_AND_EXTENDED = 1;
     const ALERTS_DEPT_ONLY = 0;
     const ALERTS_ADMIN_ONLY = 3;
 
     const FLAG_ASSIGN_MEMBERS_ONLY = 0x0001;
     const FLAG_DISABLE_AUTO_CLAIM  = 0x0002;
+<<<<<<< HEAD
     const FLAG_ACTIVE = 0x0004;
     const FLAG_ARCHIVED = 0x0008;
     const FLAG_ASSIGN_PRIMARY_ONLY = 0x0010;
     const FLAG_DISABLE_REOPEN_AUTO_ASSIGN = 0x0020;
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 
     function asVar() {
         return $this->getName();
@@ -107,21 +108,6 @@ implements TemplateVariable, Searchable {
         }
     }
 
-    static function getSearchableFields() {
-        return array(
-            'name' => new TextboxField(array(
-                'label' => __('Name'),
-            )),
-            'manager' => new DepartmentManagerSelectionField(array(
-                'label' => __('Manager'),
-            )),
-        );
-    }
-
-    static function supportsCustomData() {
-        return false;
-    }
-
     function getId() {
         return $this->id;
     }
@@ -150,45 +136,6 @@ implements TemplateVariable, Searchable {
 
     function getFullName() {
         return self::getNameById($this->getId());
-    }
-
-    function getStatus() {
-        if($this->flags & self::FLAG_ACTIVE)
-          return __('Active');
-        elseif($this->flags & self::FLAG_ARCHIVED)
-          return __('Archived');
-        else
-          return __('Disabled');
-    }
-
-    function allowsReopen() {
-      return !($this->flags & self::FLAG_ARCHIVED);
-    }
-
-    function isActive() {
-        return !!($this->flags & self::FLAG_ACTIVE);
-    }
-
-    function clearInactiveDept($dept_id) {
-      global $cfg;
-
-      $topics = Topic::objects()->filter(array('dept_id'=>$dept_id))->values_flat('topic_id');
-      if ($topics) {
-        foreach ($topics as $topic_id) {
-          $topic = Topic::lookup($topic_id[0]);
-          $topic->dept_id = $cfg->getDefaultDeptId();
-          $topic->save();
-        }
-      }
-
-      $emails = Email::objects()->filter(array('dept_id'=>$dept_id))->values_flat('email_id');
-      if ($emails) {
-        foreach ($emails as $email_id) {
-          $email = Email::lookup($email_id[0]);
-          $email->dept_id = $cfg->getDefaultDeptId();
-          $email->save();
-        }
-      }
     }
 
     function getEmailId() {
@@ -273,7 +220,7 @@ implements TemplateVariable, Searchable {
                 if (!$member->staff)
                     continue;
                 // Annoted the staff model with alerts and role
-                $extended[] = AnnotatedModel::wrap($member->staff, array(
+                $extended[] = new AnnotatedModel($member->staff, array(
                     'alerts'  => $member->isAlertsEnabled(),
                     'role_id' => $member->role_id,
                 ));
@@ -285,27 +232,14 @@ implements TemplateVariable, Searchable {
         return $this->_extended_members;
     }
 
-    // Get eligible members only
+    // Get members  eligible members only
     function getAssignees() {
+        $members = clone $this->getAvailableMembers();
+        // If restricted then filter to primary members ONLY!
+        if ($this->assignMembersOnly())
+            $members->filter(array('dept_id' => $this->getId()));
 
-      //this is for if all members is set
-      if (!$this->assignPrimaryOnly() && !$this->assignMembersOnly()) {
-        $members =  Staff::objects()->filter(array(
-            'onvacation' => 0,
-            'isactive' => 1,
-        ));
-
-        return Staff::nsort($members);
-      }
-
-      //this gets just the members of the dept
-      $members = clone $this->getAvailableMembers();
-
-      //this gets just the primary members of the dept
-      if ($this->assignPrimaryOnly())
-        $members->filter(array('dept_id' => $this->getId()));
-
-      return Staff::nsort($members);
+        return $members;
     }
 
     function getMembersForAlerts() {
@@ -393,30 +327,6 @@ implements TemplateVariable, Searchable {
         return ($this->getSignature() && $this->isPublic());
     }
 
-    // Check if an agent or team is eligible for assignment
-    function canAssign($assignee) {
-
-
-        if ($assignee instanceof Staff) {
-            // Primary members only
-            if ($this->assignPrimaryOnly() && !$this->isPrimaryMember($assignee))
-                return false;
-
-            // Extended members only
-            if ($this->assignMembersOnly() && !$this->isMember($assignee))
-                return false;
-        } elseif (!$assignee instanceof Team) {
-            // Assignee can only be an Agent or a Team
-            return false;
-        }
-
-        // Make sure agent / team  is availabe for assignment
-        if (!$assignee->isAvailable())
-             return false;
-
-        return true;
-    }
-
     function getManagerId() {
         return $this->manager_id;
     }
@@ -425,22 +335,20 @@ implements TemplateVariable, Searchable {
         return $this->manager;
     }
 
-    function isManager(Staff $staff) {
-        $staff = $staff->getId();
+    function isManager($staff) {
+        if (is_object($staff))
+            $staff = $staff->getId();
 
         return ($this->getManagerId() && $this->getManagerId()==$staff);
     }
 
-    function isMember(Staff $staff) {
-        $staff = $staff->getId();
+    function isMember($staff) {
+        if (is_object($staff))
+            $staff = $staff->getId();
 
         return $this->getMembers()->findFirst(array(
             'staff_id' => $staff
         ));
-    }
-
-    function isPrimaryMember(Staff $staff) {
-        return ($staff->getDeptId() == $this->getId());
     }
 
     function isPublic() {
@@ -463,19 +371,6 @@ implements TemplateVariable, Searchable {
         return $this->flags & self::FLAG_ASSIGN_MEMBERS_ONLY;
     }
 
-    function assignPrimaryOnly() {
-        return $this->flags & self::FLAG_ASSIGN_PRIMARY_ONLY;
-    }
-
-    function getAssignmentFlag() {
-        if($this->flags & self::FLAG_ASSIGN_MEMBERS_ONLY)
-          return 'members';
-        elseif($this->flags & self::FLAG_ASSIGN_PRIMARY_ONLY)
-          return 'primary';
-        else
-          return 'all';
-    }
-
     function disableAutoClaim() {
         return $this->flags & self::FLAG_DISABLE_AUTO_CLAIM;
     }
@@ -494,10 +389,14 @@ implements TemplateVariable, Searchable {
             foreach (static::$meta['joins'] as $k => $v)
                 unset($ht[$k]);
 
+        $ht['assign_members_only'] = $this->assignMembersOnly();
         $ht['disable_auto_claim'] =  $this->disableAutoClaim();
+<<<<<<< HEAD
         $ht['status'] = $this->getStatus();
         $ht['assignment_flag'] = $this->getAssignmentFlag();
         $ht['disable_reopen_auto_assign'] =  $this->disableReopenAutoAssign();
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         return $ht;
     }
 
@@ -525,11 +424,6 @@ implements TemplateVariable, Searchable {
             // DO SOME HOUSE CLEANING
             //Move tickets to default Dept. TODO: Move one ticket at a time and send alerts + log notes.
             Ticket::objects()
-                ->filter(array('dept_id' => $id))
-                ->update(array('dept_id' => $cfg->getDefaultDeptId()));
-
-            // Move tasks
-            Task::objects()
                 ->filter(array('dept_id' => $id))
                 ->update(array('dept_id' => $cfg->getDefaultDeptId()));
 
@@ -605,7 +499,7 @@ implements TemplateVariable, Searchable {
      *
      */
 
-    public function setFlag($flag, $val) {
+    private function setFlag($flag, $val) {
 
         if ($val)
             $this->flags |= $flag;
@@ -613,6 +507,7 @@ implements TemplateVariable, Searchable {
             $this->flags &= ~$flag;
     }
 
+<<<<<<< HEAD
     function hasFlag($flag) {
         return ($this->get('flags', 0) & $flag) != 0;
     }
@@ -632,6 +527,8 @@ implements TemplateVariable, Searchable {
         Export::departmentMembers($dept, $members, $filename);
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     /*----Static functions-------*/
     static function getIdByName($name, $pid=null) {
         $row = static::objects()
@@ -645,7 +542,7 @@ implements TemplateVariable, Searchable {
     }
 
     function getNameById($id) {
-        $names = Dept::getDepartments();
+        $names = static::getDepartments();
         return $names[$id];
     }
 
@@ -659,8 +556,8 @@ implements TemplateVariable, Searchable {
             : null;
     }
 
-    static function getDepartments($criteria=null, $localize=true, $disabled=true) {
-        $depts = null;
+    static function getDepartments( $criteria=null, $localize=true) {
+        static $depts = null;
 
         if (!isset($depts) || $criteria) {
             // XXX: This will upset the static $depts array
@@ -668,7 +565,7 @@ implements TemplateVariable, Searchable {
             $query = self::objects();
             if (isset($criteria['publiconly']))
                 $query->filter(array(
-                            'flags__hasbit' => Dept::FLAG_ACTIVE));
+                            'ispublic' => ($criteria['publiconly'] ? 1 : 0)));
 
             if ($manager=$criteria['manager'])
                 $query->filter(array(
@@ -683,14 +580,10 @@ implements TemplateVariable, Searchable {
             }
 
             $query->order_by('name')
-                 ->values('id', 'pid', 'flags', 'name', 'parent');
+                ->values('id', 'pid', 'name', 'parent');
 
-            foreach ($query as $row) {
-              $display = ($row['flags'] & self::FLAG_ACTIVE);
-
-              $depts[$row['id']] = array('id' => $row['id'], 'pid'=>$row['pid'], 'name'=>$row['name'],
-                  'parent'=>$row['parent'], 'disabled' => !$display);
-            }
+            foreach ($query as $row)
+                $depts[$row['id']] = $row;
 
             $localize_this = function($id, $default) use ($localize) {
                 if (!$localize)
@@ -717,32 +610,21 @@ implements TemplateVariable, Searchable {
                 // Fetch local names
                 $names[$id] = $localize_this($id, $name);
             }
-
-            // Apply requested filters
-            $requested_names = array();
-            foreach ($names as $id=>$n) {
-                $info = $depts[$id];
-                if (!$disabled && $info['disabled'])
-                    continue;
-                if ($disabled === self::DISPLAY_DISABLED && $info['disabled'])
-                    $n .= " - ".__("(disabled)");
-
-                $requested_names[$id] = $n;
-            }
-            asort($requested_names);
+            asort($names);
 
             // TODO: Use locale-aware sorting mechanism
-            if ($criteria)
-                return $requested_names;
 
-            $depts = $requested_names;
+            if ($criteria)
+                return $names;
+
+            $depts = $names;
         }
 
-        return $requested_names;
+        return $depts;
     }
 
     static function getPublicDepartments() {
-        $depts =null;
+        static $depts =null;
 
         if (!$depts)
             $depts = self::getDepartments(array('publiconly'=>true));
@@ -778,8 +660,7 @@ implements TemplateVariable, Searchable {
 
         $id = $this->id;
         if ($id && $id != $vars['id'])
-            $errors['err']=__('Missing or invalid Dept ID.')
-                .' '.__('Internal error occurred');
+            $errors['err']=__('Missing or invalid Dept ID (internal error).');
 
         if (!$vars['name']) {
             $errors['name']=__('Name required');
@@ -793,25 +674,6 @@ implements TemplateVariable, Searchable {
 
         if ($vars['pid'] && !($p = static::lookup($vars['pid'])))
             $errors['pid'] = __('Department selection is required');
-
-        $dept = Dept::lookup($vars['pid']);
-        if($dept && !$dept->isActive())
-          $errors['dept_id'] = sprintf(__('%s selected must be active'), __('Parent Department'));
-
-        if ($vars['sla_id'] && !SLA::lookup($vars['sla_id']))
-            $errors['sla_id'] = __('Invalid SLA');
-
-        if ($vars['manager_id'] && !Staff::lookup($vars['manager_id']))
-            $errors['manager_id'] = __('Unknown Staff');
-
-        if ($vars['email_id'] && !Email::lookup($vars['email_id']))
-            $errors['email_id'] = __('Unknown System Email');
-
-        if ($vars['tpl_id'] && !EmailTemplateGroup::lookup($vars['tpl_id']))
-            $errors['tpl_id'] = __('Unknown Template Set');
-
-        if ($vars['autoresp_email_id'] && !Email::lookup($vars['autoresp_email_id']))
-            $errors['autoresp_email_id'] = __('Unkown System Email');
 
         // Format access update as [array(dept_id, role_id, alerts?)]
         $access = array();
@@ -847,24 +709,32 @@ implements TemplateVariable, Searchable {
         }
 
         $this->pid = $vars['pid'] ?: null;
+<<<<<<< HEAD
         $this->ispublic = isset($vars['ispublic']) ? (int) $vars['ispublic'] : 0;
         $this->email_id = isset($vars['email_id']) ? (int) $vars['email_id'] : 0;
         $this->tpl_id = isset($vars['tpl_id']) ? (int) $vars['tpl_id'] : 0;
         $this->sla_id = isset($vars['sla_id']) ? (int) $vars['sla_id'] : 0;
         $this->schedule_id = isset($vars['schedule_id']) ? (int) $vars['schedule_id'] : 0;
         $this->autoresp_email_id = isset($vars['autoresp_email_id']) ? (int) $vars['autoresp_email_id'] : 0;
+=======
+        $this->ispublic = isset($vars['ispublic'])?$vars['ispublic']:0;
+        $this->email_id = isset($vars['email_id'])?$vars['email_id']:0;
+        $this->tpl_id = isset($vars['tpl_id'])?$vars['tpl_id']:0;
+        $this->sla_id = isset($vars['sla_id'])?$vars['sla_id']:0;
+        $this->autoresp_email_id = isset($vars['autoresp_email_id'])?$vars['autoresp_email_id']:0;
+>>>>>>> parent of 7093d97... 2020 Update
         $this->manager_id = $vars['manager_id'] ?: 0;
         $this->name = Format::striptags($vars['name']);
         $this->signature = Format::sanitize($vars['signature']);
         $this->group_membership = $vars['group_membership'];
         $this->ticket_auto_response = isset($vars['ticket_auto_response'])?$vars['ticket_auto_response']:1;
         $this->message_auto_response = isset($vars['message_auto_response'])?$vars['message_auto_response']:1;
-        $this->flags = $vars['flags'] ?: 0;
-
+        $this->flags = 0;
         $this->setFlag(self::FLAG_ASSIGN_MEMBERS_ONLY, isset($vars['assign_members_only']));
         $this->setFlag(self::FLAG_DISABLE_AUTO_CLAIM, isset($vars['disable_auto_claim']));
         $this->setFlag(self::FLAG_DISABLE_REOPEN_AUTO_ASSIGN, isset($vars['disable_reopen_auto_assign']));
 
+<<<<<<< HEAD
         $filter_actions = FilterAction::objects()->filter(array('type' => 'dept', 'configuration' => '{"dept_id":'. $this->getId().'}'));
         if ($filter_actions && $vars['status'] == 'active')
           FilterAction::setFilterFlag($filter_actions, 'dept', false);
@@ -902,6 +772,8 @@ implements TemplateVariable, Searchable {
             break;
         }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
         $this->path = $this->getFullPath();
 
         $wasnew = $this->__new__;
@@ -993,7 +865,7 @@ extends Form {
                 'default' => 0,
                 'choices' =>
                     array(0 => '— '.__('Top-Level Department').' —')
-                    + Dept::getPublicDepartments()
+                    + Dept::getDepartments()
             )),
             'name' => new TextboxField(array(
                 'required' => true,
@@ -1023,7 +895,7 @@ extends Form {
         );
     }
 
-    function getClean($validate = true) {
+    function getClean() {
         $clean = parent::getClean();
 
         $clean['ispublic'] = !$clean['private'];

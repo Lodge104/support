@@ -141,7 +141,7 @@ if($_POST){
                             || !Dept::lookup($_POST['dept_id'])
                             || !Role::lookup($_POST['role_id'])
                         ) {
-                            $errors['err'] = __('Internal error occurred');
+                            $errors['err'] = 'Internal error.';
                             break;
                         }
                         foreach ($members as $s) {
@@ -162,7 +162,7 @@ if($_POST){
                         break;
 
                     default:
-                        $errors['err'] = sprintf('%s - %s', __('Unknown action'), __('Get technical help!'));
+                        $errors['err'] = __('Unknown action - get technical help.');
                 }
 
             }
@@ -176,12 +176,12 @@ if($_POST){
 $page='staffmembers.inc.php';
 $tip_namespace = 'staff.agent';
 if($staff || ($_REQUEST['a'] && !strcasecmp($_REQUEST['a'],'add'))) {
+<<<<<<< HEAD
   if ($staff && ($pdept=$staff->getDept()) && !$pdept->isActive())
     $warn = sprintf(__('%s is assigned a %s that is not active.'), __('Agent'), __('Primary Department'));
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     $page='staff.inc.php';
-} elseif ($_REQUEST['a'] && !strcasecmp($_REQUEST['a'],'export')) {
-    if (!Staff::export())
-        $errors['err'] = sprintf(__('Unable to export %s.'), __('Agents'));
 }
 $nav->setTabActive('staff');
 $ost->addExtraHeader('<meta name="tip-namespace" content="' . $tip_namespace . '" />',

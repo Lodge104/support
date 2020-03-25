@@ -4,7 +4,7 @@ if (!defined('OSTSCPINC') || !$thisstaff
     die('Access Denied');
 
 $info = $qs = array();
-if($faq && $faq->getId()){
+if($faq){
     $title=__('Update FAQ').': '.$faq->getQuestion();
     $action='update';
     $submit_text=__('Save Changes');
@@ -63,7 +63,7 @@ $qstr = Http::build_query($qs);
         <option value="<?php echo $C->getId(); ?>" <?php
             if ($C->getId() == $info['category_id']) echo 'selected="selected"';
             ?>><?php echo sprintf('%s (%s)',
-                Category::getNameById($C->getId()),
+                $C->getName(),
                 $C->isPublic() ? __('Public') : __('Private')
             ); ?></option>
 <?php } ?>
@@ -77,7 +77,7 @@ if ($topics = Topic::getAllHelpTopics()) {
 ?>
     <div style="padding-top:9px">
         <strong><?php echo __('Help Topics');?></strong>:
-        <div class="faded"><?php echo sprintf(__('Check all help topics related to %s.'), __('this FAQ article'));?></div>
+        <div class="faded"><?php echo __('Check all help topics related to this FAQ.');?></div>
     </div>
     <select multiple="multiple" name="topics[]" class="multiselect"
         data-placeholder="<?php echo __('Help Topics'); ?>"

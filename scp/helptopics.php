@@ -65,9 +65,12 @@ if($_POST){
 
                 switch(strtolower($_POST['a'])) {
                     case 'enable':
-                        $topics = Topic::objects()->filter(array(
-                          'topic_id__in'=>$_POST['ids'],
+                        $num = Topic::objects()->filter(array(
+                            'topic_id__in' => $_POST['ids'],
+                        ))->update(array(
+                            'isactive' => true,
                         ));
+<<<<<<< HEAD
                         foreach ($topics as $t) {
                           $t->setFlag(Topic::FLAG_ARCHIVED, false);
                           $t->setFlag(Topic::FLAG_ACTIVE, true);
@@ -80,6 +83,8 @@ if($_POST){
                           }
 
                         }
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 
                         if ($num > 0) {
                             if($num==$count)
@@ -94,11 +99,14 @@ if($_POST){
                         }
                         break;
                     case 'disable':
-                        $topics = Topic::objects()->filter(array(
-                          'topic_id__in'=>$_POST['ids'],
+                        $num = Topic::objects()->filter(array(
+                            'topic_id__in'=>$_POST['ids'],
                         ))->exclude(array(
-                            'topic_id'=>$cfg->getDefaultTopicId()
+                            'topic_id'=>$cfg->getDefaultTopicId(),
+                        ))->update(array(
+                            'isactive' => false,
                         ));
+<<<<<<< HEAD
                         foreach ($topics as $t) {
                           $t->setFlag(Topic::FLAG_ARCHIVED, false);
                           $t->setFlag(Topic::FLAG_ACTIVE, false);
@@ -110,6 +118,8 @@ if($_POST){
                               $num++;
                           }
                         }
+=======
+>>>>>>> parent of 7093d97... 2020 Update
                         if ($num > 0) {
                             if($num==$count)
                                 $msg = sprintf(__('Successfully disabled %s'),
@@ -122,6 +132,7 @@ if($_POST){
                                 _N('selected help topic', 'selected help topics', $count));
                         }
                         break;
+<<<<<<< HEAD
                     case 'archive':
                         $topics = Topic::objects()->filter(array(
                           'topic_id__in'=>$_POST['ids'],
@@ -151,6 +162,8 @@ if($_POST){
                                 _N('selected help topic', 'selected help topics', $count));
                         }
                         break;
+=======
+>>>>>>> parent of 7093d97... 2020 Update
                     case 'delete':
                         $topics = Topic::objects()->filter(array(
                             'topic_id__in'=>$_POST['ids']
@@ -200,7 +213,7 @@ if($_POST){
                         }
                         break;
                     default:
-                        $errors['err']=sprintf('%s - %s', __('Unknown action'), __('Get technical help!'));
+                        $errors['err']=__('Unknown action - get technical help.');
                 }
             }
             break;
@@ -215,11 +228,7 @@ if($_POST){
 
 $page='helptopics.inc.php';
 $tip_namespace = 'manage.helptopic';
-if($topic || ($_REQUEST['a'] && !strcasecmp($_REQUEST['a'],'add')))
-{
-    if ($topic && ($dept=$topic->getDept()) && !$dept->isActive())
-      $warn = sprintf(__('%s is assigned a %s that is not active.'), __('Help Topic'), __('Department'));
-
+if($topic || ($_REQUEST['a'] && !strcasecmp($_REQUEST['a'],'add'))) {
     $page='helptopic.inc.php';
 }
 

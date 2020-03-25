@@ -158,17 +158,7 @@ if (!$lv) { ?>
         echo sprintf('%.2f MiB', $space); ?></td>
     <tr><td><?php echo __('Space for Attachments'); ?></td>
         <td><?php
-        $sql = 'SELECT
-                    (DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024
-                FROM
-                    information_schema.TABLES
-                WHERE
-                    TABLE_SCHEMA = "'.DBNAME.'"
-                AND
-                    TABLE_NAME = "'.FILE_CHUNK_TABLE.'"
-                ORDER BY
-                    (DATA_LENGTH + INDEX_LENGTH)
-                DESC';
+        $sql = 'SELECT SUM(LENGTH(filedata)) / 1048576 FROM '.FILE_CHUNK_TABLE;
         $space = db_result(db_query($sql));
         echo sprintf('%.2f MiB', $space); ?></td></tr>
     <tr><td><?php echo __('Timezone'); ?></td>
@@ -187,18 +177,16 @@ if (!$lv) { ?>
         $p = $info['path'];
         if ($info['phar'])
             $p = 'phar://' . $p;
-        $manifest = (file_exists($p . '/MANIFEST.php')) ? (include $p . '/MANIFEST.php') : null;
 ?>
     <h3><strong><?php echo Internationalization::getLanguageDescription($info['code']); ?></strong>
-        <?php if ($manifest) { ?>
-            &mdash; <?php echo $manifest['Language']; ?>
-        <?php } ?>
+        &mdash; <?php echo $manifest['Language']; ?>
 <?php   if ($info['phar'])
             Plugin::showVerificationBadge($info['path']); ?>
         </h3>
         <div><?php echo sprintf('<code>%s</code> — %s', $info['code'],
                 str_replace(ROOT_DIR, '', $info['path'])); ?>
-<?php   if ($manifest) { ?>
+<?php   if (file_exists($p . '/MANIFEST.php')) {
+            $manifest = (include $p . '/MANIFEST.php'); ?>
             <br/> <?php echo __('Version'); ?>: <?php echo $manifest['Version'];
                 ?>, <?php echo sprintf(__('for version %s'),
                     'v'.($manifest['Phrases-Version'] ?: '1.9')); ?>

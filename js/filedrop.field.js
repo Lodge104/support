@@ -11,7 +11,6 @@
       progressUpdated: $.proxy(this.progressUpdated, this),
       speedUpdated: $.proxy(this.speedUpdated, this),
       dragOver: $.proxy(this.dragOver, this),
-      dragLeave: $.proxy(this.dragLeave, this),
       drop: $.proxy(this.drop, this),
       beforeSend: $.proxy(this.beforeSend, this),
       beforeEach: $.proxy(this.beforeEach, this),
@@ -30,9 +29,6 @@
   };
 
   FileDropbox.prototype = {
-    dragLeave: function(e) {
-        this.$element.removeAttr('style');
-    },
     drop: function(e) {
         this.$element.removeAttr('style');
     },
@@ -157,7 +153,7 @@
       filenode
           .append($('<div class="filetype"></div>').addClass())
           .append($('<img class="preview" />'))
-          .append($('<span class="filename ltr"></div>')
+          .append($('<span class="filename ltr filedropfile"></div>')
             .append($('<span class="filesize"></span>').text(
               this.fileSize(parseInt(file.size))
             ))
@@ -176,7 +172,7 @@
           .append($('<input type="hidden"/>').attr('name', this.options.name)
             .val(file.id))
       if (this.options.deletable) {
-        filenode.prepend($('<span><i class="icon-trash"></i></span>')
+        filenode.prepend($('<span><i class="fa fa-trash"></i></span>')
           .addClass('trash pull-right')
           .click($.proxy(this.deleteNode, this, filenode))
         );
@@ -296,6 +292,8 @@
  */
 ;(function($) {
 
+  jQuery.event.props.push("dataTransfer");
+
   var default_opts = {
       fallback_id: '',
       link: false,
@@ -365,9 +363,9 @@
 
     function drop(e) {
       if( opts.drop.call(this, e) === false ) return false;
-      if(!e.originalEvent.dataTransfer)
+      if(!e.dataTransfer)
         return;
-      files = e.originalEvent.dataTransfer.files;
+      files = e.dataTransfer.files;
       if (files === null || files === undefined || files.length === 0) {
         opts.error(errors[0]);
         return false;

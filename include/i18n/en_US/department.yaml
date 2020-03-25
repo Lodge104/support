@@ -3,7 +3,6 @@
 #
 # Fields:
 # id - (int:optional) id number in the database
-# flags - (bitmask: 0x0004 Active 0x0008 Archived)
 # name - (string) Short name of the department
 # signature - (string) Descriptive name of the department
 #
@@ -18,7 +17,6 @@
   signature: |
     Support Department
   ispublic: 1
-  flags: 0x0004
   group_membership: 1
 
 - id: 2
@@ -26,7 +24,6 @@
   signature: |
     Sales and Customer Retention
   ispublic: 1
-  flags: 0x0004
   sla_id: 1
   group_membership: 1
 
@@ -35,5 +32,4 @@
   signature: |
     Maintenance Department
   ispublic: 0
-  flags: 0x0004
   group_membership: 0

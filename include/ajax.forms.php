@@ -15,26 +15,20 @@ class DynamicFormsAjaxAPI extends AjaxController {
     }
 
     function getFormsForHelpTopic($topic_id, $client=false) {
-        if (!$_SERVER['HTTP_REFERER'])
-            Http::response(403, 'Forbidden.');
-
         if (!($topic = Topic::lookup($topic_id)))
             Http::response(404, 'No such help topic');
 
         if ($_GET || isset($_SESSION[':form-data'])) {
             if (!is_array($_SESSION[':form-data']))
                 $_SESSION[':form-data'] = array();
-            $_SESSION[':form-data'] = array_merge($_SESSION[':form-data'],
-                    Format::htmlchars($_GET));
+            $_SESSION[':form-data'] = array_merge($_SESSION[':form-data'], $_GET);
         }
 
         foreach ($topic->getForms() as $form) {
             if (!$form->hasAnyVisibleFields())
                 continue;
             ob_start();
-            $form->getForm($_SESSION[':form-data'])->render(array(
-                'staff' => !$client,
-                'mode' => 'create'));
+            $form->getForm($_SESSION[':form-data'])->render(!$client);
             $html .= ob_get_clean();
             ob_start();
             print $form->getMedia();
@@ -151,8 +145,6 @@ class DynamicFormsAjaxAPI extends AjaxController {
     function saveListItem($list_id, $item_id) {
         global $thisstaff;
 
-        $errors = array();
-
         if (!$thisstaff)
             Http::response(403, 'Login required');
 
@@ -180,8 +172,8 @@ class DynamicFormsAjaxAPI extends AjaxController {
                 $item->update([
                     'name' =>   $basic['name'],
                     'value' =>  $basic['value'],
-                    'abbrev' =>  $basic['extra'],
-                ], $errors);
+                    'extra' =>  $basic['extra'],
+                ]);
             }
         }
 
@@ -388,15 +380,9 @@ class DynamicFormsAjaxAPI extends AjaxController {
     }
 
     function attach() {
-        global $thisstaff;
-
-        $config = DynamicFormField::objects()
-            ->filter(array('type__contains'=>'thread'))
-            ->first()->getConfiguration();
         $field = new FileUploadField();
-        $field->_config = $config;
         return JsonDataEncoder::encode(
-            array('id'=>$field->ajaxUpload($thisstaff ? true : false))
+            array('id'=>$field->ajaxUpload())
         );
     }
 

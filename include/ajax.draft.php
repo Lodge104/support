@@ -132,9 +132,14 @@ class DraftAjaxAPI extends AjaxController {
             'id' => $f->getKey(),
             // Return draft_id to connect the auto draft creation
             'draft_id' => $draft->getId(),
+<<<<<<< HEAD
             'url' => $f->getDownloadUrl(
                 ['type' => 'D', 'deposition' => 'inline']),
         )));
+=======
+            'filelink' => $f->getDownloadUrl(false, 'inline'),
+        ));
+>>>>>>> parent of 7093d97... 2020 Update
     }
 
     // Client interface for drafts =======================================
@@ -347,6 +352,7 @@ class DraftAjaxAPI extends AjaxController {
             && ($object = $thread->getObject())
             && ($thisstaff->canAccess($object))
         ) {
+<<<<<<< HEAD
             $search->add(Q::all([
                 'attachments__thread_entry__thread_id' => $_GET['threadId'],
                 'attachments__inline' => 1,
@@ -360,6 +366,25 @@ class DraftAjaxAPI extends AjaxController {
 
         $files = array();
         foreach ($images as $f) {
+=======
+            $union = ' UNION SELECT f.id, a.`type`, a.`name` FROM '.THREAD_TABLE.' t
+                JOIN '.THREAD_ENTRY_TABLE.' th ON (th.thread_id = t.id)
+                JOIN '.ATTACHMENT_TABLE.' a ON (a.object_id = th.id AND a.`type` = \'H\')
+                JOIN '.FILE_TABLE.' f ON (a.file_id = f.id)
+                WHERE a.`inline` = 1 AND t.id='.db_input($_GET['threadId']);
+        }
+
+        $sql = 'SELECT distinct f.id, COALESCE(a.type, f.ft), a.`name` FROM '.FILE_TABLE
+            .' f LEFT JOIN '.ATTACHMENT_TABLE.' a ON (a.file_id = f.id)
+            WHERE ((a.`type` IN (\'C\', \'F\', \'T\', \'P\') AND a.`inline` = 1) OR f.ft = \'L\')'
+                .' AND f.`type` LIKE \'image/%\'';
+        if (!($res = db_query($sql.$union)))
+            Http::response(500, 'Unable to lookup files');
+
+        $files = array();
+        while (list($id, $type, $name) = db_fetch_row($res)) {
+            $f = AttachmentFile::lookup((int) $id);
+>>>>>>> parent of 7093d97... 2020 Update
             $url = $f->getDownloadUrl();
             $files[] = array(
                 // Don't send special sizing for thread items 'cause they

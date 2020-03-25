@@ -93,7 +93,7 @@ var scp_prep = function() {
         else
             formObj = $(this).closest('form');
         if($('.dialog#confirm-action p#'+name+'-confirm').length === 0) {
-            alert('Unknown action '+name+' - Get technical help!');
+            alert('Unknown action '+name+' - get technical help.');
         } else if(checkbox_checker(formObj, 1)) {
             var action = name;
             $('.dialog#confirm-action').undelegate('.confirm');
@@ -163,18 +163,6 @@ var scp_prep = function() {
 
     $('form.save, form:has(table.list)').submit(function() {
         $(window).unbind('beforeunload');
-        $.toggleOverlay(true);
-        // Disable staff-side Post Reply/Open buttons to help prevent
-        // duplicate POST
-        var form = $(this);
-        $(this).find('input[type="submit"]').each(function (index) {
-            // Clone original input
-            $(this).clone(false).removeAttr('id').prop('disabled', true).insertBefore($(this));
-
-            // Hide original input and add it to top of form
-            $(this).hide();
-            form.prepend($(this));
-        });
         $('#overlay, #loading').show();
         return true;
      });
@@ -205,6 +193,7 @@ var scp_prep = function() {
         }
      });
 
+<<<<<<< HEAD
     $('form select#cannedResp').select2({width: '350px'});
     $('form select#cannedResp').on('select2:opening', function (e) {
         var redactor = $('.richtext', $(this).closest('form')).data('redactor');
@@ -212,6 +201,8 @@ var scp_prep = function() {
             redactor.api('selection.save');
     });
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     $('form select#cannedResp').change(function() {
 
         var fObj = $(this).closest('form');
@@ -230,6 +221,7 @@ var scp_prep = function() {
                 cache: false,
                 success: function(canned){
                     //Canned response.
+<<<<<<< HEAD
                     var box = $('#response', fObj),
                         redactor = $R('#response');
                     if (canned.response) {
@@ -237,6 +229,14 @@ var scp_prep = function() {
                             redactor.api('selection.restore');
                             redactor.insertion.insertHtml(canned.response);
                         } else
+=======
+                    var box = $('#response',fObj),
+                        redactor = box.data('redactor');
+                    if(canned.response) {
+                        if (redactor)
+                            redactor.insert.html(canned.response);
+                        else
+>>>>>>> parent of 7093d97... 2020 Update
                             box.val(box.val() + canned.response);
                     }
                     //Canned attachments.
@@ -393,8 +393,7 @@ var scp_prep = function() {
            $('input[name^='+attr+']', ui.item.parent('tbody')).each(function(i, el) {
                $(el).val(i + 1 + offset);
            });
-       },
-       'cancel': ':input,button,div[contenteditable=true]'
+       }
    });
 
     // Scroll to a stop or top on scroll-up click
@@ -480,7 +479,7 @@ var scp_prep = function() {
 
   $('div.tab_content[id] div.error:not(:empty)').each(function() {
     var div = $(this).closest('.tab_content');
-    $('a[href^="#'+div.attr('id')+'"]').parent().addClass('error');
+    $('a[href^=#'+div.attr('id')+']').parent().addClass('error');
   });
 
   $('[data-toggle="tooltip"]').tooltip()
@@ -493,53 +492,6 @@ var scp_prep = function() {
   $('.attached.input input')
     .on('focus', function() { $(this).parent().addClass('focus'); })
     .on('blur', function() { $(this).parent().removeClass('focus'); })
-
-  $(function() {
-    // whenever we hover over a menu item that has a submenu
-    $('.subQ').on('mouseover', function() {
-      var $menuItem = $(this),
-          $submenuWrapper = $('> .subMenuQ', $menuItem);
-
-      // grab the menu item's position relative to its positioned parent
-      var menuItemPos = $menuItem.position();
-
-      // place the submenu in the correct position relevant to the menu item
-      $submenuWrapper.css({
-        top: menuItemPos.top - 1,
-        left: menuItemPos.left + Math.round($menuItem.outerWidth())
-      });
-    });
-    // Ensure the "new ticket" link is never in the drop-down menu
-    $('#new-ticket').parent('li').addClass('primary-only');
-    $('#customQ_nav').overflowmenu({
-      guessHeight: false,
-      // items: 'li.top-queue',
-      change: function( e, ui ) {
-        var handle = ui.container.find('.jb-overflowmenu-menu-secondary-handle');
-        handle.toggle( ui.secondary.children().length > 0 );
-      }
-    });
-  });
-
-  // Auto fetch queue counts
-  $(function() {
-    var fired = false;
-    $('#customQ_nav li.item').hover(function() {
-      if (fired) return;
-      fired = true;
-      $.ajax({
-        url: 'ajax.php/queue/counts',
-        dataType: 'json',
-        success: function(json) {
-          $('li span.queue-count').each(function(i, e) {
-            var $e = $(e);
-            $e.text(json['q' + $e.data('queueId')]);
-            $(e).parents().find('#queue-count-bucket').show();
-          });
-        }
-      });
-    });
-  });
 };
 
 $(document).ready(scp_prep);
@@ -589,7 +541,34 @@ $(document).ajaxSend(function(event, xhr, settings) {
 /* Get config settings from the backend */
 jQuery.fn.exists = function() { return this.length>0; };
 
+<<<<<<< HEAD
 $.pjax.defaults.timeout = 30000;
+=======
+$.translate_format = function(str) {
+    var translation = {
+        'DD':   'oo',
+        'D':    'o',
+        'EEEE': 'DD',
+        'EEE':  'D',
+        'MMMM': '||',   // Double replace necessary
+        'MMM':  '|',
+        'MM':   'mm',
+        'M':    'm',
+        '||':   'MM',
+        '|':    'M',
+        'yyyy': '`',
+        'yyy':  '`',
+        'yy':   'y',
+        'y':    'yy',
+        '`':    'yy'
+    };
+    // Change PHP formats to datepicker ones
+    $.each(translation, function(php, jqdp) {
+        str = str.replace(php, jqdp);
+    });
+    return str;
+};
+>>>>>>> parent of 7093d97... 2020 Update
 $(document).keydown(function(e) {
 
     if (e.keyCode == 27 && !$('#overlay').is(':hidden')) {
@@ -704,9 +683,7 @@ $.dialog = function (url, codes, cb, options) {
                         }
                         catch (e) { }
                         $('div.body', $popup).html(resp);
-                        if ($('#msg_error, .error-banner', $popup).length) {
-                            $popup.effect('shake');
-                        }
+                        $popup.effect('shake');
                         $('#msg_notice, #msg_error', $popup).delay(5000).slideUp();
                         $('div.tab_content[id] div.error:not(:empty)', $popup).each(function() {
                           var div = $(this).closest('.tab_content');
@@ -794,7 +771,7 @@ $.confirm = function(message, title, options) {
             .append($('<span class="buttons pull-left"></span>')
                 .append($('<input type="button" class="close"/>')
                     .attr('value', __('Cancel'))
-                    .click(function() { hide();  D.resolve(false); })
+                    .click(function() { hide(); })
             )).append($('<span class="buttons pull-right"></span>')
                 .append($('<input type="button"/>')
                     .attr('value', __('OK'))
@@ -806,9 +783,8 @@ $.confirm = function(message, title, options) {
 };
 
 $.userLookup = function (url, cb) {
-    $.dialog(url, 201, function (xhr, user) {
-        if ($.type(user) == 'string')
-            user = $.parseJSON(user);
+    $.dialog(url, 201, function (xhr) {
+        var user = $.parseJSON(xhr.responseText);
         if (cb) return cb(user);
     }, {
         onshow: function() { $('#user-search').focus(); }
@@ -816,9 +792,8 @@ $.userLookup = function (url, cb) {
 };
 
 $.orgLookup = function (url, cb) {
-    $.dialog(url, 201, function (xhr, org) {
-        if ($.type(org) == 'string')
-            org = $.parseJSON(user);
+    $.dialog(url, 201, function (xhr) {
+        var org = $.parseJSON(xhr.responseText);
         if (cb) cb(org);
     }, {
         onshow: function() { $('#org-search').focus(); }
@@ -988,7 +963,7 @@ $(document).on('click.tab', 'ul.tabs > li > a', function(e) {
         $ul.children('li.active').removeClass('active');
         $(this).closest('li').addClass('active');
         $container.children('.tab_content').hide();
-        $tab.fadeIn('fast').show();
+        $tab.fadeIn('fast');
         return false;
     }
 
@@ -1058,11 +1033,12 @@ $(document).on('submit', 'form', function() {
 });
 
 //Collaborators
-$(document).on('click', 'a.collaborator, a.collaborators:not(.noclick)', function(e) {
+$(document).on('click', 'a.collaborator, a.collaborators', function(e) {
     e.preventDefault();
     var url = 'ajax.php/'+$(this).attr('href').substr(1);
     $.dialog(url, 201, function (xhr) {
        var resp = $.parseJSON(xhr.responseText);
+       $('input#t'+resp.id+'-emailcollab').show();
        $('#t'+resp.id+'-recipients').text(resp.text);
        $('.tip_box').remove();
     }, {
@@ -1148,8 +1124,13 @@ if ($.support.pjax) {
     var href = $this.attr('href');
     if (!$this.hasClass('no-pjax')
         && !$this.closest('.no-pjax').length
+<<<<<<< HEAD
         && href && href.charAt(0) != '#')
       $.pjax.click(event, {container: $this.data('pjaxContainer') || '#pjax-container', timeout: 30000});
+=======
+        && $this.attr('href').charAt(0) != '#')
+      $.pjax.click(event, {container: $this.data('pjaxContainer') || $('#pjax-container'), timeout: 2000});
+>>>>>>> parent of 7093d97... 2020 Update
   })
 }
 
@@ -1185,16 +1166,19 @@ $(document).on('change', 'select[data-quick-add]', function() {
 });
 
 // Quick note interface
-$(document).on('click.note', '.quicknote .action.edit-note', function(e) {
-    // Prevent Auto-Scroll to top of page
-    e.preventDefault();
+$(document).on('click.note', '.quicknote .action.edit-note', function() {
     var note = $(this).closest('.quicknote'),
         body = note.find('.body'),
         T = $('<textarea>').text(body.html());
     if (note.closest('.dialog, .tip_box').length)
         T.addClass('no-bar small');
     body.replaceWith(T);
+<<<<<<< HEAD
     T.redactor({ focusEnd: true });
+=======
+    $.redact(T);
+    $(T).redactor('focus.setStart');
+>>>>>>> parent of 7093d97... 2020 Update
     note.find('.action.edit-note').hide();
     note.find('.action.save-note').show();
     note.find('.action.cancel-edit').show();
@@ -1268,7 +1252,12 @@ $(document).on('click', '#new-note', function() {
     note.replaceWith(T);
     $('<p>').addClass('submit').css('text-align', 'center')
         .append(button).appendTo(T.parent());
+<<<<<<< HEAD
     T.redactor({ focusEnd: true });
+=======
+    $.redact(T);
+    $(T).redactor('focus.setStart');
+>>>>>>> parent of 7093d97... 2020 Update
     return false;
 });
 
@@ -1318,27 +1307,3 @@ window.relativeAdjust = setInterval(function() {
   });
 }, 20000);
 
-// Add 'afterShow' event to jQuery elements,
-// thanks http://stackoverflow.com/a/1225238/1025836
-jQuery(function($) {
-    var _oldShow = $.fn.show;
-
-    // This should work with jQuery 3 with or without jQuery UI
-    $.fn.show = function() {
-        var argsArray = Array.prototype.slice.call(arguments),
-            arg = argsArray[0],
-            options = argsArray[1] || {duration: 0};
-        if (typeof(arg) === 'number')
-            options.duration = arg;
-        else
-            options.effect = arg;
-        return this.each(function () {
-            var obj = $(this);
-            _oldShow.call(obj, $.extend(options, {
-                complete: function() {
-                    obj.trigger('afterShow');
-                }
-            }));
-        });
-    }
-});

@@ -190,6 +190,7 @@ class AdminAjaxAPI extends AjaxController {
 
         include STAFFINC_DIR . 'templates/quick-add.tmpl.php';
     }
+<<<<<<< HEAD
 
     function addQueueColumn($root='Ticket') {
         global $ost, $thisstaff;
@@ -243,4 +244,6 @@ class AdminAjaxAPI extends AjaxController {
         include STAFFINC_DIR . 'templates/queue-sorting-add.tmpl.php';
 
     }
+=======
+>>>>>>> parent of 7093d97... 2020 Update
 }

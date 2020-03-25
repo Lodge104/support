@@ -29,8 +29,7 @@ if ($thisstaff->hasPerm(FAQ::PERM_MANAGE)) { ?>
 
 <div id="breadcrumbs">
     <a href="kb.php"><?php echo __('All Categories');?></a>
-    &raquo; <a href="kb.php?cid=<?php echo $category->getId(); ?>"><?php
-    echo $category->getFullName(); ?></a>
+    &raquo; <a href="kb.php?cid=<?php echo $category->getId(); ?>"><?php echo $category->getName(); ?></a>
     <span class="faded">(<?php echo $category->isPublic()?__('Public'):__('Internal'); ?>)</span>
 </div>
 
@@ -41,8 +40,7 @@ if ($thisstaff->hasPerm(FAQ::PERM_MANAGE)) { ?>
 <?php foreach ($attachments as $att) { ?>
 <div>
     <i class="icon-paperclip pull-left"></i>
-    <a target="_blank" href="<?php echo $att->file->getDownloadUrl(['id' =>
-    $att->getId()]); ?>"
+    <a target="_blank" href="<?php echo $att->file->getDownloadUrl(); ?>"
         class="attachment no-pjax">
         <?php echo Format::htmlchars($att->getFilename()); ?>
     </a>

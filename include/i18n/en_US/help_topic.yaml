@@ -4,7 +4,7 @@
 # Fields:
 # id - (int:optional) id number in the database
 # topic - (string) descriptive name of the help topic
-# flags - (bitmask: Active | Disabled | Archived)
+# isactive - (bool:0|1) if the help topic should be initially usable
 # ispublic - (bool:0|1) true or false if end users should be able to see the
 #       help topic. In other words, true or false if the help topic is _not_
 #       for internal use only
@@ -19,7 +19,7 @@
 #
 ---
 - topic_id: 1
-  flags: 0x02
+  isactive: 1
   ispublic: 1
   priority_id: 2
   forms: [2]
@@ -27,8 +27,7 @@
   notes: |
     Questions about products or services
 
-- topic_id: 2
-  flags: 0x02
+- isactive: 1
   ispublic: 1
   priority_id: 1
   forms: [2]
@@ -37,7 +36,7 @@
     Tickets that primarily concern the sales and billing departments
 
 - topic_id: 10
-  flags: 0x02
+  isactive: 1
   ispublic: 1
   dept_id: 3
   priority_id: 2
@@ -47,7 +46,7 @@
     Product, service, or equipment related issues
 
 - topic_pid: 10
-  flags: 0x02
+  isactive: 1
   ispublic: 1
   sla_id: 1
   priority_id: 3

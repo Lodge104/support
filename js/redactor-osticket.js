@@ -111,8 +111,28 @@
         // If the draft was created, a draft_id will be sent back — update
         // the URL to send updates in the future
         if (!this.opts.draftId && data.draft_id) {
+<<<<<<< HEAD
             this._setup(data.draft_id);
             $(this.app.rootElement).attr('data-draft-id', this.opts.draftId);
+=======
+            this.opts.draftId = data.draft_id;
+            this.opts.autosave = 'ajax.php/draft/' + data.draft_id;
+            this.opts.clipboardUploadUrl =
+            this.opts.imageUpload =
+                'ajax.php/draft/'+this.opts.draftId+'/attach';
+            if (!this.code.get())
+                this.code.set(' ', false);
+        }
+        // Only show the [Draft Saved] notice if there is content in the
+        // field that has been touched
+        if (!this.draft.firstSave) {
+            this.draft.firstSave = true;
+            // No change yet — dont't show the button
+            return;
+        }
+        if (data && this.code.get()) {
+            this.$draft_saved.show().delay(5000).fadeOut();
+>>>>>>> parent of 7093d97... 2020 Update
         }
 
         this.statusbar.add('draft', __('all changes saved'));
@@ -389,6 +409,7 @@ $(function() {
                 'imageResizable': true,
                 'syncBeforeCallback': captureImageSizes,
                 'tabFocus': false,
+<<<<<<< HEAD
                 'toolbarFixed': true,
                 'callbacks': {
                     'start': function() {
@@ -404,6 +425,17 @@ $(function() {
                         // Fixup class for
                         $element.parent().closest(':not(.redactor-box)').addClass('-redactor-container')
                     },
+=======
+                'toolbarFixedBox': true,
+                'focusCallback': function() { this.$box.addClass('no-pjax'); },
+                'initCallback': function() {
+                    if (this.$element.data('width'))
+                        this.$editor.width(this.$element.data('width'));
+                    this.$editor.attr('spellcheck', 'true');
+                    var lang = this.$editor.closest('[lang]').attr('lang');
+                    if (lang)
+                        this.$editor.attr('lang', lang);
+>>>>>>> parent of 7093d97... 2020 Update
                 },
                 'linkSize': 100000,
                 'definedlinks': 'ajax.php/config/links'
@@ -412,6 +444,7 @@ $(function() {
         var reset = $('input[type=reset]', el.closest('form'));
         if (reset) {
             reset.click(function() {
+<<<<<<< HEAD
                 var file = $('.file', el.closest('form'));
                 if (file)
                     file.remove();
@@ -430,6 +463,21 @@ $(function() {
                 }
             });
         }
+=======
+                if (el.hasClass('draft'))
+                    el.redactor('deleteDraft');
+                else
+                    el.redactor('set', '', false, false);
+            });
+        }
+        $('input[type=submit]', el.closest('form')).on('click', function() {
+            // Some setups (IE v10 on Windows 7 at least) seem to have a bug
+            // where Redactor does not sync properly after adding an image.
+            // Therefore, the ::get() call will not include text added after
+            // the image was inserted.
+            el.redactor('code.sync');
+        });
+>>>>>>> parent of 7093d97... 2020 Update
         if (!$.clientPortal) {
             options['plugins'].push('signature');
         }
@@ -483,6 +531,7 @@ $(function() {
     };
     findRichtextBoxes();
     $(document).ajaxStop(findRichtextBoxes);
+    $(document).on('pjax:success', findRichtextBoxes);
     $(document).on('pjax:start', cleanupRedactorElements);
 });
 

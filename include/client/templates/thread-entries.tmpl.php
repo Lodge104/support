@@ -1,14 +1,7 @@
 <?php
-$states = array('created', 'closed', 'reopened', 'edited', 'collab');
-$event_ids = array();
-foreach ($states as $state) {
-    $eid = Event::getIdByName($state);
-    $event_ids[] = $eid;
-}
 $events = $events
-    ->filter(array('event_id__in' => $event_ids))
+    ->filter(array('state__in' => array('created', 'closed', 'reopened', 'edited', 'collab')))
     ->order_by('id');
-$eventCount = count($events);
 $events = new IteratorIterator($events->getIterator());
 $events->rewind();
 $event = $events->current();
@@ -41,9 +34,7 @@ if (count($entries)) {
                 $events->next();
                 $event = $events->current();
             }
-            ?><div id="thread-entry-<?php echo $entry->getId(); ?>"><?php
             include 'thread-entry.tmpl.php';
-            ?></div><?php
         }
         $i++;
     }
@@ -57,7 +48,7 @@ while ($event) {
 }
 
 // This should never happen
-if (count($entries) + $eventCount == 0) {
+if (count($entries) + count($events) == 0) {
     echo '<p><em>'.__('No entries have been posted to this thread.').'</em></p>';
 }
 ?>

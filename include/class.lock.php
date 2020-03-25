@@ -25,7 +25,7 @@ class Lock extends VerySimpleModel {
         'pk' => array('lock_id'),
         'joins' => array(
             'ticket' => array(
-                'reverse' => 'Ticket.lock',
+                'reverse' => 'TicketModel.lock',
                 'list' => false,
             ),
             'task' => array(

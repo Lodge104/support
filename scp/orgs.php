@@ -80,7 +80,7 @@ if ($_POST) {
                 break;
 
             default:
-                $errors['err']=sprintf('%s - %s', __('Unknown action'), __('Get technical help!'));
+                $errors['err']=__('Unknown action - get technical help.');
             }
             if (!$errors['err'] && !$count) {
                 $errors['err'] = __('Unable to manage any of the selected organizations');
@@ -103,8 +103,7 @@ if ($_POST) {
     if (!($query=$_SESSION[':Q:orgs']))
         $errors['err'] = __('Query token not found');
     elseif (!Export::saveOrganizations($query, __('organizations')."-$ts.csv", 'csv'))
-        $errors['err'] = __('Unable to export results.')
-            .' '.__('Internal error occurred');
+        $errors['err'] = __('Internal error: Unable to export results');
 }
 
 $page = 'orgs.inc.php';
@@ -120,9 +119,8 @@ if ($org) {
         } elseif ($_REQUEST['a'] == 'export' && ($query=$_SESSION[':O:tickets'])) {
             $filename = sprintf('%s-tickets-%s.csv',
                     $org->getName(), strftime('%Y%m%d'));
-            if (!Export::saveTickets($query, NULL, $filename, 'csv'))
-                $errors['err'] = __('Unable to dump query results.')
-                    .' '.__('Internal error occurred');
+            if (!Export::saveTickets($query, $filename, 'csv'))
+                $errors['err'] = __('Internal error: Unable to dump query results');
         }
         break;
     }

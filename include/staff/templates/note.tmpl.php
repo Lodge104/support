@@ -7,8 +7,7 @@
         </div>
         <div class="header-right">
 <?php
-$staff = $note->getStaff();
-echo $staff ? $staff->getName() : _('Staff');
+            echo $note->getStaff()->getName();
 if (isset($show_options) && $show_options) { ?>
             <div class="options no-pjax">
                 <a href="#" class="action edit-note" title="edit"><i class="icon-pencil"></i></a>

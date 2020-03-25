@@ -22,16 +22,11 @@ require_once($thisdir.'main.inc.php');
 
 if(!defined('INCLUDE_DIR')) die('Fatal error');
 
-// Enforce ACL (if applicable)
-if (!Validator::check_acl('client'))
-    die(__('Access Denied'));
-
 /*Some more include defines specific to client only */
 define('CLIENTINC_DIR',INCLUDE_DIR.'client/');
 define('OSTCLIENTINC',TRUE);
 
-//define('ASSETS_PATH',ROOT_PATH.'assets/default/');
-define('ASSETS_PATH',ROOT_PATH.'assets/kendo/');
+define('ASSETS_PATH',ROOT_PATH.'assets/default/');
 
 //Check the status of the HelpDesk.
 if (!in_array(strtolower(basename($_SERVER['SCRIPT_NAME'])), array('logo.php','file.php'))

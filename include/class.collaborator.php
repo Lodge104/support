@@ -34,14 +34,11 @@ implements EmailContact, ITicketUser {
         ),
     );
 
-    const FLAG_ACTIVE = 0x0001;
-    const FLAG_CC = 0x0002;
-
     function __toString() {
         return Format::htmlchars($this->toString());
     }
     function toString() {
-        return sprintf('"%s" <%s>', $this->getName(), $this->getEmail());
+        return sprintf('%s <%s>', $this->getName(), $this->getEmail());
     }
 
     function getId() {
@@ -49,7 +46,7 @@ implements EmailContact, ITicketUser {
     }
 
     function isActive() {
-        return !!($this->flags & self::FLAG_ACTIVE);
+        return $this->isactive;
     }
 
     function getCreateDate() {
@@ -83,37 +80,21 @@ implements EmailContact, ITicketUser {
         return $this->user->getName();
     }
 
-    static function getIdByUserId($userId, $threadId) {
-        $row = Collaborator::objects()
-            ->filter(array('user_id'=>$userId, 'thread_id'=>$threadId))
-            ->values_flat('id')
-            ->first();
-
-        return $row ? $row[0] : 0;
-    }
-
     // VariableReplacer interface
     function getVar($what) {
         global $cfg;
 
         switch (strtolower($what)) {
         case 'ticket_link':
-            $qstr = array();
-            if ($this->getTicket()->getAuthToken($this)
-                && ($ticket=$this->getTicket())
-                && !$ticket->getThread()->getNumCollaborators()) {
-                  $qstr['auth'] = $ticket->getAuthToken($this);
-                  return sprintf('%s/view.php?%s',
-                          $cfg->getBaseUrl(),
-                          Http::build_query($qstr, false)
-                          );
-                }
-                else {
-                  return sprintf('%s/tickets.php?id=%s',
-                          $cfg->getBaseUrl(),
-                          $ticket->getId()
-                          );
-                }
+            return sprintf('%s/view.php?%s',
+                $cfg->getBaseUrl(),
+                Http::build_query(
+                    // TODO: Chance to $this->getTicket when
+                    array('auth' => $this->getTicket()->getAuthToken($this)),
+                    false
+                )
+            );
+            break;
         }
     }
 
@@ -133,43 +114,8 @@ implements EmailContact, ITicketUser {
         return $this->user_id;
     }
 
-    function hasFlag($flag) {
-        return ($this->get('flags', 0) & $flag) != 0;
-    }
-
-    public function setFlag($flag, $val) {
-        if ($val)
-            $this->flags |= $flag;
-        else
-            $this->flags &= ~$flag;
-    }
-
-    public function setCc() {
-      $this->setFlag(Collaborator::FLAG_ACTIVE, true);
-      $this->setFlag(Collaborator::FLAG_CC, true);
-      $this->save();
-    }
-
-    function isCc() {
-        return !!($this->flags & self::FLAG_CC);
-    }
-
-    function getCollabList($collabs) {
-      $collabList = array();
-      foreach ($collabs as $c) {
-        $u = User::lookup($c);
-        if ($u) {
-          $email = $u->getEmail()->address;
-          $collabList[$c] = $email;
-        }
-      }
-      return $collabList;
-    }
-
     static function create($vars=false) {
         $inst = new static($vars);
-        $inst->setFlag(Collaborator::FLAG_ACTIVE, true);
-        $inst->setFlag(Collaborator::FLAG_CC, true);
         $inst->created = SqlFunction::NOW();
         return $inst;
     }
@@ -181,26 +127,27 @@ implements EmailContact, ITicketUser {
     }
 
     static function add($info, &$errors) {
+
         if (!$info || !$info['threadId'] || !$info['userId'])
             $errors['err'] = __('Invalid or missing information');
-        elseif ($c = Collaborator::lookup(array(
+        elseif ($c = static::lookup(array(
             'thread_id' => $info['threadId'],
             'user_id' => $info['userId'],
         )))
-          $errors['err'] = sprintf(__('%s is already a collaborator'),
-                      $c->getName());
+            $errors['err'] = sprintf(__('%s is already a collaborator'),
+                    $c->getName());
 
         if ($errors) return false;
 
         $collab = static::create(array(
+            'isactive' => isset($info['isactive']) ? $info['isactive'] : 0,
             'thread_id' => $info['threadId'],
             'user_id' => $info['userId'],
         ));
         if ($collab->save(true))
             return $collab;
 
-        $errors['err'] = __('Unable to add collaborator.')
-            .' '.__('Internal error occurred');
+        $errors['err'] = __('Unable to add collaborator. Internal error');
 
         return false;
     }

@@ -18,7 +18,7 @@ if ($_REQUEST['query']) {
 
 $sortOptions = array(
         'name' => 'name',
-        'users' => 'user_count',
+        'users' => 'users',
         'create' => 'created',
         'update' => 'updated'
         );

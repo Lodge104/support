@@ -82,7 +82,11 @@ $nav->addSubMenu(array('desc'=>__('Upgrader'),
                            'href'=>'upgrade.php',
                            'iconclass'=>'preferences'),
                         true);
+<<<<<<< HEAD
 $ost->addExtraHeader('<script type="text/javascript" src="./js/upgrader.js?f1e9e88"></script>');
+=======
+$ost->addExtraHeader('<script type="text/javascript" src="./js/upgrader.js?901e5ea"></script>');
+>>>>>>> parent of 7093d97... 2020 Update
 require(STAFFINC_DIR.'header.inc.php');
 require(UPGRADE_DIR.$inc);
 require(STAFFINC_DIR.'footer.inc.php');

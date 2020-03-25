@@ -79,9 +79,10 @@ class i18n_Compiler extends Module {
             self::$crowdin_api_url);
 
         $args += array('key' => $this->key);
-        if ($branch = $this->getOption('branch', false))
-            $args += array('branch' => $branch);
-        $url .= '?' . Http::build_query($args);
+        foreach ($args as &$a)
+            $a = urlencode($a);
+        unset($a);
+        $url .= '?' . Format::array_implode('=', '&', $args);
 
         return $this->_http_get($url);
     }
@@ -188,7 +189,7 @@ class i18n_Compiler extends Module {
             $contents = $zip->getFromIndex($i);
             if (!$contents)
                 continue;
-            if (strpos($info['name'], '/messages.po') !== false) {
+            if (fnmatch('*/messages*.po', $info['name']) !== false) {
                 $po_file = $contents;
                 // Don't add the PO file as-is to the PHAR file
                 continue;
@@ -219,10 +220,10 @@ class i18n_Compiler extends Module {
             $this->stderr->write($lang . ": Cannot find Redactor language file\n");
 
         // JQuery UI Datepicker
-        // https://github.com/jquery/jquery-ui/tree/master/ui/i18n
+        // http://jquery-ui.googlecode.com/svn/tags/latest/ui/i18n/jquery.ui.datepicker-de.js
         foreach ($langs as $l) {
             list($code, $js) = $this->_http_get(
-                'https://raw.githubusercontent.com/jquery/jquery-ui/master/ui/i18n/datepicker-'
+                'http://jquery-ui.googlecode.com/svn/tags/latest/ui/i18n/jquery.ui.datepicker-'
                     .str_replace('_','-',$l).'.js');
             // If locale-specific version is not available, use the base
             // language version (de if de_CH is not available)
@@ -415,7 +416,7 @@ class i18n_Compiler extends Module {
                     break;
                 case T_WHITESPACE:
                     // noop
-                    continue 2;
+                    continue;
                 case T_STRING_VARNAME:
                 case T_NUM_STRING:
                 case T_ENCAPSED_AND_WHITESPACE:
@@ -470,7 +471,7 @@ class i18n_Compiler extends Module {
         while (list(,$T) = each($tokens)) {
             switch ($T[0]) {
             case T_WHITESPACE:
-                continue 2;
+                continue;
             case '(':
                 return $this->__read_args($tokens, $args);
             default:
@@ -498,7 +499,7 @@ class i18n_Compiler extends Module {
                     break;
                 }
                 if (!isset($funcs[$T[1]]))
-                    continue 2;
+                    continue;
                 $constants = $funcs[$T[1]];
                 if ($info = $this->__get_func_args($tokens, $constants))
                     $T_funcs[] = $info;
@@ -517,7 +518,7 @@ class i18n_Compiler extends Module {
                         case '@trans':
                             $translate = true;
                         default:
-                            continue 2;
+                            continue;
                         }
                     }
                 }
@@ -634,7 +635,7 @@ class i18n_Compiler extends Module {
         );
         $root = realpath($options['root'] ?: ROOT_DIR);
         $domain = $options['domain'] ? '('.$options['domain'].')/' : '';
-        $files = Test::getAllScripts("*.php", $root);
+        $files = Test::getAllScripts(true, $root);
         $strings = array();
         foreach ($files as $f) {
             $F = str_replace($root.'/', $domain, $f);
@@ -670,7 +671,7 @@ class i18n_Compiler extends Module {
                     $this->stdout->write(sprintf(
                         "'%s' (%s) and '%s' (%s)\n",
                        $orig, $usage, $other_orig, $other_usage
-                    ));
+                    )); 
                 }
             }
         }

@@ -25,7 +25,7 @@ $(document).ready(function(){
         var fObj = $(this).closest('form');
         if(!fObj.data('changed')){
             fObj.data('changed', true);
-            $('input[type=submit]', fObj).css('color', 'white');
+            $('input[type=submit]', fObj).css('color', 'red');
             $(window).bind('beforeunload', function(e) {
                 return __("Are you sure you want to leave? Any changes or info you've entered will be discarded!");
              });
@@ -45,17 +45,6 @@ $(document).ready(function(){
 
     $('form').submit(function() {
         $(window).unbind('beforeunload');
-        // Disable client-side Post Reply/Create Ticket buttons to help
-        // prevent duplicate POST
-        var form = $(this);
-        $(this).find('input[type="submit"]').each(function (index) {
-            // Clone original input
-            $(this).clone(false).removeAttr('id').prop('disabled', true).insertBefore($(this));
-
-            // Hide original input and add it to top of form
-            $(this).hide();
-            form.prepend($(this));
-        });
         $('#overlay, #loading').show();
         return true;
        });
@@ -182,6 +171,26 @@ getConfig = (function() {
     };
 })();
 
+<<<<<<< HEAD
+=======
+$.translate_format = function(str) {
+    var translation = {
+        'd':'dd',
+        'j':'d',
+        'z':'o',
+        'm':'mm',
+        'F':'MM',
+        'n':'m',
+        'Y':'yy'
+    };
+    // Change PHP formats to datepicker ones
+    $.each(translation, function(php, jqdp) {
+        str = str.replace(php, jqdp);
+    });
+    return str;
+};
+
+>>>>>>> parent of 7093d97... 2020 Update
 $.sysAlert = function (title, msg, cb) {
     var $dialog =  $('.dialog#alert');
     if ($dialog.length) {

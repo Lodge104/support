@@ -6,7 +6,7 @@
 
 $staff=$ticket->getStaff();
 $lock=$ticket->getLock();
-$role=$ticket->getRole($thisstaff);
+$role=$thisstaff->getRole($ticket->getDeptId());
 $error=$msg=$warn=null;
 $thread = $ticket->getThread();
 
@@ -120,38 +120,6 @@ echo sprintf(
 
 echo '
     </table>';
-?>
-<?php
-foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
-    // Skip core fields shown earlier in the ticket preview
-    $answers = $form->getAnswers()->exclude(Q::any(array(
-        'field__flags__hasbit' => DynamicFormField::FLAG_EXT_STORED,
-        'field__name__in' => array('subject', 'priority')
-    )));
-    $displayed = array();
-    foreach($answers as $a) {
-        if (!($v = $a->display()))
-            continue;
-        $displayed[] = array($a->getLocal('label'), $v);
-    }
-    if (count($displayed) == 0)
-        continue;
-
-    echo '<hr>';
-    echo '<table border="0" cellspacing="" cellpadding="1" width="100%" style="margin-bottom:0px;" class="ticket_info">';
-    echo '<tbody>';
-
-    foreach ($displayed as $stuff) {
-        list($label, $v) = $stuff;
-        echo '<tr>';
-        echo '<th width="20%" style="white-space: nowrap;">'.Format::htmlchars($label).':</th>';
-        echo '<td>'.$v.'</td>';
-        echo '</tr>';
-    }
-
-    echo '</tbody>';
-    echo '</table>';
-}
 echo '</div>'; // ticket preview content.
 ?>
 
@@ -179,8 +147,13 @@ echo '</div>'; // ticket preview content.
     <br>
     <?php
     echo sprintf('<span><a class="collaborators"
+<<<<<<< HEAD
                             href="#thread/%d/collaborators/1">%s</a></span>',
                             $thread->getId(),
+=======
+                            href="#tickets/%d/collaborators">%s</a></span>',
+                            $ticket->getId(),
+>>>>>>> parent of 7093d97... 2020 Update
                             $thread && $thread->getNumCollaborators()
                                 ? __('Manage Collaborators') : __('Add Collaborator')
                                 );
@@ -204,15 +177,15 @@ if($ticket->getNumNotes())
 if($ticket->isOpen())
     $options[]=array('action'=>__('Reply'),'url'=>"tickets.php?id=$tid#reply");
 
-if ($role->hasPerm(Ticket::PERM_ASSIGN))
+if ($role->hasPerm(TicketModel::PERM_ASSIGN))
     $options[]=array('action'=>($ticket->isAssigned()?__('Reassign'):__('Assign')),'url'=>"tickets.php?id=$tid#assign");
 
-if ($role->hasPerm(Ticket::PERM_TRANSFER))
+if ($role->hasPerm(TicketModel::PERM_TRANSFER))
     $options[]=array('action'=>__('Transfer'),'url'=>"tickets.php?id=$tid#transfer");
 
 $options[]=array('action'=>__('Post Note'),'url'=>"tickets.php?id=$tid#note");
 
-if ($role->hasPerm(Ticket::PERM_EDIT))
+if ($role->hasPerm(TicketModel::PERM_EDIT))
     $options[]=array('action'=>__('Edit Ticket'),'url'=>"tickets.php?id=$tid&a=edit");
 
 if($options) {

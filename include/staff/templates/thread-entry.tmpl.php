@@ -13,7 +13,6 @@ $name = $user ? $user->getName() : $entry->poster;
 $avatar = '';
 if ($user && $cfg->isAvatarsEnabled())
     $avatar = $user->getAvatar();
-
 ?>
 <div class="thread-entry <?php
     echo $entry->isSystem() ? 'system' : $entryTypes[$entry->type]; ?> <?php if ($avatar) echo 'avatar'; ?>">
@@ -54,6 +53,7 @@ if ($user && $cfg->isAvatarsEnabled())
         if ($entry->flags & ThreadEntry::FLAG_RESENT) { ?>
             <span class="label label-bare"><?php echo __('Resent'); ?></span>
 <?php   }
+<<<<<<< HEAD
         if ($entry->flags & ThreadEntry::FLAG_REPLY_ALL) { ?>
             <span class="label label-bare"><i class="icon-group"></i></span>
 <?php   }
@@ -68,6 +68,11 @@ if ($user && $cfg->isAvatarsEnabled())
         if ($entry->flags & ThreadEntry::FLAG_COLLABORATOR && $entry->type == 'M') { ?>
             <span class="label label-bare"><?php echo __('Cc Collaborator'); ?></span>
         <?php   } ?>
+=======
+        if ($entry->flags & ThreadEntry::FLAG_COLLABORATOR) { ?>
+            <span class="label label-bare"><?php echo __('Collaborator'); ?></span>
+<?php   } ?>
+>>>>>>> parent of 7093d97... 2020 Update
         </span>
         </div>
 <?php
@@ -105,8 +110,7 @@ if ($user && $cfg->isAvatarsEnabled())
 ?>
         <span class="attachment-info">
         <i class="icon-paperclip icon-flip-horizontal"></i>
-        <a class="no-pjax truncate filename" href="<?php echo
-        $A->file->getDownloadUrl(['id' => $A->getId()]);
+        <a class="no-pjax truncate filename" href="<?php echo $A->file->getDownloadUrl();
             ?>" download="<?php echo Format::htmlchars($A->getFilename()); ?>"
             target="_blank"><?php echo Format::htmlchars($A->getFilename());
         ?></a><?php echo $size;?>

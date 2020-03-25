@@ -295,8 +295,7 @@ class FileManager extends Module {
 
                 // Find or create the file record
                 $finfo = $header['file'];
-                // TODO: Consider the $version code, drop columns which do
-                // not exist in this database schema
+                // TODO: Consider the $version code
                 $f = AttachmentFile::lookup($finfo['id']);
                 if ($f) {
                     // Verify file information
@@ -320,6 +319,7 @@ class FileManager extends Module {
                     // Bypass the AttachmentFile::create() because we do not
                     // have the data to send yet.
                     $f = new AttachmentFile($finfo);
+                    $f->__new__ = true;
                     if (!$f->save(true)) {
                         $this->fail(sprintf(
                             '%s: Unable to create new file record',
@@ -447,9 +447,10 @@ class FileManager extends Module {
             $files = AttachmentFile::objects();
             $this->_applyCriteria($options, $files);
 
-            foreach ($files as $f) {
+            foreach ($files as $m) {
                 // Drop associated attachment links
-                $f->attachments->expunge();
+                $m->tickets->expunge();
+                $f = AttachmentFile::lookup($m->id);
 
                 // Drop file contents
                 if ($bk = $f->open())

@@ -14,6 +14,7 @@ class TicketApiController extends ApiController {
             "attachments" => array("*" =>
                 array("name", "type", "data", "encoding", "size")
             ),
+<<<<<<< HEAD
             "message", "ip", "priorityId",
             "system_emails" => array(
                 "*" => "*"
@@ -21,6 +22,9 @@ class TicketApiController extends ApiController {
             "thread_entry_recipients" => array (
                 "*" => array("to", "cc")
             )
+=======
+            "message", "ip", "priorityId"
+>>>>>>> parent of 7093d97... 2020 Update
         );
         # Fetch dynamic form field names for the given help topic and add
         # the names to the supported request structure
@@ -46,7 +50,7 @@ class TicketApiController extends ApiController {
         if(!strcasecmp($format, 'email')) {
             $supported = array_merge($supported, array('header', 'mid',
                 'emailId', 'to-email-id', 'ticketId', 'reply-to', 'reply-to-name',
-                'in-reply-to', 'references', 'thread-type', 'system_emails',
+                'in-reply-to', 'references', 'thread-type',
                 'mailflags' => array('bounce', 'auto-reply', 'spam', 'viral'),
                 'recipients' => array('*' => array('name', 'email', 'source'))
                 ));

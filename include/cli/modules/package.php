@@ -125,7 +125,7 @@ class Packager extends Deployment {
                     if ($php56plus) {
                         // Set the Unix mode of the file
                         $stat = stat($full);
-                        $zip->setExternalAttributesName($local, ZipArchive::OPSYS_UNIX, $stat['mode'] << 16);
+                        $zip->setExternalAttributesName($local, ZipArchive::OPSYS_UNIX, $stat['mode']);
                     }
             }
         };

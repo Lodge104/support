@@ -117,7 +117,7 @@ if($_POST){
                                 _N('selected SLA plan', 'selected SLA plans', $count));
                         break;
                     default:
-                        $errors['err']=sprintf('%s - %s', __('Unknown action'), __('Get technical help!'));
+                        $errors['err']=__('Unknown action - get technical help.');
                 }
             }
             break;

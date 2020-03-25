@@ -69,7 +69,7 @@ class Crypto {
      *      is only really useful for testing. The crypto library will be
      *      automatically selected based on the available PHP extensions.
      */
-    static function encrypt($input, $key, $skey='encryption', $crypt=null) {
+    function encrypt($input, $key, $skey='encryption', $crypt=null) {
 
         //Gets preffered crypto.
         if(!($crypto =  Crypto::get($crypt)))
@@ -97,7 +97,7 @@ class Crypto {
      * skey - (string_ sub key or namespace used originally for the
      *      encryption
      */
-    static function decrypt($ciphertext, $key, $skey='encryption') {
+    function decrypt($ciphertext, $key, $skey='encryption') {
 
         if(!$key || !$ciphertext || $ciphertext[0] != '$')
             return false;
@@ -112,7 +112,7 @@ class Crypto {
         return $crypto->decrypt(base64_decode($ciphertext));
     }
 
-    static function get($crypt) {
+    function get($crypt) {
 
         $cryptos = self::cryptos();
         if(!$cryptos || ($crypt && !isset($cryptos[$crypt])))
@@ -133,7 +133,7 @@ class Crypto {
      *  Returns list of supported cryptos
      *
      */
-    static function cryptos() {
+    function cryptos() {
 
         static $cryptos = false;
 
@@ -153,7 +153,7 @@ class Crypto {
         return $cryptos;
     }
 
-    static function hash($string, $key) {
+    function hash($string, $key) {
         $hash = new Crypt_Hash('sha512');
         $hash->setKey($key);
         return $hash->hash($string);
@@ -164,7 +164,7 @@ class Crypto {
       Credit: The routine borrows heavily from PHPSecLib's Crypt_Random
       package.
      */
-    static function random($len) {
+    function random($len) {
 
         if(CRYPT_IS_WINDOWS) {
             if (function_exists('openssl_random_pseudo_bytes')

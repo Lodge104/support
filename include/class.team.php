@@ -126,6 +126,7 @@ implements TemplateVariable {
         return $this->isEnabled();
     }
 
+<<<<<<< HEAD
     function isAvailable() {
         return ($this->isActive() && $this->members);
     }
@@ -140,6 +141,8 @@ implements TemplateVariable {
                 return true;
     }
 
+=======
+>>>>>>> parent of 7093d97... 2020 Update
     function alertsEnabled() {
         return ($this->flags & self::FLAG_NOALERTS) == 0;
     }
@@ -238,6 +241,7 @@ implements TemplateVariable {
           }
           $member->setAlerts($alerts);
       }
+<<<<<<< HEAD
 
       if ($errors)
           return false;
@@ -246,13 +250,15 @@ implements TemplateVariable {
       if ($dropped) {
           $type = array('type' => 'edited', 'key' => 'Members Removed');
           Signal::send('object.edited', $this, $type);
+=======
+      if (!$errors && $dropped) {
+>>>>>>> parent of 7093d97... 2020 Update
           $this->members
               ->filter(array('staff_id__in' => array_keys($dropped)))
               ->delete();
           $this->members->reset();
       }
-
-      return true;
+      return !$errors;
     }
 
     function save($refetch=false) {

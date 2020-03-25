@@ -121,7 +121,7 @@ class osTicket {
             return true;
 
         $msg=sprintf(__('Invalid CSRF token [%1$s] on %2$s'),
-                (Format::htmlchars($_POST[$name]).''.$_SERVER['HTTP_X_CSRFTOKEN']), THISPAGE);
+                ($_POST[$name].''.$_SERVER['HTTP_X_CSRFTOKEN']), THISPAGE);
         $this->logWarning(__('Invalid CSRF Token').' '.$name, $msg, false);
 
         return false;
@@ -436,7 +436,7 @@ class osTicket {
             switch ($info['v']) {
             case '1':
                 if ($major && $info['m'] && $info['m'] != $major)
-                    continue 2;
+                    continue;
                 if ($product == 'core' && GIT_VERSION == '$git')
                     return $info['c'];
                 return $info['V'];

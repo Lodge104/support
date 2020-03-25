@@ -227,7 +227,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                     <th colspan="2">
                         <em><strong><?php echo __('Filter Actions');?></strong>:
                         <div><?php
-                            echo __('Can be overridden by other filters depending on processing order.');
+                            echo __('Can be overwridden by other filters depending on processing order.');
                         ?><br/><?php
                             echo __('Actions are executed in the order declared below');
                             ?></div></em>
@@ -238,21 +238,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                 <?php
                 $existing = array();
                 if ($filter) { foreach ($filter->getActions() as $A) {
-                    $_warn = '';
                     $existing[] = $A->type;
-                    $config = JsonDataParser::parse($A->configuration);
-                    if($A->type == 'dept') {
-                      $errors['topic_id'] = '';
-                      $dept = Dept::lookup($config['dept_id']);
-                      if($dept && !$dept->isActive())
-                        $_warn = sprintf(__('%s must be active'), __('Department'));
-                    }
-                    elseif($A->type == 'topic') {
-                      $errors['dept_id'] = '';
-                      $topic = Topic::lookup($config['topic_id']);
-                      if($topic && !$topic->isActive())
-                        $_warn = sprintf(__('%s must be active'), __('Help Topic'));
-                    }
                 ?>
                 <tr style="background-color:white"><td><i class="icon-sort icon-large icon-muted"></i>
                     <?php echo $A->getImpl()->getName(); ?>:</td>
@@ -262,11 +248,8 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
                         // XXX: Drop this when the ORM supports proper caching
                         $form->isValid();
                         include STAFFINC_DIR . 'templates/dynamic-form-simple.tmpl.php';
-                        if($_warn) {
-                            ?>&nbsp;<span class="error">*&nbsp;<?php echo $_warn; ?></span>
-                        <?php } ?>
-                        <input type="hidden" name="actions[]" value="<?php
-                            echo $A->getId() ? "I".$A->getId() : "N".$A->getImpl()->getType(); ?>"/>
+                        ?>
+                        <input type="hidden" name="actions[]" value="I<?php echo $A->getId(); ?>"/>
                         <div class="pull-right" style="position:absolute;top:2px;right:2px;">
                             <a href="#" title="<?php echo __('clear'); ?>" onclick="javascript:
                                 if (!confirm(__('You sure?')))

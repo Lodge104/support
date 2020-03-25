@@ -15,6 +15,7 @@
 // TODO:  Make ObjectModel models base class and extend VerySimpleModel
 class ObjectModel {
 
+<<<<<<< HEAD
     const OBJECT_TYPE_TICKET       = 'T';
     const OBJECT_TYPE_THREAD       = 'H';
     const OBJECT_TYPE_USER         = 'U';
@@ -26,11 +27,21 @@ class ObjectModel {
     const OBJECT_TYPE_DEPT         = 'D';
     const OBJECT_TYPE_STAFF        = 'S';
     const OBJECT_TYPE_CHILD_TICKET = 'C';
+=======
+    const OBJECT_TYPE_TICKET = 'T';
+    const OBJECT_TYPE_THREAD = 'H';
+    const OBJECT_TYPE_USER   = 'U';
+    const OBJECT_TYPE_ORG    = 'O';
+    const OBJECT_TYPE_FAQ    = 'K';
+    const OBJECT_TYPE_FILE   = 'F';
+    const OBJECT_TYPE_TASK   = 'A';
+>>>>>>> parent of 7093d97... 2020 Update
 
     private function objects() {
         static $objects = false;
         if ($objects == false) {
             $objects = array(
+<<<<<<< HEAD
                 self::OBJECT_TYPE_TICKET        => 'Ticket',
                 self::OBJECT_TYPE_THREAD        => 'ThreadEntry',
                 self::OBJECT_TYPE_USER          => 'User',
@@ -43,6 +54,16 @@ class ObjectModel {
                 self::OBJECT_TYPE_STAFF         => 'Staff',
                 self::OBJECT_TYPE_CHILD_TICKET  => 'Ticket',
             );
+=======
+                    self::OBJECT_TYPE_TICKET  => 'Ticket',
+                    self::OBJECT_TYPE_THREAD  => 'ThreadEntry',
+                    self::OBJECT_TYPE_USER    => 'User',
+                    self::OBJECT_TYPE_ORG     => 'Organization',
+                    self::OBJECT_TYPE_FAQ     => 'FAQ',
+                    self::OBJECT_TYPE_FILE    => 'AttachmentFile',
+                    self::OBJECT_TYPE_TASK    => 'Task',
+                    );
+>>>>>>> parent of 7093d97... 2020 Update
         }
 
         return $objects;

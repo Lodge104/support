@@ -15,12 +15,12 @@ if($topic && $_REQUEST['a']!='add') {
     $title=__('Add New Help Topic');
     $action='create';
     $submit_text=__('Add Topic');
-    // $info['isactive']=isset($info['isactive'])?$info['isactive']:1;
+    $info['isactive']=isset($info['isactive'])?$info['isactive']:1;
     $info['ispublic']=isset($info['ispublic'])?$info['ispublic']:1;
     $qs += array('a' => $_REQUEST['a']);
     $forms = TicketForm::objects();
 }
-$info=Format::htmlchars(($errors && $_POST)?$_POST:$info, true);
+$info=Format::htmlchars(($errors && $_POST)?$_POST:$info);
 ?>
 
 <h2><?php echo $title; ?>
@@ -60,11 +60,8 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info, true);
                 <?php echo __('Status');?>:
             </td>
             <td>
-                <select name="status">
-                  <option value="active"<?php echo ($info['status'] == __('Active'))?'selected="selected"':'';?>><?php echo __('Active'); ?></option>
-                  <option value="disabled"<?php echo ($info['status'] == __('Disabled'))?'selected="selected"':'';?>><?php echo __('Disabled'); ?></option>
-                  <option value="archived"<?php echo ($info['status'] == __('Archived'))?'selected="selected"':'';?>><?php echo __('Archived'); ?></option>
-                </select>
+                <input type="radio" name="isactive" value="1" <?php echo $info['isactive']?'checked="checked"':''; ?>> <?php echo __('Active'); ?>
+                <input type="radio" name="isactive" value="0" <?php echo !$info['isactive']?'checked="checked"':''; ?>> <?php echo __('Disabled'); ?>
                 &nbsp;<span class="error">*&nbsp;</span> <i class="help-tip icon-question-sign" href="#status"></i>
             </td>
         </tr>
@@ -85,7 +82,7 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info, true);
             <td>
                 <select name="topic_pid">
                     <option value="">&mdash; <?php echo __('Top-Level Topic'); ?> &mdash;</option><?php
-                    $topics = Topic::getHelpTopics();
+                    $topics = Topic::getAllHelpTopics();
                     while (list($id,$topic) = each($topics)) {
                         if ($id == $info['topic_id'])
                             continue; ?>
@@ -125,26 +122,13 @@ $info=Format::htmlchars(($errors && $_POST)?$_POST:$info, true);
                 <select name="dept_id" data-quick-add="department">
                     <option value="0">&mdash; <?php echo __('System Default'); ?> &mdash;</option>
                     <?php
-                    if($info['dept_id'])
-                      $current_name = Dept::getNameById($info['dept_id']);
-                    if ($depts=Dept::getPublicDepartments()) {
-                      if(!array_key_exists($info['dept_id'], $depts) && $info['dept_id'])
-                      {
-                        $depts[$info['dept_id']] = $current_name;
-                        $warn = sprintf(__('%s selected must be active'), __('Department'));
-                      }
-                    foreach ($depts as $id=>$name) {
+                    foreach (Dept::getDepartments() as $id=>$name) {
                         $selected=($info['dept_id'] && $id==$info['dept_id'])?'selected="selected"':'';
                         echo sprintf('<option value="%d" %s>%s</option>',$id,$selected,$name);
-                    }
-                  }
-                  ?>
+                    } ?>
                     <option value="0" data-quick-add>&mdash; <?php echo __('Add New');?> &mdash;</option>
                 </select>
-                <?php
-                if($warn) { ?>
-                    &nbsp;<span class="error">*&nbsp;<?php echo $warn; ?></span>
-                <?php } ?>
+                &nbsp;<span class="error">&nbsp;<?php echo $errors['dept_id']; ?></span>
                 <i class="help-tip icon-question-sign" href="#department"></i>
             </td>
         </tr>

@@ -63,7 +63,7 @@ if(jQuery) (function($) {
 
 	function hideDropdowns(event) {
 
-		var targetGroup = event ? $(event.target).parents().addBack() : null;
+		var targetGroup = event ? $(event.target).parents().andSelf() : null;
 		if( targetGroup && targetGroup.is('.action-dropdown') && !targetGroup.is('a') ) return;
 
 		$('body')

@@ -307,7 +307,7 @@ $.refreshTicketView = function(interval) {
         return;
 
       clearInterval(refresh);
-      $.pjax({url: document.location.href, container:'#pjax-container', timeout: 30000});
+      $.pjax({url: document.location.href, container:'#pjax-container'});
     }, interval);
     $(document).on('pjax:start', function() {
         clearInterval(refresh);

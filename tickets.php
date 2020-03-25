@@ -53,11 +53,12 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
             foreach ($forms as $form) {
                 $form->filterFields(function($f) { return !$f->isStorable(); });
                 $form->setSource($_POST);
-                if (!$form->isValidForClient(true))
+                if (!$form->isValid())
                     $errors = array_merge($errors, $form->errors());
             }
         }
         if (!$errors) {
+<<<<<<< HEAD
             foreach ($forms as $form) {
                 $changes += $form->getChanges();
                 $form->saveAnswers(function ($f) {
@@ -70,7 +71,14 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
               $ticket->logEvent('edited', array('fields' => $changes), $user);
               $type = array('type' => 'edited', 'fields' => $changes);
               Signal::send('object.edited', $ticket, $type);
+=======
+            foreach ($forms as $f) {
+                $changes += $f->getChanges();
+                $f->save();
+>>>>>>> parent of 7093d97... 2020 Update
             }
+            if ($changes)
+                $ticket->logEvent('edited', array('fields' => $changes));
             $_REQUEST['a'] = null; //Clear edit action - going back to view.
         }
         break;
@@ -89,7 +97,7 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
                     'poster' => (string) $thisclient->getName(),
                     'message' => $_POST['message']
                     );
-            $vars['files'] = $attachments->getFiles();
+            $vars['cannedattachments'] = $attachments->getClean();
             if (isset($_POST['draft_id']))
                 $vars['draft_id'] = $_POST['draft_id'];
 
@@ -119,8 +127,7 @@ elseif (is_object($ticket) && $ticket->getId()) {
     switch(strtolower($_REQUEST['a'])) {
     case 'print':
         if (!$ticket || !$ticket->pdfExport($_REQUEST['psize']))
-            $errors['err'] = __('Unable to print to PDF.')
-                .' '.__('Internal error occurred');
+            $errors['err'] = __('Internal error: Unable to print to PDF');
         break;
     }
 }
@@ -132,9 +139,9 @@ if($ticket && $ticket->checkUserAccess($thisclient)) {
         $inc = 'edit.inc.php';
         if (!$forms) $forms=DynamicFormEntry::forTicket($ticket->getId());
         // Auto add new fields to the entries
-        foreach ($forms as $form) {
-            $form->filterFields(function($f) { return !$f->isStorable(); });
-            $form->addMissingFields();
+        foreach ($forms as $f) {
+            $f->filterFields(function($f) { return !$f->isStorable(); });
+            $f->addMissingFields();
         }
     }
     else
