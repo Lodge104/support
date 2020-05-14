@@ -59,7 +59,6 @@ class TaskModel extends VerySimpleModel {
 
             'ticket' => array(
                 'constraint' => array(
-                    'object_type' => "'T'",
                     'object_id' => 'Ticket.ticket_id',
                 ),
                 'null' => true,
@@ -268,7 +267,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             return false;
 
         // Check access based on department or assignment
-        if (!$staff->canAccessDept($this->getDeptId())
+        if (!$staff->canAccessDept($this->getDept())
                 && $this->isOpen()
                 && $staff->getId() != $this->getStaffId()
                 && !$staff->isTeamMember($this->getTeamId()))
@@ -280,7 +279,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             return true;
 
         // Permission check requested -- get role.
-        if (!($role=$staff->getRole($this->getDeptId())))
+        if (!($role=$staff->getRole($this->getDept())))
             return false;
 
         // Check permission based on the effective role
@@ -407,6 +406,9 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         $alert = isset($options['alert']) ? $options['alert'] : true;
         switch ($type) {
         case 'N':
+        case 'M':
+            return $this->getThread()->addDescription($vars);
+            break;
         default:
             return $this->postNote($vars, $errors, $poster, $alert);
         }
@@ -535,17 +537,8 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             $this->reopen();
             $this->closed = null;
 
-            $ecb = function ($t) {
+            $ecb = function ($t) use($thisstaff) {
                 $t->logEvent('reopened', false, null, 'closed');
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 if ($t->ticket) {
                     $t->ticket->reopen();
                     $vars = array(
@@ -555,10 +548,6 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                             );
                     $t->ticket->logNote($vars['title'], $vars['note'], $thisstaff);
                 }
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7093d97... 2020 Update
             };
             break;
         case 'closed':
@@ -575,17 +564,8 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
             $this->close();
             $this->closed = SqlFunction::NOW();
-            $ecb = function($t) {
+            $ecb = function($t) use($thisstaff) {
                 $t->logEvent('closed');
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 if ($t->ticket) {
                     $vars = array(
                             'title' => sprintf('Task %s Closed',
@@ -594,10 +574,6 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                             );
                     $t->ticket->logNote($vars['title'], $vars['note'], $thisstaff);
                 }
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7093d97... 2020 Update
             };
             break;
         default:
@@ -672,7 +648,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             $errors['err'] = __('Unknown assignee');
         } elseif (!$assignee->isAvailable()) {
             $errors['err'] = __('Agent is unavailable for assignment');
-        } elseif ($dept->assignMembersOnly() && !$dept->isMember($assignee)) {
+        } elseif (!$dept->canAssign($assignee)) {
             $errors['err'] = __('Permission denied');
         }
 
@@ -716,6 +692,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         $evd = array();
         $assignee = $form->getAssignee();
         if ($assignee instanceof Staff) {
+            $dept = $this->getDept();
             if ($this->getStaffId() == $assignee->getId()) {
                 $errors['assignee'] = sprintf(__('%s already assigned to %s'),
                         __('Task'),
@@ -723,7 +700,10 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
                         );
             } elseif(!$assignee->isAvailable()) {
                 $errors['assignee'] = __('Agent is unavailable for assignment');
-            } else {
+              } elseif (!$dept->canAssign($assignee)) {
+                $errors['err'] = __('Permission denied');
+            }
+            else {
                 $this->staff_id = $assignee->getId();
                 if ($thisstaff && $thisstaff->getId() == $assignee->getId())
                     $evd['claim'] = true;
@@ -1019,7 +999,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
         $pdf = new Task2PDF($this, $options);
         $name = 'Task-'.$this->getNumber().'.pdf';
-        Http::download($name, 'application/pdf', $pdf->Output($name, 'S'));
+        Http::download($name, 'application/pdf', $pdf->output($name, 'S'));
         //Remember what the user selected - for autoselect on the next print.
         $_SESSION['PAPER_SIZE'] = $options['psize'];
         exit;
@@ -1057,7 +1037,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         case 'create_date':
             return new FormattedDate($this->getCreateDate());
          case 'due_date':
-            if ($due = $this->getEstDueDate())
+            if ($due = $this->getDueDate())
                 return new FormattedDate($due);
             break;
         case 'close_date':
@@ -1193,6 +1173,14 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
 
     }
 
+    function addCollaborator($user, $vars, &$errors, $event=true) {
+        if ($c = $this->getThread()->addCollaborator($user, $vars, $errors, $event)) {
+            $this->collaborators = null;
+            $this->recipients = null;
+        }
+        return $c;
+    }
+
     /*
      * Notify collaborators on response or new message
      *
@@ -1201,7 +1189,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         global $cfg;
 
         if (!$entry instanceof ThreadEntry
-            || !($recipients=$this->getThread()->getParticipants())
+            || !($recipients=$this->getThread()->getRecipients())
             || !($dept=$this->getDept())
             || !($tpl=$dept->getTemplate())
             || !($msg=$tpl->getTaskActivityNoticeMsgTemplate())
@@ -1283,11 +1271,13 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
             $_errors = array();
             $this->postNote(array(
                         'note' => $vars['note'],
-                        'title' => __('Task Update'),
+                        'title' => _S('Task Updated'),
                         ),
                     $_errors,
                     $thisstaff);
         }
+
+        $this->updated = SqlFunction::NOW();
 
         if ($changes)
             $this->logEvent('edited', array('fields' => $changes));
@@ -1344,7 +1334,7 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         $task->logEvent('created', null, $thisstaff);
 
         // Get role for the dept
-        $role = $thisstaff->getRole($task->dept_id);
+        $role = $thisstaff->getRole($task->getDept());
         // Assignment
         $assignee = $vars['internal_formdata']['assignee'];
         if ($assignee
@@ -1373,26 +1363,8 @@ class Task extends TaskModel implements RestrictedAccess, Threadable {
         if (!parent::delete())
             return false;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $thread->delete();
-<<<<<<< HEAD
-        $this->logEvent('deleted');
-=======
-
->>>>>>> parent of 7093d97... 2020 Update
-=======
         $this->logEvent('deleted');
 
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-        $this->logEvent('deleted');
-=======
-        $thread->delete();
->>>>>>> parent of 7093d97... 2020 Update
-
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         Draft::deleteForNamespace('task.%.' . $this->getId());
 
         foreach (DynamicFormEntry::forObject($this->getId(), ObjectModel::OBJECT_TYPE_TASK) as $form)
@@ -1604,7 +1576,8 @@ class TaskThread extends ObjectThread {
     function addDescription($vars, &$errors=array()) {
 
         $vars['threadId'] = $this->getId();
-        $vars['message'] = $vars['description'];
+        if (!isset($vars['message']) && $vars['description'])
+            $vars['message'] = $vars['description'];
         unset($vars['description']);
         return MessageThreadEntry::add($vars, $errors);
     }

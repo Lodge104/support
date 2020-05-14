@@ -1,7 +1,7 @@
 <?php
 if (!defined('OSTSCPINC')
     || !$thisstaff || !$task
-    || !($role = $thisstaff->getRole($task->getDeptId())))
+    || !($role = $thisstaff->getRole($task->getDept())))
     die('Invalid path');
 
 global $cfg;
@@ -78,7 +78,7 @@ if ($role->hasPerm(Task::PERM_DELETE)) {
             'delete' => array(
                 'href' => sprintf('#tasks/%d/delete', $task->getId()),
                 'icon' => 'icon-trash',
-                'class' => 'red button',
+                'class' => (strpos($_SERVER['REQUEST_URI'], 'tickets.php') !== false) ? 'danger' : 'red button',
                 'label' => __('Delete'),
                 'redirect' => 'tasks.php'
             ));
@@ -146,7 +146,7 @@ if ($task->isOverdue())
                 <ul>
 
                     <?php
-                    if ($task->isOpen()) { ?>
+                    if (!$task->isOpen()) { ?>
                     <li>
                         <a class="no-pjax task-action"
                             href="#tasks/<?php echo $task->getId(); ?>/reopen"><i
@@ -154,7 +154,7 @@ if ($task->isOverdue())
                             echo __('Reopen');?> </a>
                     </li>
                     <?php
-                    } else {
+                    } elseif ($canClose) {
                     ?>
                     <li>
                         <a class="no-pjax task-action"
@@ -212,7 +212,7 @@ if ($task->isOverdue())
                                 echo __('Reopen');?> </a>
                         </li>
                         <?php
-                        } else {
+                        } elseif ($canClose) {
                         ?>
                         <li>
                             <a class="no-pjax task-action"
@@ -268,7 +268,7 @@ if ($task->isOverdue())
                 <?php
                 foreach ($actions as $action) {?>
                 <span class="action-button <?php echo $action['class'] ?: ''; ?>">
-                    <a class="task-action"
+                    <a class="<?php echo ($action['class'] == 'no-pjax') ? '' : 'task-action'; ?>"
                         <?php
                         if ($action['dialog'])
                             echo sprintf("data-dialog-config='%s'", $action['dialog']);
@@ -372,9 +372,9 @@ if (!$ticket) { ?>
                         <th><?php echo __('Collaborators');?>:</th>
                         <td>
                             <?php
-                            $collaborators = __('Add Participants');
+                            $collaborators = __('Collaborators');
                             if ($task->getThread()->getNumCollaborators())
-                                $collaborators = sprintf(__('Participants (%d)'),
+                                $collaborators = sprintf(__('Collaborators (%d)'),
                                         $task->getThread()->getNumCollaborators());
 
                             echo sprintf('<span><a class="collaborators preview"
@@ -486,32 +486,9 @@ else
                         style="display:<?php echo $thread->getNumCollaborators() ? 'inline-block': 'none'; ?>;"
                         >
                     <?php
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    if ($thread->getNumCollaborators())
-                        $recipients = sprintf(__('(%d of %d)'),
-=======
-                    $recipients = __('Add Participants');
-                    if ($thread->getNumCollaborators())
-                        $recipients = sprintf(__('Recipients (%d of %d)'),
->>>>>>> parent of 7093d97... 2020 Update
-=======
                     $recipients = __('Collaborators');
                     if ($thread->getNumCollaborators())
                         $recipients = sprintf(__('Collaborators (%d of %d)'),
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-                    $recipients = __('Collaborators');
-                    if ($thread->getNumCollaborators())
-                        $recipients = sprintf(__('Collaborators (%d of %d)'),
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-                    $recipients = __('Add Participants');
-                    if ($thread->getNumCollaborators())
-                        $recipients = sprintf(__('Recipients (%d of %d)'),
->>>>>>> parent of 7093d97... 2020 Update
                                 $thread->getNumActiveCollaborators(),
                                 $thread->getNumCollaborators());
 
@@ -642,7 +619,6 @@ else
 <?php
 echo $reply_attachments_form->getMedia();
 ?>
-
 <script type="text/javascript">
 $(function() {
     $(document).off('.tasks-content');
@@ -688,7 +664,10 @@ $(function() {
                 .slideUp();
             }
         })
-        .done(function() { })
+        .done(function() {
+            $('#loading').hide();
+            $.toggleOverlay(false);
+        })
         .fail(function() { });
      });
     <?php

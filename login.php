@@ -70,7 +70,7 @@ if ($_POST && isset($_POST['luser'])) {
                 ?: 'tickets.php');
         }
     } elseif(!$errors['err']) {
-        $errors['err'] = __('Invalid username or password - try again!');
+        $errors['err'] = sprintf('%s - %s', __('Invalid username or password'), __('Please try again!'));
     }
     $suggest_pwreset = true;
 }
@@ -90,12 +90,18 @@ elseif ($_POST && isset($_POST['lticket'])) {
 
         // We're using authentication backend so we can guard aganist brute
         // force attempts (which doesn't buy much since the link is emailed)
-        $ticket->sendAccessLink($user);
-        $msg = sprintf(__("%s - access link sent to your email!"),
-            Format::htmlchars($user->getName()->getFirst()));
-        $_POST = null;
+        if ($ticket) {
+            $ticket->sendAccessLink($user);
+            $msg = sprintf(__("%s - access link sent to your email!"),
+                Format::htmlchars($user->getName()->getFirst()));
+            $_POST = null;
+        } else {
+            $errors['err'] = sprintf('%s - %s',
+                __('Invalid email or ticket number'),
+                __('Please try again!'));
+        }
     } elseif(!$errors['err']) {
-        $errors['err'] = __('Invalid email or ticket number - try again!');
+        $errors['err'] = sprintf('%s - %s', __('Invalid email or ticket number'), __('Please try again!'));
     }
 }
 elseif (isset($_GET['do'])) {

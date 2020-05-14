@@ -53,13 +53,11 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
             foreach ($forms as $form) {
                 $form->filterFields(function($f) { return !$f->isStorable(); });
                 $form->setSource($_POST);
-                if (!$form->isValid())
+                if (!$form->isValidForClient(true))
                     $errors = array_merge($errors, $form->errors());
             }
         }
         if (!$errors) {
-<<<<<<< HEAD
-<<<<<<< HEAD
             foreach ($forms as $form) {
                 $changes += $form->getChanges();
                 $form->saveAnswers(function ($f) {
@@ -70,27 +68,7 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
             if ($changes) {
               $user = User::lookup($thisclient->getId());
               $ticket->logEvent('edited', array('fields' => $changes), $user);
-<<<<<<< HEAD
-<<<<<<< HEAD
-              $type = array('type' => 'edited', 'fields' => $changes);
-              Signal::send('object.edited', $ticket, $type);
-=======
-            foreach ($forms as $f) {
-                $changes += $f->getChanges();
-                $f->save();
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-            foreach ($forms as $f) {
-                $changes += $f->getChanges();
-                $f->save();
->>>>>>> parent of 7093d97... 2020 Update
             }
-            if ($changes)
-                $ticket->logEvent('edited', array('fields' => $changes));
             $_REQUEST['a'] = null; //Clear edit action - going back to view.
         }
         break;
@@ -109,7 +87,7 @@ if ($_POST && is_object($ticket) && $ticket->getId()) {
                     'poster' => (string) $thisclient->getName(),
                     'message' => $_POST['message']
                     );
-            $vars['cannedattachments'] = $attachments->getClean();
+            $vars['files'] = $attachments->getFiles();
             if (isset($_POST['draft_id']))
                 $vars['draft_id'] = $_POST['draft_id'];
 
@@ -139,7 +117,8 @@ elseif (is_object($ticket) && $ticket->getId()) {
     switch(strtolower($_REQUEST['a'])) {
     case 'print':
         if (!$ticket || !$ticket->pdfExport($_REQUEST['psize']))
-            $errors['err'] = __('Internal error: Unable to print to PDF');
+            $errors['err'] = __('Unable to print to PDF.')
+                .' '.__('Internal error occurred');
         break;
     }
 }
@@ -151,9 +130,9 @@ if($ticket && $ticket->checkUserAccess($thisclient)) {
         $inc = 'edit.inc.php';
         if (!$forms) $forms=DynamicFormEntry::forTicket($ticket->getId());
         // Auto add new fields to the entries
-        foreach ($forms as $f) {
-            $f->filterFields(function($f) { return !$f->isStorable(); });
-            $f->addMissingFields();
+        foreach ($forms as $form) {
+            $form->filterFields(function($f) { return !$f->isStorable(); });
+            $form->addMissingFields();
         }
     }
     else

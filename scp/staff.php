@@ -137,7 +137,7 @@ if($_POST){
                             || !Dept::lookup($_POST['dept_id'])
                             || !Role::lookup($_POST['role_id'])
                         ) {
-                            $errors['err'] = 'Internal error.';
+                            $errors['err'] = __('Internal error occurred');
                             break;
                         }
                         foreach ($members as $s) {
@@ -158,7 +158,7 @@ if($_POST){
                         break;
 
                     default:
-                        $errors['err'] = __('Unknown action - get technical help.');
+                        $errors['err'] = sprintf('%s - %s', __('Unknown action'), __('Get technical help!'));
                 }
 
             }
@@ -172,28 +172,14 @@ if($_POST){
 $page='staffmembers.inc.php';
 $tip_namespace = 'staff.agent';
 if($staff || ($_REQUEST['a'] && !strcasecmp($_REQUEST['a'],'add'))) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-  if ($staff && ($pdept=$staff->getDept()) && !$pdept->isActive())
-    $warn = sprintf(__('%s is assigned a %s that is not active.'), __('Agent'), __('Primary Department'));
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
   if ($staff && ($pdept=$staff->getDept()) && !$pdept->isActive())
     $warn = sprintf(__('%s is assigned a %s that is not active.'), __('Agent'), __('Primary Department'));
 
-<<<<<<< HEAD
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
->>>>>>> parent of 7093d97... 2020 Update
     $page='staff.inc.php';
+} elseif ($_REQUEST['a'] && !strcasecmp($_REQUEST['a'],'export')) {
+    if (!Staff::export())
+        $errors['err'] = sprintf(__('Unable to export %s.'), __('Agents'));
 }
 
 $nav->setTabActive('staff');

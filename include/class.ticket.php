@@ -36,26 +36,13 @@ require_once(INCLUDE_DIR.'class.collaborator.php');
 require_once(INCLUDE_DIR.'class.task.php');
 require_once(INCLUDE_DIR.'class.faq.php');
 
-class TicketModel extends VerySimpleModel {
+class Ticket extends VerySimpleModel
+implements RestrictedAccess, Threadable, Searchable {
     static $meta = array(
         'table' => TICKET_TABLE,
         'pk' => array('ticket_id'),
-<<<<<<< HEAD
-<<<<<<< HEAD
         'select_related' => array('topic', 'staff', 'user', 'team', 'dept',
-<<<<<<< HEAD
-<<<<<<< HEAD
-            'sla', 'thread', 'child_thread', 'user__default_email', 'status'),
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
             'sla', 'thread', 'user__default_email', 'status'),
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-            'sla', 'thread', 'user__default_email', 'status'),
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
->>>>>>> parent of 7093d97... 2020 Update
         'joins' => array(
             'user' => array(
                 'constraint' => array('user_id' => 'User.id')
@@ -111,44 +98,13 @@ class TicketModel extends VerySimpleModel {
     const PERM_CREATE   = 'ticket.create';
     const PERM_EDIT     = 'ticket.edit';
     const PERM_ASSIGN   = 'ticket.assign';
+    const PERM_RELEASE  = 'ticket.release';
     const PERM_TRANSFER = 'ticket.transfer';
-<<<<<<< HEAD
-<<<<<<< HEAD
     const PERM_REFER    = 'ticket.refer';
-<<<<<<< HEAD
-<<<<<<< HEAD
-    const PERM_MERGE    = 'ticket.merge';
-    const PERM_LINK     = 'ticket.link';
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
->>>>>>> parent of 7093d97... 2020 Update
     const PERM_REPLY    = 'ticket.reply';
     const PERM_CLOSE    = 'ticket.close';
     const PERM_DELETE   = 'ticket.delete';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    const FLAG_COMBINE_THREADS     = 0x0001;
-    const FLAG_SEPARATE_THREADS    = 0x0002;
-    const FLAG_LINKED              = 0x0008;
-    const FLAG_PARENT              = 0x0010;
-=======
->>>>>>> parent of 7093d97... 2020 Update
-
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-
->>>>>>> parent of 7093d97... 2020 Update
     static protected $perms = array(
             self::PERM_CREATE => array(
                 'title' =>
@@ -165,38 +121,21 @@ class TicketModel extends VerySimpleModel {
                 /* @trans */ 'Assign',
                 'desc'  =>
                 /* @trans */ 'Ability to assign tickets to agents or teams'),
+            self::PERM_RELEASE => array(
+                'title' =>
+                /* @trans */ 'Release',
+                'desc'  =>
+                /* @trans */ 'Ability to release ticket assignment'),
             self::PERM_TRANSFER => array(
                 'title' =>
                 /* @trans */ 'Transfer',
                 'desc'  =>
                 /* @trans */ 'Ability to transfer tickets between departments'),
-<<<<<<< HEAD
-<<<<<<< HEAD
             self::PERM_REFER => array(
                 'title' =>
                 /* @trans */ 'Refer',
                 'desc'  =>
                 /* @trans */ 'Ability to manage ticket referrals'),
-<<<<<<< HEAD
-<<<<<<< HEAD
-            self::PERM_MERGE => array(
-                'title' =>
-                /* @trans */ 'Merge',
-                'desc'  =>
-                /* @trans */ 'Ability to merge tickets'),
-            self::PERM_LINK => array(
-                'title' =>
-                /* @trans */ 'Link',
-                'desc'  =>
-                /* @trans */ 'Ability to link tickets'),
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
->>>>>>> parent of 7093d97... 2020 Update
             self::PERM_REPLY => array(
                 'title' =>
                 /* @trans */ 'Post Reply',
@@ -220,6 +159,8 @@ class TicketModel extends VerySimpleModel {
             /* @trans */ 'Phone',
             'Email' =>
             /* @trans */ 'Email',
+            'Live Chat' =>
+            /* @trans */ 'Live Chat',
 
             'Web' =>
             /* @trans */ 'Web',
@@ -229,120 +170,6 @@ class TicketModel extends VerySimpleModel {
             /* @trans */ 'Other',
             );
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> parent of 7093d97... 2020 Update
-    function getId() {
-        return $this->ticket_id;
-    }
-
-    function getEffectiveDate() {
-         return Format::datetime(max(
-             strtotime($this->thread->lastmessage),
-             strtotime($this->closed),
-             strtotime($this->reopened),
-             strtotime($this->created)
-         ));
-    }
-
-    static function registerCustomData(DynamicForm $form) {
-        if (!isset(static::$meta['joins']['cdata+'.$form->id])) {
-            $cdata_class = <<<EOF
-class DynamicForm{$form->id} extends DynamicForm {
-    static function getInstance() {
-        static \$instance;
-        if (!isset(\$instance))
-            \$instance = static::lookup({$form->id});
-        return \$instance;
-    }
-}
-class TicketCdataForm{$form->id}
-extends VerySimpleModel {
-    static \$meta = array(
-        'view' => true,
-        'pk' => array('ticket_id'),
-        'joins' => array(
-            'ticket' => array(
-                'constraint' => array('ticket_id' => 'TicketModel.ticket_id'),
-            ),
-        )
-    );
-    static function getQuery(\$compiler) {
-        return '('.DynamicForm{$form->id}::getCrossTabQuery('T', 'ticket_id').')';
-    }
-}
-EOF;
-            eval($cdata_class);
-            $join = array(
-                'constraint' => array('ticket_id' => 'TicketCdataForm'.$form->id.'.ticket_id'),
-                'list' => true,
-            );
-            // This may be necessary if the model has already been inspected
-            if (static::$meta instanceof ModelMeta)
-                static::$meta->addJoin('cdata+'.$form->id, $join);
-            else {
-                static::$meta['joins']['cdata+'.$form->id] = array(
-                    'constraint' => array('ticket_id' => 'TicketCdataForm'.$form->id.'.ticket_id'),
-                    'list' => true,
-                );
-            }
-        }
-    }
-
-    static function getPermissions() {
-        return self::$perms;
-    }
-
-    static function getSources() {
-        static $translated = false;
-        if (!$translated) {
-            foreach (static::$sources as $k=>$v)
-                static::$sources[$k] = __($v);
-        }
-
-        return static::$sources;
-    }
-}
-
-RolePermission::register(/* @trans */ 'Tickets', TicketModel::getPermissions(), true);
-
-class TicketCData extends VerySimpleModel {
-    static $meta = array(
-        'table' => TICKET_CDATA_TABLE,
-        'pk' => array('ticket_id'),
-        'joins' => array(
-            'ticket' => array(
-                'constraint' => array('ticket_id' => 'TicketModel.ticket_id'),
-            ),
-            ':priority' => array(
-                'constraint' => array('priority' => 'Priority.priority_id'),
-                'null' => true,
-            ),
-        ),
-    );
-}
-
-class Ticket extends TicketModel
-implements RestrictedAccess, Threadable {
-
-    static $meta = array(
-        'select_related' => array('topic', 'staff', 'user', 'team', 'dept', 'sla', 'thread',
-            'user__default_email'),
-    );
-<<<<<<< HEAD
->>>>>>> parent of 7093d97... 2020 Update
-
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-
->>>>>>> parent of 7093d97... 2020 Update
     var $lastMsgId;
     var $last_message;
 
@@ -353,27 +180,7 @@ implements RestrictedAccess, Threadable {
     var $active_collaborators;
     var $recipients;
     var $lastrespondent;
-<<<<<<< HEAD
-<<<<<<< HEAD
     var $lastuserrespondent;
-<<<<<<< HEAD
-<<<<<<< HEAD
-    var $_children;
-=======
-=======
->>>>>>> parent of 7093d97... 2020 Update
-
-    function __onload() {
-        $this->loadDynamicData();
-    }
-<<<<<<< HEAD
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
->>>>>>> parent of 7093d97... 2020 Update
 
     function loadDynamicData($force=false) {
         if (!isset($this->_answers) || $force) {
@@ -392,8 +199,6 @@ implements RestrictedAccess, Threadable {
         return $this->_answers;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     function getAnswer($field, $form=null) {
         // TODO: Prefer CDATA ORM relationship if already loaded
         $this->loadDynamicData();
@@ -404,71 +209,6 @@ implements RestrictedAccess, Threadable {
         return $this->ticket_id;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    function getPid() {
-        return $this->ticket_pid;
-    }
-
-    function getChildren() {
-        if (!isset($this->_children))
-            $this->_children = self::getChildTickets($this->getId());
-
-        return $this->_children;
-    }
-
-    function getMergeTypeByFlag($flag) {
-        if (($flag & self::FLAG_COMBINE_THREADS) != 0)
-            return 'combine';
-        if (($flag & self::FLAG_SEPARATE_THREADS) != 0)
-            return 'separate';
-        else
-            return 'visual';
-        return 'visual';
-    }
-
-    function getMergeType() {
-        if ($this->hasFlag(self::FLAG_COMBINE_THREADS))
-            return 'combine';
-        if ($this->hasFlag(self::FLAG_SEPARATE_THREADS))
-            return 'separate';
-        else
-            return 'visual';
-        return 'visual';
-    }
-
-    function isMerged() {
-        if (!is_null($this->getPid()) || $this->isParent())
-            return true;
-
-        return false;
-    }
-
-    function isParent($flag=false) {
-        if (is_numeric($flag) && ($flag & self::FLAG_PARENT) != 0)
-            return true;
-        elseif (!is_numeric($flag) && $this->hasFlag(self::FLAG_PARENT))
-            return true;
-
-        return false;
-    }
-
-    function hasFlag($flag) {
-        return ($this->get('flags', 0) & $flag) != 0;
-    }
-
-    function isChild($pid=false) {
-        return ($this->getPid() ? true : false);
-    }
-
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
->>>>>>> parent of 7093d97... 2020 Update
     function hasState($state) {
         return  strcasecmp($this->getState(), $state) == 0;
     }
@@ -482,7 +222,8 @@ implements RestrictedAccess, Threadable {
     }
 
     function isReopenable() {
-        return $this->getStatus()->isReopenable();
+        return ($this->getStatus()->isReopenable() && $this->getDept()->allowsReopen()
+        && ($this->getTopic() ? $this->getTopic()->allowsReopen() : true));
     }
 
     function isClosed() {
@@ -490,12 +231,13 @@ implements RestrictedAccess, Threadable {
     }
 
     function isCloseable() {
+        global $cfg;
 
         if ($this->isClosed())
             return true;
 
         $warning = null;
-        if ($this->getMissingRequiredFields()) {
+        if (self::getMissingRequiredFields($this)) {
             $warning = sprintf(
                     __( '%1$s is missing data on %2$s one or more required fields %3$s and cannot be closed'),
                     __('This ticket'),
@@ -503,6 +245,10 @@ implements RestrictedAccess, Threadable {
         } elseif (($num=$this->getNumOpenTasks())) {
             $warning = sprintf(__('%1$s has %2$d open tasks and cannot be closed'),
                     __('This ticket'), $num);
+        } elseif ($cfg->requireTopicToClose() && !$this->getTopicId()) {
+            $warning = sprintf(
+                    __( '%1$s is missing a %2$s and cannot be closed'),
+                    __('This ticket'), __('Help Topic'), '');
         }
 
         return $warning ?: true;
@@ -516,8 +262,24 @@ implements RestrictedAccess, Threadable {
          return $this->hasState('deleted');
     }
 
-    function isAssigned() {
-        return $this->isOpen() && ($this->getStaffId() || $this->getTeamId());
+    function isAssigned($to=null) {
+        if (!$this->isOpen())
+            return false;
+
+        if (is_null($to))
+            return ($this->getStaffId() || $this->getTeamId());
+
+        switch (true) {
+        case $to instanceof Staff:
+            return ($to->getId() == $this->getStaffId() ||
+                    $to->isTeamMember($this->getTeamId()));
+            break;
+        case $to instanceof Team:
+            return ($to->getId() == $this->getTeamId());
+            break;
+        }
+
+        return false;
     }
 
     function isOverdue() {
@@ -532,52 +294,34 @@ implements RestrictedAccess, Threadable {
         return null !== $this->getLock();
     }
 
+    function getRole($staff) {
+        if (!$staff instanceof Staff)
+            return null;
+
+        return $staff->getRole($this->getDept(), $this->isAssigned($staff));
+    }
+
     function checkStaffPerm($staff, $perm=null) {
+
         // Must be a valid staff
-        if (!$staff instanceof Staff && !($staff=Staff::lookup($staff)))
+        if ((!$staff instanceof Staff) && !($staff=Staff::lookup($staff)))
             return false;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         // check department access first
         if (!$staff->canAccessDept($this->getDept())
                 // check assignment
                 && !$this->isAssigned($staff)
                 // check referral
-<<<<<<< HEAD
-<<<<<<< HEAD
-                && !$this->getThread()->isReferred($staff))
-=======
-=======
->>>>>>> parent of 7093d97... 2020 Update
-        // Check access based on department or assignment
-        if (($staff->showAssignedOnly()
-            || !$staff->canAccessDept($this->getDeptId()))
-            // only open tickets can be considered assigned
-            && $this->isOpen()
-            && $staff->getId() != $this->getStaffId()
-            && !$staff->isTeamMember($this->getTeamId())
-        ) {
-<<<<<<< HEAD
->>>>>>> parent of 7093d97... 2020 Update
-=======
                 && !$this->thread->isReferred($staff))
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-                && !$this->thread->isReferred($staff))
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
->>>>>>> parent of 7093d97... 2020 Update
             return false;
-        }
 
         // At this point staff has view access unless a specific permission is
         // requested
         if ($perm === null)
             return true;
 
-        // Permission check requested -- get role.
-        if (!($role=$staff->getRole($this->getDeptId())))
+        // Permission check requested -- get role if any
+        if (!($role=$this->getRole($staff)))
             return false;
 
         // Check permission based on the effective role
@@ -663,7 +407,7 @@ implements RestrictedAccess, Threadable {
     }
 
     function getSubject() {
-        return (string) $this->_answers['subject'];
+        return (string) $this->getAnswer('subject');
     }
 
     /* Help topic title  - NOT object -> $topic */
@@ -696,46 +440,15 @@ implements RestrictedAccess, Threadable {
         return $this->duedate;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    function getSLADueDate($recompute=false) {
-        global $cfg;
-
-        if (!$recompute && $this->est_duedate)
-            return $this->est_duedate;
-
-        if (($sla = $this->getSLA()) && $sla->isActive()) {
-            $schedule = $this->getDept()->getSchedule();
-            $tz = new DateTimeZone($cfg->getDbTimezone());
-            $dt = new DateTime($this->getReopenDate() ?:
-                    $this->getCreateDate(), $tz);
-            $dt = $sla->addGracePeriod($dt, $schedule);
-            // Make sure time is in DB timezone
-            $dt->setTimezone($tz);
-            return $dt->format('Y-m-d H:i:s');
-=======
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function getSLADueDate($datetime=null) {
-=======
-    function getSLADueDate() {
->>>>>>> parent of 7093d97... 2020 Update
         if ($sla = $this->getSLA()) {
-            $dt = new DateTime($this->getCreateDate());
-
+            $dt = new DateTime($datetime ?: $this->getReopenDate() ?: $this->getCreateDate());
             return $dt
                 ->add(new DateInterval('PT' . $sla->getGracePeriod() . 'H'))
                 ->format('Y-m-d H:i:s');
-<<<<<<< HEAD
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         }
     }
 
-<<<<<<< HEAD
     function updateEstDueDate($clearOverdue=true) {
         $DueDate = $this->getEstDueDate();
         $this->est_duedate = $this->getSLADueDate();
@@ -749,48 +462,14 @@ implements RestrictedAccess, Threadable {
         }
 
         return $this->save();
-=======
-    function getSLADueDate() {
-        if ($sla = $this->getSLA()) {
-            $dt = new DateTime($this->getCreateDate());
-
-            return $dt
-                ->add(new DateInterval('PT' . $sla->getGracePeriod() . 'H'))
-                ->format('Y-m-d H:i:s');
-        }
-    }
-
-    function updateEstDueDate() {
-        $this->est_duedate = $this->getEstDueDate();
-        $this->save();
->>>>>>> parent of 7093d97... 2020 Update
     }
 
     function getEstDueDate() {
-        // Real due date
-        if ($duedate = $this->getDueDate()) {
-            return $duedate;
-        }
-        // return sla due date (If ANY)
-        return $this->getSLADueDate();
+        // Real due date or  sla due date (If ANY)
+        return $this->getDueDate() ?: $this->getSLADueDate();
     }
 
-=======
-    function updateEstDueDate() {
-        $this->est_duedate = $this->getEstDueDate();
-        $this->save();
-    }
 
-    function getEstDueDate() {
-        // Real due date
-        if ($duedate = $this->getDueDate()) {
-            return $duedate;
-        }
-        // return sla due date (If ANY)
-        return $this->getSLADueDate();
-    }
-
->>>>>>> parent of 7093d97... 2020 Update
     function getCloseDate() {
         return $this->closed;
     }
@@ -835,42 +514,18 @@ implements RestrictedAccess, Threadable {
     function getPriorityId() {
         global $cfg;
 
-        if (($a = $this->_answers['priority'])
-            && ($b = $a->getValue())
-        ) {
-            return $b->getId();
-        }
+        if (($priority = $this->getPriority()))
+            return $priority->getId();
+
         return $cfg->getDefaultPriorityId();
     }
 
     function getPriority() {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         if (($a = $this->getAnswer('priority')))
             return $a->getValue();
 
         return null;
-<<<<<<< HEAD
-=======
-        if (($a = $this->_answers['priority']) && ($b = $a->getValue()))
-            return $b->getDesc();
-        return '';
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-        if (($a = $this->_answers['priority']) && ($b = $a->getValue()))
-            return $b->getDesc();
-        return '';
->>>>>>> parent of 7093d97... 2020 Update
     }
 
     function getPhoneNumber() {
@@ -878,7 +533,8 @@ implements RestrictedAccess, Threadable {
     }
 
     function getSource() {
-        return $this->source;
+        $sources = $this->getSources();
+        return $sources[$this->source] ?: $this->source;
     }
 
     function getIP() {
@@ -893,7 +549,7 @@ implements RestrictedAccess, Threadable {
         global $cfg;
 
         return array(
-            'source'    => $this->getSource(),
+            'source'    => $this->source,
             'topicId'   => $this->getTopicId(),
             'slaId'     => $this->getSLAId(),
             'user_id'   => $this->getOwnerId(),
@@ -1074,6 +730,26 @@ implements RestrictedAccess, Threadable {
         return $this->lastrespondent;
     }
 
+    function getLastUserRespondent() {
+        if (!isset($this->$lastuserrespondent)) {
+            if (!$this->thread || !$this->thread->entries)
+                return $this->$lastuserrespondent = false;
+            $this->$lastuserrespondent = User::objects()
+                ->filter(array(
+                'id' => $this->thread->entries
+                    ->filter(array(
+                        'user_id__gt' => 0,
+                    ))
+                    ->values_flat('user_id')
+                    ->order_by('-id')
+                    ->limit(1)
+                ))
+                ->first()
+                ?: false;
+        }
+        return $this->$lastuserrespondent;
+    }
+
     function getLastMessageDate() {
         return $this->thread->lastmessage;
     }
@@ -1170,19 +846,28 @@ implements RestrictedAccess, Threadable {
         return $entries;
     }
 
-    //UserList of recipients  (owner + collaborators)
-    function getRecipients() {
-        if (!isset($this->recipients)) {
-            $list = new UserList();
-            $list->add($this->getOwner());
-            if ($collabs = $this->getThread()->getActiveCollaborators()) {
-                foreach ($collabs as $c)
-                    $list->add($c);
-            }
-            $this->recipients = $list;
+    // MailingList of participants  (owner + collaborators)
+    function getRecipients($who='all', $whitelist=array(), $active=true) {
+        $list = new MailingList();
+        switch (strtolower($who)) {
+            case 'user':
+                $list->addTo($this->getOwner());
+                break;
+            case 'all':
+                $list->addTo($this->getOwner());
+                // Fall-trough
+            case 'collabs':
+                if (($collabs = $active ?  $this->getActiveCollaborators() :
+                    $this->getCollaborators())) {
+                    foreach ($collabs as $c)
+                        if (!$whitelist || in_array($c->getUserId(),
+                                    $whitelist))
+                            $list->addCc($c);
+                }
+                break;
+            default:
+                return null;
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
         return $list;
     }
 
@@ -1199,52 +884,18 @@ implements RestrictedAccess, Threadable {
     }
 
     function getNumActiveCollaborators() {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return $this->getThread() ? $this->getThread()->getNumActiveCollaborators() : '';
-=======
-        return $this->recipients;
->>>>>>> parent of 7093d97... 2020 Update
-=======
         return $this->getThread()->getNumActiveCollaborators();
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-        return $this->getThread()->getNumActiveCollaborators();
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-        return $this->recipients;
->>>>>>> parent of 7093d97... 2020 Update
     }
 
     function getAssignmentForm($source=null, $options=array()) {
 
         $prompt = $assignee = '';
         // Possible assignees
-<<<<<<< HEAD
-<<<<<<< HEAD
         $assignees = null;
         switch (strtolower($options['target'])) {
             case 'agents':
                 $assignees = array();
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-        $assignees = array();
-        switch (strtolower($options['target'])) {
-            case 'agents':
                 $dept = $this->getDept();
->>>>>>> parent of 7093d97... 2020 Update
-=======
-=======
-        $assignees = array();
-        switch (strtolower($options['target'])) {
-            case 'agents':
->>>>>>> parent of 7093d97... 2020 Update
-                $dept = $this->getDept();
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-                $dept = $this->getDept();
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 foreach ($dept->getAssignees() as $member)
                     $assignees['s'.$member->getId()] = $member;
 
@@ -1253,6 +904,7 @@ implements RestrictedAccess, Threadable {
                 $prompt = __('Select an Agent');
                 break;
             case 'teams':
+                $assignees = array();
                 if (($teams = Team::getActiveTeams()))
                     foreach ($teams as $id => $name)
                         $assignees['t'.$id] = $name;
@@ -1269,11 +921,9 @@ implements RestrictedAccess, Threadable {
 
         $form = AssignmentForm::instantiate($source, $options);
 
-        if ($assignees)
+        if (isset($assignees))
             $form->setAssignees($assignees);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         if (($refer = $form->getField('refer'))) {
             if ($assignee) {
                 $visibility = new VisibilityConstraint(
@@ -1285,40 +935,36 @@ implements RestrictedAccess, Threadable {
             }
         }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        // Field configurations
-        if ($f=$form->getField('assignee')) {
-            if ($prompt)
-                $f->configure('prompt', $prompt);
-            $f->configure('dept', $dept);
-        }
-=======
-        if ($prompt && ($f=$form->getField('assignee')))
-            $f->configure('prompt', $prompt);
-=======
-=======
-
-=======
->>>>>>> parent of 7093d97... 2020 Update
-        if ($prompt && ($f=$form->getField('assignee')))
-            $f->configure('prompt', $prompt);
-
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
         if ($prompt && ($f=$form->getField('assignee')))
             $f->configure('prompt', $prompt);
 
-<<<<<<< HEAD
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-
->>>>>>> parent of 7093d97... 2020 Update
 
         return $form;
     }
 
-=======
->>>>>>> parent of 7093d97... 2020 Update
+    function getReferralForm($source=null, $options=array()) {
+
+        $form = ReferralForm::instantiate($source, $options);
+        $dept = $this->getDept();
+        // Agents
+        $staff = Staff::objects()->filter(array(
+         'isactive' => 1,
+         ))
+         ->filter(Q::not(array('dept_id' => $dept->getId())));
+        $staff = Staff::nsort($staff);
+        $agents = array();
+        foreach ($staff as $s)
+          $agents[$s->getId()] = $s;
+        $form->setChoices('agent', $agents);
+        // Teams
+        $form->setChoices('team', Team::getActiveTeams());
+        // Depts
+        $form->setChoices('dept', Dept::getDepartments());
+
+        return $form;
+    }
+
     function getClaimForm($source=null, $options=array()) {
         global $thisstaff;
 
@@ -1336,13 +982,12 @@ implements RestrictedAccess, Threadable {
     function getTransferForm($source=null) {
 
         if (!$source)
-            $source = array('dept' => array($this->getDeptId()));
+            $source = array('dept' => array($this->getDeptId()),
+                    'refer' => false);
 
         return TransferForm::instantiate($source);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     function getField($fid) {
 
         if (is_numeric($fid))
@@ -1415,10 +1060,6 @@ implements RestrictedAccess, Threadable {
         }
     }
 
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7093d97... 2020 Update
     function getDynamicFields($criteria=array()) {
 
         $fields = DynamicFormField::objects()->filter(array(
@@ -1439,17 +1080,37 @@ implements RestrictedAccess, Threadable {
         }
     }
 
-    function getMissingRequiredFields() {
+    //if ids passed, function returns only the ids of fields disabled by help topic
+    static function getMissingRequiredFields($ticket, $ids=false) {
+        // Check for fields disabled by Help Topic
+        $disabled = array();
+        foreach (($ticket->getTopic() ? $ticket->getTopic()->forms : $ticket->entries) as $f) {
+            $extra = JsonDataParser::decode($f->extra);
 
-        return $this->getDynamicFields(array(
+            if (!empty($extra['disable']))
+                $disabled[] = $extra['disable'];
+        }
+
+        $disabled = !empty($disabled) ? call_user_func_array('array_merge', $disabled) : NULL;
+
+        if ($ids)
+          return $disabled;
+
+        $criteria = array(
                     'answers__field__flags__hasbit' => DynamicFormField::FLAG_ENABLED,
                     'answers__field__flags__hasbit' => DynamicFormField::FLAG_CLOSE_REQUIRED,
                     'answers__value__isnull' => true,
-                    ));
+                    );
+
+        // If there are disabled fields then exclude them
+        if ($disabled)
+            array_push($criteria, Q::not(array('answers__field__id__in' => $disabled)));
+
+        return $ticket->getDynamicFields($criteria);
     }
 
     function getMissingRequiredField() {
-        $fields = $this->getMissingRequiredFields();
+        $fields = self::getMissingRequiredFields($this);
         return $fields ? $fields[0] : null;
     }
 
@@ -1464,6 +1125,25 @@ implements RestrictedAccess, Threadable {
         }
 
         return $c;
+    }
+
+    function addCollaborators($users, $vars, &$errors, $event=true) {
+
+        if (!$users || !is_array($users))
+            return null;
+
+        $collabs = $this->getCollaborators();
+        $new = array();
+        foreach ($users as $user) {
+            if (!($user instanceof User)
+                    && !($user = User::lookup($user)))
+                continue;
+            if ($collabs->findFirst(array('user_id' => $user->getId())))
+                continue;
+            if ($c=$this->addCollaborator($user, $vars, $errors, $event))
+                $new[] = $c;
+        }
+        return $new;
     }
 
     //XXX: Ugly for now
@@ -1493,7 +1173,6 @@ implements RestrictedAccess, Threadable {
                 'id__in' => $cids
             ))->update(array(
                 'updated' => SqlFunction::NOW(),
-                'isactive' => 1,
             ));
         }
 
@@ -1503,7 +1182,6 @@ implements RestrictedAccess, Threadable {
                 Q::not(array('id__in' => $cids))
             ))->update(array(
                 'updated' => SqlFunction::NOW(),
-                'isactive' => 0,
             ));
         }
 
@@ -1637,30 +1315,27 @@ implements RestrictedAccess, Threadable {
         return $this->save();
     }
 
-    //Status helper.
-
+    // Ticket Status helper.
     function setStatus($status, $comments='', &$errors=array(), $set_closing_agent=true) {
         global $thisstaff;
 
-        if ($thisstaff && !($role = $thisstaff->getRole($this->getDeptId())))
+        if ($thisstaff && !($role=$this->getRole($thisstaff)))
             return false;
 
-        if ($status && is_numeric($status))
-            $status = TicketStatus::lookup($status);
-
-        if (!$status || !$status instanceof TicketStatus)
+        if ((!$status instanceof TicketStatus)
+                && !($status = TicketStatus::lookup($status)))
             return false;
 
         // Double check permissions (when changing status)
         if ($role && $this->getStatusId()) {
             switch ($status->getState()) {
             case 'closed':
-                if (!($role->hasPerm(TicketModel::PERM_CLOSE)))
+                if (!($role->hasPerm(Ticket::PERM_CLOSE)))
                     return false;
                 break;
             case 'deleted':
-                // XXX: intercept deleted status and do hard delete
-                if ($role->hasPerm(TicketModel::PERM_DELETE))
+                // XXX: intercept deleted status and do hard delete TODO: soft deletes
+                if ($role->hasPerm(Ticket::PERM_DELETE))
                     return $this->delete($comments);
                 // Agent doesn't have permission to delete  tickets
                 return false;
@@ -1759,9 +1434,6 @@ implements RestrictedAccess, Threadable {
         return false;
     }
 
-
-
-
     function setAnsweredState($isanswered) {
         $this->isanswered = $isanswered;
         return $this->save();
@@ -1854,37 +1526,12 @@ implements RestrictedAccess, Threadable {
                         $recipients[] = $M;
             }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                if ($cfg->alertDeptManagerONNewTicket() && $manager) {
-                    $recipients[] = $manager;
-                }
-=======
-            // Account manager
-            if ($cfg->alertAcctManagerONNewMessage()
-                && ($org = $this->getOwner()->getOrganization())
-                && ($acct_manager = $org->getAccountManager())
-            ) {
-                if ($acct_manager instanceof Team)
-                    $recipients = array_merge($recipients, $acct_manager->getMembers());
-                else
-                    $recipients[] = $acct_manager;
-            }
->>>>>>> parent of 7093d97... 2020 Update
-=======
             if ($cfg->alertDeptManagerONNewTicket() && $manager) {
                 $recipients[] = $manager;
             }
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-            if ($cfg->alertDeptManagerONNewTicket() && $manager) {
-                $recipients[] = $manager;
-            }
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
             // Account manager
-            if ($cfg->alertAcctManagerONNewMessage()
+            if ($cfg->alertAcctManagerONNewTicket()
                 && ($org = $this->getOwner()->getOrganization())
                 && ($acct_manager = $org->getAccountManager())
             ) {
@@ -1975,8 +1622,7 @@ implements RestrictedAccess, Threadable {
      * Notify collaborators on response or new message
      *
      */
-
-    function  notifyCollaborators($entry, $vars = array()) {
+    function notifyCollaborators($entry, $vars = array()) {
         global $cfg;
 
         if (!$entry instanceof ThreadEntry
@@ -1988,26 +1634,9 @@ implements RestrictedAccess, Threadable {
         ) {
             return;
         }
-        // Who posted the entry?
-        $skip = array();
-        if ($entry instanceof MessageThreadEntry) {
-            $poster = $entry->getUser();
-            // Skip the person who sent in the message
-            $skip[$entry->getUserId()] = 1;
-            // Skip all the other recipients of the message
-            foreach ($entry->getAllEmailRecipients() as $R) {
-                foreach ($recipients as $R2) {
-                    if (0 === strcasecmp($R2->getEmail(), $R->mailbox.'@'.$R->host)) {
-                        $skip[$R2->getUserId()] = true;
-                        break;
-                    }
-                }
-            }
-        } else {
-            $poster = $entry->getStaff();
-            // Skip the ticket owner
-            $skip[$this->getUserId()] = 1;
-        }
+
+        $poster = User::lookup($entry->user_id);
+        $posterEmail = $poster->getEmail()->address;
 
         $vars = array_merge($vars, array(
             'message' => (string) $entry,
@@ -2023,15 +1652,46 @@ implements RestrictedAccess, Threadable {
         if ($vars['from_name'])
             $options += array('from_name' => $vars['from_name']);
 
-        foreach ($recipients as $recipient) {
-            // Skip folks who have already been included on this part of
-            // the conversation
-            if (isset($skip[$recipient->getUserId()]))
-                continue;
-            $notice = $this->replaceVars($msg, array('recipient' => $recipient));
-            $email->send($recipient, $notice['subj'], $notice['body'], $attachments,
-                $options);
+        $skip = array();
+        if ($entry instanceof MessageThreadEntry) {
+          foreach ($entry->getAllEmailRecipients() as $R) {
+                $skip[] = $R->mailbox.'@'.$R->host;
+            }
         }
+
+        foreach ($recipients as $key => $recipient) {
+            $recipient = $recipient->getContact();
+
+            if(get_class($recipient) == 'TicketOwner')
+                $owner = $recipient;
+
+            if ((get_class($recipient) == 'Collaborator' ? $recipient->getUserId() : $recipient->getId()) == $entry->user_id)
+                unset($recipients[$key]);
+         }
+
+        if (!count($recipients))
+            return true;
+
+        //see if the ticket user is a recipient
+        if ($owner->getEmail()->address != $poster->getEmail()->address && !in_array($owner->getEmail()->address, $skip))
+          $owner_recip = $owner->getEmail()->address;
+
+        //say dear collaborator if the ticket user is not a recipient
+        if (!$owner_recip) {
+            $nameFormats = array_keys(PersonsName::allFormats());
+            $names = array();
+            foreach ($nameFormats as $key => $value) {
+              $names['recipient.name.' . $value] = __('Collaborator');
+            }
+            $names = array_merge($names, array('recipient' => $recipient));
+            $cnotice = $this->replaceVars($msg, $names);
+        }
+        //otherwise address email to ticket user
+        else
+            $cnotice = $this->replaceVars($msg, array('recipient' => $owner));
+
+        $email->send($recipients, $cnotice['subj'], $cnotice['body'], $attachments,
+            $options);
     }
 
     function onMessage($message, $autorespond=true, $reopen=true) {
@@ -2048,14 +1708,6 @@ implements RestrictedAccess, Threadable {
         // confused with autorespond on new message setting
         if ($reopen && $this->isClosed() && $this->isReopenable()) {
             $this->reopen();
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             // Auto-assign to closing staff or the last respondent if the
             // agent is available and has access. Otherwise, put the ticket back
             // to unassigned pool.
@@ -2067,30 +1719,11 @@ implements RestrictedAccess, Threadable {
                     // Is agent on vacation ?
                     && $staff->isAvailable()
                     // Does the agent have access to dept?
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    && $staff->canAccessDept($dept->getId()))
-=======
                     && $staff->canAccessDept($dept))
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-                    && $staff->canAccessDept($dept))
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-                    && $staff->canAccessDept($dept->getId()))
->>>>>>> parent of 7093d97... 2020 Update
                 $this->setStaffId($staff->getId());
             else
                 $this->setStaffId(0); // Clear assignment
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
         if (!$autorespond)
             return;
@@ -2150,7 +1783,6 @@ implements RestrictedAccess, Threadable {
         global $cfg, $thisstaff;
 
         //TODO: do some shit
-
         if (!$alert // Check if alert is enabled
             || !$cfg->alertONNewActivity()
             || !($dept=$this->getDept())
@@ -2404,15 +2036,15 @@ implements RestrictedAccess, Threadable {
                 return new FormattedDate($this->getCloseDate());
             break;
         case 'last_update':
-            return new FormattedDate($this->last_update);
+            return new FormattedDate($this->lastupdate);
         case 'user':
             return $this->getOwner();
         default:
-            if (isset($this->_answers[$tag]))
+            if ($a = $this->getAnswer($tag))
                 // The answer object is retrieved here which will
                 // automatically invoke the toString() method when the
                 // answer is coerced into text
-                return $this->_answers[$tag];
+                return $a;
         }
     }
 
@@ -2473,8 +2105,6 @@ implements RestrictedAccess, Threadable {
         return $base + $extra;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     // Searchable interface
     static function getSearchableFields() {
         $base = array(
@@ -2586,10 +2216,6 @@ implements RestrictedAccess, Threadable {
         return true;
     }
 
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7093d97... 2020 Update
     //Replace base variables.
     function replaceVars($input, $vars = array()) {
         global $ost;
@@ -2700,6 +2326,9 @@ implements RestrictedAccess, Threadable {
                     $_errors, $thisstaff, false);
         }
 
+        if ($form->refer() && $cdept)
+            $this->thread->refer($cdept);
+
         //Send out alerts if enabled AND requested
         if (!$alert || !$cfg->alertONTransfer())
             return true; //no alerts!!
@@ -2767,7 +2396,7 @@ implements RestrictedAccess, Threadable {
             $errors['err'] = __('Unknown assignee');
         } elseif (!$assignee->isAvailable()) {
             $errors['err'] = __('Agent is unavailable for assignment');
-        } elseif ($dept->assignMembersOnly() && !$dept->isMember($assignee)) {
+        } elseif (!$dept->canAssign($assignee)) {
             $errors['err'] = __('Permission denied');
         }
 
@@ -2822,34 +2451,21 @@ implements RestrictedAccess, Threadable {
         global $thisstaff;
 
         $evd = array();
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $audit = array();
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $refer = null;
         $dept = $this->getDept();
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7093d97... 2020 Update
         $assignee = $form->getAssignee();
         if ($assignee instanceof Staff) {
-            $dept = $this->getDept();
             if ($this->getStaffId() == $assignee->getId()) {
                 $errors['assignee'] = sprintf(__('%s already assigned to %s'),
                         __('Ticket'),
                         __('the agent')
                         );
-            } elseif(!$assignee->isAvailable()) {
+            } elseif (!$assignee->isAvailable()) {
                 $errors['assignee'] = __('Agent is unavailable for assignment');
-            } elseif ($dept->assignMembersOnly() && !$dept->isMember($assignee)) {
+            } elseif (!$dept->canAssign($assignee)) {
                 $errors['err'] = __('Permission denied');
             } else {
+                $refer = $this->staff ?: null;
                 $this->staff_id = $assignee->getId();
                 if ($thisstaff && $thisstaff->getId() == $assignee->getId()) {
                     $alert = false;
@@ -2864,7 +2480,10 @@ implements RestrictedAccess, Threadable {
                         __('Ticket'),
                         __('the team')
                         );
+            } elseif (!$dept->canAssign($assignee)) {
+                $errors['err'] = __('Permission denied');
             } else {
+                $refer = $this->team ?: null;
                 $this->team_id = $assignee->getId();
                 $evd = array('team' => $assignee->getId());
             }
@@ -2878,6 +2497,9 @@ implements RestrictedAccess, Threadable {
         $this->logEvent('assigned', $evd);
 
         $this->onAssign($assignee, $form->getComments(), $alert);
+
+        if ($refer && $form->refer())
+            $this->thread->refer($refer);
 
         return true;
     }
@@ -2903,8 +2525,6 @@ implements RestrictedAccess, Threadable {
         return true;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     function release($info=array(), &$errors) {
         if ($info['sid'] && $info['tid'])
             return $this->unassign();
@@ -2989,14 +2609,6 @@ implements RestrictedAccess, Threadable {
                             array('dept' => $dept->getId()));
         }
 
-=======
-    function release() {
-        return $this->unassign();
->>>>>>> parent of 7093d97... 2020 Update
-=======
-    function release() {
-        return $this->unassign();
->>>>>>> parent of 7093d97... 2020 Update
     }
 
     //Change ownership
@@ -3006,7 +2618,7 @@ implements RestrictedAccess, Threadable {
         if (!$user
             || ($user->getId() == $this->getOwnerId())
             || !($this->checkStaffPerm($thisstaff,
-                TicketModel::PERM_EDIT))
+                Ticket::PERM_EDIT))
         ) {
             return false;
         }
@@ -3044,17 +2656,7 @@ implements RestrictedAccess, Threadable {
             $vars['ip_address'] = $_SERVER['REMOTE_ADDR'];
 
         $errors = array();
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        if ($vars['userId'] != $ticket->user_id) {
-=======
         if ($vars['userId'] != $this->user_id) {
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-        if ($vars['userId'] != $this->user_id) {
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             if ($vars['userId']) {
                 $user = User::lookup($vars['userId']);
              } elseif ($vars['header']
@@ -3094,20 +2696,7 @@ implements RestrictedAccess, Threadable {
       if ($recipients && $recipients instanceof MailingList)
           $vars['thread_entry_recipients'] = $recipients->getEmailAddresses();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        if (!($message = $ticket->getThread()->addMessage($vars, $errors)))
-=======
         if (!($message = $this->getThread()->addMessage($vars, $errors)))
->>>>>>> parent of 7093d97... 2020 Update
-=======
-        if (!($message = $this->getThread()->addMessage($vars, $errors)))
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-=======
->>>>>>> parent of 7093d97... 2020 Update
-        if (!($message = $this->getThread()->addMessage($vars, $errors)))
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             return null;
 
         $this->setLastMessage($message);
@@ -3128,8 +2717,6 @@ implements RestrictedAccess, Threadable {
                 if (strcasecmp($recipient['source'], 'delivered-to') === 0)
                     continue;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
                 if (($cuser=User::fromVars($recipient))) {
                   if (!$existing = Collaborator::getIdByUserId($cuser->getId(), $this->getThreadId())) {
                     if ($c=$this->addCollaborator($cuser, $info, $errors, false)) {
@@ -3146,21 +2733,6 @@ implements RestrictedAccess, Threadable {
 
                 }
 
-=======
-=======
->>>>>>> parent of 7093d97... 2020 Update
-                if (($user=User::fromVars($recipient)))
-                    if ($c=$this->addCollaborator($user, $info, $errors, false))
-                        // FIXME: This feels very unwise — should be a
-                        // string indexed array for future
-                        $collabs[$c->user_id] = array(
-                            'name' => $c->getName()->getOriginal(),
-                            'src' => $recipient['source'],
-                        );
-<<<<<<< HEAD
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7093d97... 2020 Update
             }
             // TODO: Can collaborators add others?
             if ($collabs) {
@@ -3180,22 +2752,12 @@ implements RestrictedAccess, Threadable {
 
         $this->onMessage($message, ($autorespond && $alerts), $reopen); //must be called b4 sending alerts to staff.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         if ($autorespond && $alerts
             && $cfg && $cfg->notifyCollabsONNewMessage()
             && strcasecmp($origin, 'email')) {
           //when user replies, this is where collabs notified
           $this->notifyCollaborators($message, array('signature' => ''));
         }
-=======
-        if ($autorespond && $alerts && $cfg && $cfg->notifyCollabsONNewMessage())
-            $this->notifyCollaborators($message, array('signature' => ''));
->>>>>>> parent of 7093d97... 2020 Update
-=======
-        if ($autorespond && $alerts && $cfg && $cfg->notifyCollabsONNewMessage())
-            $this->notifyCollaborators($message, array('signature' => ''));
->>>>>>> parent of 7093d97... 2020 Update
 
         if (!($alerts && $autorespond))
             return $message; //Our work is done...
@@ -3259,22 +2821,6 @@ implements RestrictedAccess, Threadable {
                 $sentlist[] = $staff->getEmail();
             }
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $type = array('type' => 'message', 'uid' => $vars['userId']);
-        Signal::send('object.created', $this, $type);
-=======
->>>>>>> parent of 7093d97... 2020 Update
-
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-
->>>>>>> parent of 7093d97... 2020 Update
         return $message;
     }
 
@@ -3287,9 +2833,9 @@ implements RestrictedAccess, Threadable {
             return false;
         }
         $files = array();
-        foreach ($canned->attachments->getAll() as $file) {
-            $files[] = $file->file_id;
-            $_SESSION[':cannedFiles'][$file->file_id] = 1;
+        foreach ($canned->attachments->getAll() as $att) {
+            $files[] = array('id' => $att->file_id, 'name' => $att->getName());
+            $_SESSION[':cannedFiles'][$att->file_id] = $att->getName();
         }
 
         if ($cfg->isRichTextEnabled())
@@ -3302,7 +2848,7 @@ implements RestrictedAccess, Threadable {
         $info = array('msgId' => $message instanceof ThreadEntry ? $message->getId() : 0,
                       'poster' => __('SYSTEM (Canned Reply)'),
                       'response' => $response,
-                      'cannedattachments' => $files
+                      'files' => $files
         );
         $errors = array();
         if (!($response=$this->postReply($info, $errors, false, false)))
@@ -3363,18 +2909,41 @@ implements RestrictedAccess, Threadable {
         if (!$vars['ip_address'] && $_SERVER['REMOTE_ADDR'])
             $vars['ip_address'] = $_SERVER['REMOTE_ADDR'];
 
+        // Add new collaborators (if any).
+        if (isset($vars['ccs']) && count($vars['ccs']))
+            $this->addCollaborators($vars['ccs'], array(), $errors);
+
+        if ($collabs = $this->getCollaborators()) {
+            foreach ($collabs as $collaborator) {
+                $cid = $collaborator->getUserId();
+                // Enable collaborators if they were reselected
+                if (!$collaborator->isActive() && ($vars['ccs'] && in_array($cid, $vars['ccs'])))
+                    $collaborator->setFlag(Collaborator::FLAG_ACTIVE, true);
+                // Disable collaborators if they were unchecked
+                elseif ($collaborator->isActive() && (!$vars['ccs'] || !in_array($cid, $vars['ccs'])))
+                    $collaborator->setFlag(Collaborator::FLAG_ACTIVE, false);
+
+                $collaborator->save();
+            }
+        }
+        // clear db cache
+        $this->getThread()->_collaborators = null;
+
+        // Get active recipients of the response
+        $recipients = $this->getRecipients($vars['reply-to'], $vars['ccs']);
+        if ($recipients instanceof MailingList)
+            $vars['thread_entry_recipients'] = $recipients->getEmailAddresses();
+
         if (!($response = $this->getThread()->addResponse($vars, $errors)))
             return null;
 
         $dept = $this->getDept();
         $assignee = $this->getStaff();
-        // Set status - if checked.
+        // Set status if new is selected
         if ($vars['reply_status_id']
-            && $vars['reply_status_id'] != $this->getStatusId()
-        ) {
-            $this->setStatus($vars['reply_status_id']);
-        }
-
+                && ($status = TicketStatus::lookup($vars['reply_status_id']))
+                && $status->getId() != $this->getStatusId())
+            $this->setStatus($status);
 
         // Claim on response bypasses the department assignment restrictions
         $claim = ($claim
@@ -3392,7 +2961,11 @@ implements RestrictedAccess, Threadable {
         if (!$alert)
             return $response;
 
-        $email = $dept->getEmail();
+        //allow agent to send from different dept email
+        if (!$vars['from_email_id']
+                ||  !($email = Email::lookup($vars['from_email_id'])))
+            $email = $dept->getEmail();
+
         $options = array('thread'=>$response);
         $signature = $from_name = '';
         if ($thisstaff && $vars['signature']=='mine')
@@ -3414,10 +2987,8 @@ implements RestrictedAccess, Threadable {
                 default:
                     $from_name =  $email->getName();
             }
-
             if ($from_name)
                 $options += array('from_name' => $from_name);
-
         }
 
         $variables = array(
@@ -3427,26 +2998,24 @@ implements RestrictedAccess, Threadable {
             'poster' => $thisstaff
         );
 
-        $user = $this->getOwner();
-        if (($email=$dept->getEmail())
-            && ($tpl = $dept->getTemplate())
-            && ($msg=$tpl->getReplyMsgTemplate())
-        ) {
+        if ($email
+                && $recipients
+                && ($tpl = $dept->getTemplate())
+                && ($msg=$tpl->getReplyMsgTemplate())) {
+
             $msg = $this->replaceVars($msg->asArray(),
-                $variables + array('recipient' => $user)
+                $variables + array('recipient' => $this->getOwner())
             );
-            $attachments = $cfg->emailAttachments()?$response->getAttachments():array();
-            $email->send($user, $msg['subj'], $msg['body'], $attachments,
-                $options);
+
+            // Attachments
+            $attachments = $cfg->emailAttachments() ?
+                $response->getAttachments() : array();
+
+            //Send email to recepients
+            $email->send($recipients, $msg['subj'], $msg['body'],
+                    $attachments, $options);
         }
 
-        if ($vars['emailcollab']) {
-            $this->notifyCollaborators($response,
-                array(
-                    'signature' => $signature,
-                    'from_name' => $from_name)
-            );
-        }
         return $response;
     }
 
@@ -3481,12 +3050,12 @@ implements RestrictedAccess, Threadable {
     function postNote($vars, &$errors, $poster=false, $alert=true) {
         global $cfg, $thisstaff;
 
-        //Who is posting the note - staff or system?
+        //Who is posting the note - staff or system? or user?
         if ($vars['staffId'] && !$poster)
             $poster = Staff::lookup($vars['staffId']);
 
         $vars['staffId'] = $vars['staffId'] ?: 0;
-        if ($poster && is_object($poster)) {
+        if ($poster && is_object($poster) && !$vars['userId']) {
             $vars['staffId'] = $poster->getId();
             $vars['poster'] = $poster->getName();
         }
@@ -3555,7 +3124,7 @@ implements RestrictedAccess, Threadable {
 
         $pdf = new Ticket2PDF($this, $psize, $notes);
         $name = 'Ticket-'.$this->getNumber().'.pdf';
-        Http::download($name, 'application/pdf', $pdf->Output($name, 'S'));
+        Http::download($name, 'application/pdf', $pdf->output($name, 'S'));
         //Remember what the user selected - for autoselect on the next print.
         $_SESSION['PAPER_SIZE'] = $psize;
         exit;
@@ -3571,44 +3140,7 @@ implements RestrictedAccess, Threadable {
         if (!parent::delete())
             return false;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        //deleting parent ticket
-        if ($children = Ticket::getChildTickets($this->getId())) {
-            foreach ($children as $childId) {
-                $child = Ticket::lookup($childId[0]);
-                $child->setPid(NULL);
-                $child->setMergeType(3);
-                $child->save();
-                $childThread = $child->getThread();
-                $childThread->object_type = 'T';
-                $childThread->save();
-            }
-        }
-
-        //deleting child ticket
-        if ($this->isChild()) {
-            $parent = Ticket::lookup($this->ticket_pid);
-            if ($parent->isParent() && count($parent->getChildren()) == 0) {
-                $parent->setMergeType(3);
-                $parent->save();
-            }
-        } else
-            $t->delete();
-
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $this->logEvent('deleted');
-=======
-        $t->delete();
->>>>>>> parent of 7093d97... 2020 Update
-=======
-        $t->delete();
->>>>>>> parent of 7093d97... 2020 Update
 
         foreach (DynamicFormEntry::forTicket($this->getId()) as $form)
             $form->delete();
@@ -3640,6 +3172,9 @@ implements RestrictedAccess, Threadable {
     function save($refetch=false) {
         if ($this->dirty) {
             $this->updated = SqlFunction::NOW();
+            if (isset($this->dirty['status_id']) && PHP_SAPI !== 'cli')
+                // Refetch the queue counts
+                SavedQueue::clearCounts();
         }
         return parent::save($this->dirty || $refetch);
     }
@@ -3649,7 +3184,7 @@ implements RestrictedAccess, Threadable {
 
         if (!$cfg
             || !($this->checkStaffPerm($thisstaff,
-                TicketModel::PERM_EDIT))
+                Ticket::PERM_EDIT))
         ) {
             return false;
         }
@@ -3683,6 +3218,10 @@ implements RestrictedAccess, Threadable {
                 && !array_key_exists($vars['source'], Ticket::getSources()))
             $errors['source'] = sprintf( __('Invalid source given - %s'),
                     Format::htmlchars($vars['source']));
+
+        $topic = Topic::lookup($vars['topicId']);
+        if($topic && !$topic->isActive())
+          $errors['topicId']= sprintf(__('%s selected must be active'), __('Help Topic'));
 
         // Validate dynamic meta-data
         $forms = DynamicFormEntry::forTicket($this->getId());
@@ -3733,22 +3272,25 @@ implements RestrictedAccess, Threadable {
         if (!$this->save())
             return false;
 
-	$vars['note'] = ThreadEntryBody::clean($vars['note']);
+        $vars['note'] = ThreadEntryBody::clean($vars['note']);
         if ($vars['note'])
             $this->logNote(_S('Ticket Updated'), $vars['note'], $thisstaff);
 
         // Update dynamic meta-data
-        foreach ($forms as $f) {
-            if ($C = $f->getChanges())
+        foreach ($forms as $form) {
+            if ($C = $form->getChanges())
                 $changes['fields'] = ($changes['fields'] ?: array()) + $C;
             // Drop deleted forms
-            $idx = array_search($f->getId(), $vars['forms']);
+            $idx = array_search($form->getId(), $vars['forms']);
             if ($idx === false) {
-                $f->delete();
+                $form->delete();
             }
             else {
-                $f->set('sort', $idx);
-                $f->save();
+                $form->set('sort', $idx);
+                $form->saveAnswers(function($f) {
+                        return $f->isVisibleToStaff()
+                        && $f->isEditableToStaff(); }
+                        );
             }
         }
 
@@ -3766,13 +3308,6 @@ implements RestrictedAccess, Threadable {
         $estimatedDueDate = $this->getEstDueDate();
         $this->updateEstDueDate();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return true;
-=======
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         // Clear overdue flag if duedate or SLA changes and the ticket is no longer overdue.
         if($this->isOverdue()
             && (!$estimatedDueDate //Duedate + SLA cleared
@@ -3783,13 +3318,8 @@ implements RestrictedAccess, Threadable {
 
         Signal::send('model.updated', $this);
         return $this->save();
-<<<<<<< HEAD
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     }
 
-<<<<<<< HEAD
 
     function updateField($form, &$errors) {
         global $thisstaff, $cfg;
@@ -3871,10 +3401,6 @@ implements RestrictedAccess, Threadable {
         return true;
     }
 
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7093d97... 2020 Update
    /*============== Static functions. Use Ticket::function(params); =============nolint*/
     static function getIdByNumber($number, $email=null, $ticket=false) {
 
@@ -3885,7 +3411,10 @@ implements RestrictedAccess, Threadable {
             ->filter(array('number' => $number));
 
         if ($email)
-            $query->filter(array('user__emails__address' => $email));
+            $query->filter(Q::any(array(
+                'user__emails__address' => $email,
+                'thread__collaborators__user__emails__address' => $email
+            )));
 
 
         if (!$ticket) {
@@ -3906,70 +3435,8 @@ implements RestrictedAccess, Threadable {
         $num = static::objects()
             ->filter(array('number' => $number))
 	    ->count();
-<<<<<<< HEAD
 
 	return ($num === 0);
-    }
-
-    /* Quick staff's tickets stats */
-    function getStaffStats($staff) {
-        global $cfg;
-
-        /* Unknown or invalid staff */
-        if(!$staff || (!is_object($staff) && !($staff=Staff::lookup($staff))) || !$staff->isStaff())
-            return null;
-
-        // -- Open and assigned to me
-        $assigned = Q::any(array(
-            'staff_id' => $staff->getId(),
-        ));
-        // -- Open and assigned to a team of mine
-        if ($teams = array_filter($staff->getTeams()))
-            $assigned->add(array('team_id__in' => $teams));
-
-        $visibility = Q::any(new Q(array('status__state'=>'open', $assigned)));
-
-        // -- Routed to a department of mine
-        if (!$staff->showAssignedOnly() && ($depts = $staff->getDepts()))
-            $visibility->add(array('dept_id__in' => $depts));
-
-        $blocks = Ticket::objects()
-            ->filter(Q::any($visibility))
-            ->filter(array('status__state' => 'open'))
-            ->aggregate(array('count' => SqlAggregate::COUNT('ticket_id')))
-            ->values('status__state', 'isanswered', 'isoverdue','staff_id', 'team_id');
-
-        $stats = array();
-        $hideassigned = ($cfg && !$cfg->showAssignedTickets()) && !$staff->showAssignedTickets();
-        $showanswered = $cfg->showAnsweredTickets();
-        $id = $staff->getId();
-        foreach ($blocks as $S) {
-            if ($showanswered || !$S['isanswered']) {
-                if (!($hideassigned && ($S['staff_id'] || $S['team_id'])))
-                    $stats['open'] += $S['count'];
-            }
-            else {
-                $stats['answered'] += $S['count'];
-            }
-            if ($S['isoverdue'])
-                $stats['overdue'] += $S['count'];
-            if ($S['staff_id'] == $id)
-                $stats['assigned'] += $S['count'];
-            elseif ($S['team_id']
-                    && $S['staff_id'] == 0
-                    && $teams
-                    && in_array($S['team_id'], $teams))
-                // Assigned to my team but uassigned to an agent
-                $stats['assigned'] += $S['count'];
-        }
-        return $stats;
-<<<<<<< HEAD
-=======
-
-	return ($num === 0);
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
->>>>>>> parent of 7093d97... 2020 Update
     }
 
     /* Quick client's tickets stats
@@ -4249,15 +3716,15 @@ implements RestrictedAccess, Threadable {
             $errors += $form->errors();
 
         if ($vars['topicId']) {
-            if ($topic=Topic::lookup($vars['topicId'])) {
+            if (($topic=Topic::lookup($vars['topicId']))
+                    && $topic->isActive()) {
                 foreach ($topic_forms as $topic_form) {
                     $TF = $topic_form->getForm($vars);
                     if (!$TF->isValid($field_filter('topic')))
                         $errors = array_merge($errors, $TF->errors());
                 }
-            }
-            else  {
-                $errors['topicId'] = 'Invalid help topic selected';
+            } else  {
+                $vars['topicId'] = 0;
             }
         }
 
@@ -4329,6 +3796,10 @@ implements RestrictedAccess, Threadable {
                 $vars['staffId'] = $topic->getStaffId();
             elseif (!isset($vars['teamId']) && $topic->getTeamId())
                 $vars['teamId'] = $topic->getTeamId();
+
+            // Unset slaId if 0 to use the Help Topic SLA or Default SLA
+            if ($vars['slaId'] == 0)
+                unset($vars['slaId']);
 
             //set default sla.
             if (isset($vars['slaId']))
@@ -4408,6 +3879,10 @@ implements RestrictedAccess, Threadable {
         // Start tracking ticket lifecycle events (created should come first!)
         $ticket->logEvent('created', null, $thisstaff ?: $user);
 
+        // Add collaborators (if any)
+        if (isset($vars['ccs']) && count($vars['ccs']))
+          $ticket->addCollaborators($vars['ccs'], array(), $errors);
+
         // Add organizational collaborators
         if ($org && $org->autoAddCollabs()) {
             $pris = $org->autoAddPrimaryContactsAsCollabs();
@@ -4438,6 +3913,56 @@ implements RestrictedAccess, Threadable {
         if ($message instanceof ThreadEntry) {
             $message->setFlag(ThreadEntry::FLAG_ORIGINAL_MESSAGE);
             $message->save();
+        }
+
+        //check to see if ticket was created from a thread
+        if ($_SESSION[':form-data']['ticketId'] || $_SESSION[':form-data']['taskId']) {
+          $oldTicket = Ticket::lookup($_SESSION[':form-data']['ticketId']);
+          $oldTask = Task::lookup($_SESSION[':form-data']['taskId']);
+
+          //add internal note to new ticket.
+          //New ticket should have link to old task/ticket:
+          $link = sprintf('<a href="%s.php?id=%d"><b>#%s</b></a>',
+              $oldTicket ? 'tickets' : 'tasks',
+              $oldTicket ? $oldTicket->getId() : $oldTask->getId(),
+              $oldTicket ? $oldTicket->getNumber() : $oldTask->getNumber());
+
+          $note = array(
+                  'title' => __('Ticket Created From Thread Entry'),
+                  'body' => sprintf(__(
+                        // %1$s is the word Ticket or Task, %2$s will be a link to it
+                        'This Ticket was created from %1$s %2$s'),
+                        $oldTicket ? __('Ticket') : __('Task'), $link)
+                  );
+
+          $ticket->logNote($note['title'], $note['body'], $thisstaff);
+
+          //add internal note to referenced ticket/task
+          // Old ticket/task should have link to new ticket
+          $ticketLink = sprintf('<a href="tickets.php?id=%d"><b>#%s</b></a>',
+              $ticket->getId(),
+              $ticket->getNumber());
+
+          $entryLink = sprintf('<a href="#entry-%d"><b>%s</b></a>',
+              $_SESSION[':form-data']['eid'],
+              Format::datetime($_SESSION[':form-data']['timestamp']));
+
+          $ticketNote = array(
+              'title' => __('Ticket Created From Thread Entry'),
+              'body' => sprintf(__('Ticket %1$s<br/> Thread Entry: %2$s'),
+                $ticketLink, $entryLink)
+          );
+
+          $taskNote = array(
+              'title' => __('Ticket Created From Thread Entry'),
+              'note' => sprintf(__('Ticket %1$s<br/> Thread Entry: %2$s'),
+                $ticketLink, $entryLink)
+          );
+
+          if ($oldTicket)
+            $oldTicket->logNote($ticketNote['title'], $ticketNote['body'], $thisstaff);
+          elseif ($oldTask)
+            $oldTask->postNote($taskNote, $errors, $thisstaff);
         }
 
         // Configure service-level-agreement for this ticket
@@ -4495,6 +4020,10 @@ implements RestrictedAccess, Threadable {
                 $autorespond = false;
         }
 
+
+        if ($vars['system_emails'])
+            $ticket->systemReferral($vars['system_emails']);
+
         // Check department's auto response settings
         // XXX: Dept. setting doesn't affect canned responses.
         if ($autorespond && $dept && !$dept->autoRespONNewTicket())
@@ -4532,10 +4061,11 @@ implements RestrictedAccess, Threadable {
             return false;
 
         if ($vars['deptId']
-            && ($role = $thisstaff->getRole($vars['deptId']))
-            && !$role->hasPerm(TicketModel::PERM_CREATE)
+            && ($dept=Dept::lookup($vars['deptId']))
+            && ($role = $thisstaff->getRole($dept))
+            && !$role->hasPerm(Ticket::PERM_CREATE)
         ) {
-            $errors['err'] = __('You do not have permission to create a ticket in this department');
+            $errors['err'] = sprintf(__('You do not have permission to create a ticket in %s'), __('this department'));
             return false;
         }
 
@@ -4558,8 +4088,8 @@ implements RestrictedAccess, Threadable {
         // department
         if ($vars['assignId'] && !(
             $role
-            ? $role->hasPerm(TicketModel::PERM_ASSIGN)
-            : $thisstaff->hasPerm(TicketModel::PERM_ASSIGN, false)
+            ? ($role->hasPerm(Ticket::PERM_ASSIGN) || $role->__new__)
+            : $thisstaff->hasPerm(Ticket::PERM_ASSIGN, false)
         )) {
             $errors['assignId'] = __('Action Denied. You are not allowed to assign/reassign tickets.');
         }
@@ -4569,8 +4099,8 @@ implements RestrictedAccess, Threadable {
         $vars['note'] = ThreadEntryBody::clean($vars['note']);
         $create_vars = $vars;
         $tform = TicketForm::objects()->one()->getForm($create_vars);
-        $create_vars['cannedattachments']
-            = $tform->getField('message')->getWidget()->getAttachments()->getClean();
+        $create_vars['files']
+            = $tform->getField('message')->getWidget()->getAttachments()->getFiles();
 
         if (!($ticket=self::create($create_vars, $errors, 'staff', false)))
             return false;
@@ -4578,41 +4108,53 @@ implements RestrictedAccess, Threadable {
         $vars['msgId']=$ticket->getLastMsgId();
 
         // Effective role for the department
-        $role = $thisstaff->getRole($ticket->getDeptId());
+        $role = $ticket->getRole($thisstaff);
 
+        $alert = strcasecmp('none', $vars['reply-to']);
         // post response - if any
         $response = null;
-        if($vars['response'] && $role->hasPerm(TicketModel::PERM_REPLY)) {
+        if ($vars['response'] && $role->hasPerm(Ticket::PERM_REPLY)) {
             $vars['response'] = $ticket->replaceVars($vars['response']);
             // $vars['cannedatachments'] contains the attachments placed on
             // the response form.
-            $response = $ticket->postReply($vars, $errors, false);
+            $response = $ticket->postReply($vars, $errors, ($alert &&
+                        !$cfg->notifyONNewStaffTicket()));
         }
 
         // Not assigned...save optional note if any
         if (!$vars['assignId'] && $vars['note']) {
-            if (!$cfg->isRichTextEnabled()) {
+            if (!$cfg->isRichTextEnabled())
                 $vars['note'] = new TextThreadEntryBody($vars['note']);
-            }
             $ticket->logNote(_S('New Ticket'), $vars['note'], $thisstaff, false);
         }
 
         if (!$cfg->notifyONNewStaffTicket()
-            || !isset($vars['alertuser'])
+            || !$alert
             || !($dept=$ticket->getDept())
         ) {
             return $ticket; //No alerts.
         }
+
+        // Notice Recipients
+        $recipients = $ticket->getRecipients($vars['reply-to']);
+
         // Send Notice to user --- if requested AND enabled!!
         if (($tpl=$dept->getTemplate())
             && ($msg=$tpl->getNewTicketNoticeMsgTemplate())
             && ($email=$dept->getEmail())
         ) {
-            $message = (string) $ticket->getLastMessage();
-            if ($response) {
-                $message .= ($cfg->isRichTextEnabled()) ? "<br><br>" : "\n\n";
-                $message .= $response->getBody();
-            }
+           $attachments = array();
+           $message = $ticket->getLastMessage();
+           if ($cfg->emailAttachments()) {
+               if ($message && $message->getNumAttachments()) {
+                 foreach ($message->getAttachments() as $attachment)
+                     $attachments[] = $attachment;
+               }
+               if ($response && $response->getNumAttachments()) {
+                 foreach ($response->getAttachments() as $attachment)
+                     $attachments[] = $attachment;
+               }
+           }
 
             if ($vars['signature']=='mine')
                 $signature=$thisstaff->getSignature();
@@ -4621,36 +4163,11 @@ implements RestrictedAccess, Threadable {
             else
                 $signature='';
 
-            $attachments = ($cfg->emailAttachments() && $response)
-                ? $response->getAttachments() : array();
-
             $msg = $ticket->replaceVars($msg->asArray(),
                 array(
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    'message'   => $message ?: '',
-                    'response'  => $response ?: '',
-                    'signature' => $signature,
-=======
-                    'message'   => $message,
-                    'signature' => $signature,
-                    'response'  => ($response) ? $response->getBody() : '',
->>>>>>> parent of 7093d97... 2020 Update
-=======
                     'message'   => $message,
                     'signature' => $signature,
                     'response'  => $response ?: '',
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-                    'message'   => $message,
-                    'signature' => $signature,
-<<<<<<< HEAD
-                    'response'  => $response ?: '',
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-                    'response'  => ($response) ? $response->getBody() : '',
->>>>>>> parent of 7093d97... 2020 Update
                     'recipient' => $ticket->getOwner(), //End user
                     'staff'     => $thisstaff,
                 )
@@ -4659,7 +4176,9 @@ implements RestrictedAccess, Threadable {
             $options = array(
                 'thread' => $message ?: $ticket->getThread(),
             );
-            $email->send($ticket->getOwner(), $msg['subj'], $msg['body'], $attachments,
+
+            //ticket created on user's behalf
+            $email->send($recipients, $msg['subj'], $msg['body'], $attachments,
                 $options);
         }
         return $ticket;
@@ -4675,32 +4194,11 @@ implements RestrictedAccess, Threadable {
                         'reopened__isnull' => true,
                         'duedate__isnull' => true,
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        foreach ($overdue as $ticket)
-            $ticket->markOverdue();
-=======
          Punt for now
          */
 
-        $sql='SELECT ticket_id FROM '.TICKET_TABLE.' T1 '
-=======
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-         Punt for now
-         */
-
-<<<<<<< HEAD
         $sql='SELECT ticket_id FROM '.TICKET_TABLE.' T1'
             .' USE INDEX (status_id)'
-<<<<<<< HEAD
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-        $sql='SELECT ticket_id FROM '.TICKET_TABLE.' T1 '
->>>>>>> parent of 7093d97... 2020 Update
             .' INNER JOIN '.TICKET_STATUS_TABLE.' status
                 ON (status.id=T1.status_id AND status.state="open") '
             .' LEFT JOIN '.SLA_TABLE.' T2 ON (T1.sla_id=T2.id AND T2.flags & 1 = 1) '
@@ -4717,13 +4215,6 @@ implements RestrictedAccess, Threadable {
             }
         } else {
             //TODO: Trigger escalation on already overdue tickets - make sure last overdue event > grace_period.
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
         }
    }
@@ -4734,8 +4225,6 @@ implements RestrictedAccess, Threadable {
 
         require STAFFINC_DIR.'templates/tickets-actions.tmpl.php';
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
 
     static function getLink($id) {
         global $thisstaff;
@@ -4819,9 +4308,5 @@ class TicketCData extends VerySimpleModel {
             ),
         ),
     );
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7093d97... 2020 Update
 }
-?>
+TicketCData::$meta['table'] = TABLE_PREFIX . 'ticket__cdata';

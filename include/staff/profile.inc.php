@@ -132,13 +132,6 @@ if ($avatar->isChangeable()) { ?>
         <tr>
           <td colspan="2">
             <label class="checkbox">
-            <input type="checkbox" name="show_assigned_tickets"
-              <?php echo $cfg->showAssignedTickets() ? 'disabled="disabled" ' : ''; ?>
-              <?php echo $staff->show_assigned_tickets ? 'checked="checked"' : ''; ?> />
-              <?php echo __('Show assigned tickets on open queue.'); ?>
-            <i class="help-tip icon-question-sign" href="#show_assigned_tickets"></i>
-            </label>
-            <label class="checkbox">
             <input type="checkbox" name="onvacation"
               <?php echo ($staff->onvacation) ? 'checked="checked"' : ''; ?> />
               <?php echo __('Vacation Mode'); ?>
@@ -216,13 +209,37 @@ if ($avatar->isChangeable()) { ?>
 
                   foreach($options as $k=>$v) {
                       echo sprintf('<option value="%s" %s>%s</option>',
-                                $k,($staff->default_from_name==$k)?'selected="selected"':'',$v);
+                                $k,($staff->default_from_name && $staff->default_from_name==$k)?'selected="selected"':'',$v);
                   }
                   ?>
                 </select>
                 <div class="error"><?php echo $errors['default_from_name']; ?></div>
             </td>
         </tr>
+        <tr>
+            <td>
+                <?php echo __('Default Ticket Queue'); ?>:
+            </td>
+            <td>
+                <select name="default_ticket_queue_id">
+                 <option value="0">&mdash; <?php echo __('system default');?> &mdash;</option>
+                 <?php
+                 $queues = CustomQueue::queues()
+                    ->filter(Q::any(array(
+                        'flags__hasbit' => CustomQueue::FLAG_PUBLIC,
+                        'staff_id' => $thisstaff->getId(),
+                    )))
+                    ->all();
+                 foreach ($queues as $q) { ?>
+                  <option value="<?php echo $q->id; ?>" <?php
+                    if ($q->getId() == $staff->default_ticket_queue_id) echo 'selected="selected"'; ?> >
+                   <?php echo $q->getFullName(); ?></option>
+                 <?php
+                 } ?>
+                </select>
+            </td>
+        </tr>
+
         <tr>
             <td><?php echo __('Thread View Order');?>:
               <div class="faded"><?php echo __('The order of thread entries');?></div>
@@ -283,8 +300,6 @@ if ($avatar->isChangeable()) { ?>
                 <div class="error"><?php echo $errors['default_paper_size']; ?></div>
             </td>
         </tr>
-<<<<<<< HEAD
-<<<<<<< HEAD
         <tr>
             <td><?php echo __('Reply Redirect'); ?>:
                 <div class="faded"><?php echo __('Redirect URL used after replying to a ticket.');?></div>
@@ -302,33 +317,6 @@ if ($avatar->isChangeable()) { ?>
                 <div class="error"><?php echo $errors['reply_redirect']; ?></div>
             </td>
         </tr>
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <tr>
-            <td><?php echo __('Image Attachment View'); ?>:
-                <div class="faded"><?php echo __('Open image attachments in new tab or directly download. (CTRL + Right Click)');?></div>
-            </td>
-            <td>
-                <select name="img_att_view">
-                  <?php
-                  $options=array('download'=>__('Download'),'inline'=>__('Inline'));
-                  foreach($options as $key=>$opt) {
-                      echo sprintf('<option value="%s" %s>%s</option>',
-                                $key,($staff->img_att_view==$key)?'selected="selected"':'',$opt);
-                  }
-                  ?>
-                </select>
-                <div class="error"><?php echo $errors['img_att_view']; ?></div>
-            </td>
-        </tr>
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
->>>>>>> parent of 7093d97... 2020 Update
       </tbody>
       <tbody>
         <tr class="header">

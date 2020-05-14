@@ -14,29 +14,8 @@ class TicketApiController extends ApiController {
             "attachments" => array("*" =>
                 array("name", "type", "data", "encoding", "size")
             ),
-<<<<<<< HEAD
-<<<<<<< HEAD
             "message", "ip", "priorityId",
-<<<<<<< HEAD
-<<<<<<< HEAD
-            "system_emails" => array(
-                "*" => "*"
-            ),
-            "thread_entry_recipients" => array (
-                "*" => array("to", "cc")
-            )
-=======
-            "message", "ip", "priorityId"
->>>>>>> parent of 7093d97... 2020 Update
-=======
             "system_emails", "thread_entry_recipients"
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-            "system_emails", "thread_entry_recipients"
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-            "message", "ip", "priorityId"
->>>>>>> parent of 7093d97... 2020 Update
         );
         # Fetch dynamic form field names for the given help topic and add
         # the names to the supported request structure
@@ -62,7 +41,7 @@ class TicketApiController extends ApiController {
         if(!strcasecmp($format, 'email')) {
             $supported = array_merge($supported, array('header', 'mid',
                 'emailId', 'to-email-id', 'ticketId', 'reply-to', 'reply-to-name',
-                'in-reply-to', 'references', 'thread-type',
+                'in-reply-to', 'references', 'thread-type', 'system_emails',
                 'mailflags' => array('bounce', 'auto-reply', 'spam', 'viral'),
                 'recipients' => array('*' => array('name', 'email', 'source'))
                 ));

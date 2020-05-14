@@ -32,7 +32,7 @@ class OrgsAjaxAPI extends AjaxController {
         $q = $_REQUEST['q'];
         $limit = isset($_REQUEST['limit']) ? (int) $_REQUEST['limit']:25;
 
-        if (strlen($q) < 3)
+        if (strlen(Format::searchable($q)) < 3)
             return $this->encode(array());
 
         $orgs = Organization::objects()
@@ -92,28 +92,8 @@ class OrgsAjaxAPI extends AjaxController {
             Http::response(404, 'Unknown organization');
 
         $errors = array();
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        if ($profile) {
-            if ($org->updateProfile($_POST, $errors))
-                Http::response(201, $org->to_json(), 'application/json');
-        } elseif ($org->update($_POST, $errors))
-=======
         if($org->update($_POST, $errors))
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-        if($org->update($_POST, $errors))
-<<<<<<< HEAD
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
              Http::response(201, $org->to_json(), 'application/json');
-=======
-        if($org->update($_POST, $errors))
-             Http::response(201, $org->to_json());
->>>>>>> parent of 7093d97... 2020 Update
-=======
-             Http::response(201, $org->to_json());
->>>>>>> parent of 7093d97... 2020 Update
 
         $forms = $org->getForms();
 
@@ -143,7 +123,7 @@ class OrgsAjaxAPI extends AjaxController {
             if ($org->delete())
                  Http::response(204, 'Organization deleted successfully');
             else
-                $info['error'] = 'Unable to delete organization - try again!';
+                $info['error'] = sprintf('%s - %s', __('Unable to delete organization'), __('Please try again!'));
         }
 
         include(STAFFINC_DIR . 'templates/org-delete.tmpl.php');
@@ -178,13 +158,13 @@ class OrgsAjaxAPI extends AjaxController {
                 $form = UserForm::getUserForm()->getForm($_POST);
                 $can_create = $thisstaff->hasPerm(User::PERM_CREATE);
                 if (!($user = User::fromForm($form, $can_create)))
-                    $info['error'] = __('Error adding user - try again!');
+                    $info['error'] = sprintf('%s - %s', __('Error adding user'), __('Please try again!'));
             }
 
             if (!$info['error'] && $user && $user->setOrganization($org))
-                Http::response(201, $user->to_json());
+                Http::response(201, $user->to_json(), 'application/json');
             elseif (!$info['error'])
-                $info['error'] = __('Unable to add user to the organization - try again');
+                $info['error'] = sprintf('%s - %s', __('Unable to add user to the organization'), __('Please try again!'));
 
         } elseif ($remote && $userId) {
             list($bk, $userId) = explode(':', $userId, 2);
@@ -250,9 +230,9 @@ class OrgsAjaxAPI extends AjaxController {
         if ($_POST) {
             $form = OrganizationForm::getDefaultForm()->getForm($_POST);
             if (($org = Organization::fromForm($form)))
-                Http::response(201, $org->to_json());
+                Http::response(201, $org->to_json(), 'application/json');
 
-            $info = array('error' =>__('Error adding organization - try again!'));
+            $info = array('error' =>sprintf('%s - %s', __('Error adding organization'), __('Please try again!')));
         }
 
         $info['title'] = __('Add New Organization');
@@ -294,7 +274,7 @@ class OrgsAjaxAPI extends AjaxController {
             $info += array('title' => __('Organization Lookup'));
 
         if ($_POST && ($org = Organization::lookup($_POST['orgid']))) {
-            Http::response(201, $org->to_json());
+            Http::response(201, $org->to_json(), 'application/json');
         }
 
         ob_start();

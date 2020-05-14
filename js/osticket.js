@@ -25,7 +25,7 @@ $(document).ready(function(){
         var fObj = $(this).closest('form');
         if(!fObj.data('changed')){
             fObj.data('changed', true);
-            $('input[type=submit]', fObj).css('color', 'red');
+            $('input[type=submit]', fObj).css('color', 'white');
             $(window).bind('beforeunload', function(e) {
                 return __("Are you sure you want to leave? Any changes or info you've entered will be discarded!");
              });
@@ -45,6 +45,17 @@ $(document).ready(function(){
 
     $('form').submit(function() {
         $(window).unbind('beforeunload');
+        // Disable client-side Post Reply/Create Ticket buttons to help
+        // prevent duplicate POST
+        var form = $(this);
+        $(this).find('input[type="submit"]').each(function (index) {
+            // Clone original input
+            $(this).clone(false).removeAttr('id').prop('disabled', true).insertBefore($(this));
+
+            // Hide original input and add it to top of form
+            $(this).hide();
+            form.prepend($(this));
+        });
         $('#overlay, #loading').show();
         return true;
        });
@@ -171,25 +182,8 @@ getConfig = (function() {
     };
 })();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 $.translate_format = function(str) {
     var translation = {
-        'd':'dd',
-        'j':'d',
-        'z':'o',
-        'm':'mm',
-        'F':'MM',
-        'n':'m',
-        'Y':'yy'
-=======
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-$.translate_format = function(str) {
-    var translation = {
-<<<<<<< HEAD
         'DD':   'oo',
         'D':    'o',
         'EEEE': 'DD',
@@ -205,19 +199,6 @@ $.translate_format = function(str) {
         'yy':   'y',
         'y':    'yy',
         '`':    'yy'
-<<<<<<< HEAD
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-        'd':'dd',
-        'j':'d',
-        'z':'o',
-        'm':'mm',
-        'F':'MM',
-        'n':'m',
-        'Y':'yy'
->>>>>>> parent of 7093d97... 2020 Update
     };
     // Change PHP formats to datepicker ones
     $.each(translation, function(php, jqdp) {
@@ -226,13 +207,6 @@ $.translate_format = function(str) {
     return str;
 };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 $.sysAlert = function (title, msg, cb) {
     var $dialog =  $('.dialog#alert');
     if ($dialog.length) {

@@ -3,24 +3,31 @@
 <?php
 if($info && $info['msg']) {
     echo sprintf('<p id="msg_notice" style="padding-top:2px;">%s</p>', $info['msg']);
-} ?>
+}
+
+if ($thread->object_type == 'T')
+  $type = '\'tickets\'';
+if ($thread->object_type == 'A')
+  $type = '\'tasks\'';
+?>
 <hr/>
 <?php
 if(($users=$thread->getCollaborators())) {?>
 <div id="manage_collaborators">
-<form method="post" class="collaborators" action="#thread/<?php echo $thread->getId(); ?>/collaborators">
+<form method="post" class="collaborators" onsubmit="refreshAndClose(<?php echo $thread->object_id; ?>, <?php echo $type; ?>);" action="#thread/<?php echo $thread->getId(); ?>/collaborators">
     <table border="0" cellspacing="1" cellpadding="1" width="100%">
     <?php
     foreach($users as $user) {
         $checked = $user->isActive() ? 'checked="checked"' : '';
+        $cc = $user->isCc() ? 'selected="selected"' : '';
+
         echo sprintf('<tr>
                         <td>
                             <label class="inline checkbox">
+                            <input type="checkbox" class="hidden" name="uid[]" id="%d" value="%d" checked="checked">
                             <input type="checkbox" name="cid[]" id="c%d" value="%d" %s>
                             </label>
                             <a class="collaborator" href="#thread/%d/collaborators/%d/view">%s%s</a>
-<<<<<<< HEAD
-<<<<<<< HEAD
                             <div align="left">
                                 <span class="faded"><em>%s</em></span>
                             </div>
@@ -44,37 +51,15 @@ if(($users=$thread->getCollaborators())) {?>
             </td>
             <td width="30">&nbsp;</td>
             </tr>',$user->getId(), $user->getId());
-=======
-=======
->>>>>>> parent of 7093d97... 2020 Update
-                            <span class="faded"><em>%s</em></span></td>
-                        <td width="10">
-                            <input type="hidden" name="del[]" id="d%d" value="">
-                            <a class="remove" href="#d%d">&times;</a></td>
-                        <td width="30">&nbsp;</td>
-                    </tr>',
-                    $user->getId(),
-                    $user->getId(),
-                    $checked,
-                    $thread->getId(),
-                    $user->getId(),
-                    (($U = $user->getUser()) && ($A = $U->getAvatar()))
-                        ? $U->getAvatar()->getImageTag(24) : '',
-                    Format::htmlchars($user->getName()),
-                    $user->getEmail(),
-                    $user->getId(),
-                    $user->getId());
-<<<<<<< HEAD
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7093d97... 2020 Update
     }
     ?>
+    <td>
+      <div><a class="collaborator" id="addcollaborator"
+          href="#thread/<?php echo $thread->getId(); ?>/add-collaborator/addcc"
+          ><i class="icon-plus-sign"></i> <?php echo __('Add Collaborator'); ?></a></div>
+    </td>
     </table>
     <hr style="margin-top:1em"/>
-    <div><a class="collaborator"
-        href="#thread/<?php echo $thread->getId(); ?>/add-collaborator"
-        ><i class="icon-plus-sign"></i> <?php echo __('Add New Collaborator'); ?></a></div>
     <div id="savewarning" style="display:none; padding-top:2px;"><p
     id="msg_warning"><?php echo __('You have made changes that you need to save.'); ?></p></div>
     <p class="full-width">
@@ -94,44 +79,12 @@ if(($users=$thread->getCollaborators())) {?>
     echo __("Bro, not sure how you got here!");
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-if ($_POST && $thread) {
-    $collabs = $thread->getCollaborators();
-    foreach ($collabs as $c) {
-        $options .= sprintf('<option value="%s" %s class="%s">%s</option>',
-                  $c->getUserId(),
-                  $c->isActive() ? 'selected="selected"' : '',
-                  $c->isActive() ? 'active' : 'disabled',
-                  $c->getName());
-    }
-    $recipients = sprintf(__('(%d of %d)'),
-=======
 if ($_POST && $thread && $thread->getNumCollaborators()) {
 
-    $collaborators = sprintf('Participants (%d)',
+    $collaborators = sprintf('Collaborators (%d)',
             $thread->getNumCollaborators());
 
-    $recipients = sprintf(__('Recipients (%d of %d)'),
->>>>>>> parent of 7093d97... 2020 Update
-=======
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-if ($_POST && $thread && $thread->getNumCollaborators()) {
-
-    $collaborators = sprintf('Participants (%d)',
-            $thread->getNumCollaborators());
-
-<<<<<<< HEAD
     $recipients = sprintf(__('Collaborators (%d of %d)'),
-<<<<<<< HEAD
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-    $recipients = sprintf(__('Recipients (%d of %d)'),
->>>>>>> parent of 7093d97... 2020 Update
           $thread->getNumActiveCollaborators(),
           $thread->getNumCollaborators());
     ?>
@@ -200,4 +153,8 @@ $(function() {
     });
 
 });
+
+function refreshAndClose(tid, type) {
+  window.location.href = type + '.php?id=' + tid;
+}
 </script>

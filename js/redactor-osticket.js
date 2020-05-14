@@ -79,16 +79,6 @@ RedactorPlugins.draft = function() {
         // If the draft was created, a draft_id will be sent back — update
         // the URL to send updates in the future
         if (!this.opts.draftId && data.draft_id) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-            this._setup(data.draft_id);
-            $(this.app.rootElement).attr('data-draft-id', this.opts.draftId);
-=======
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             this.opts.draftId = data.draft_id;
             this.opts.autosave = 'ajax.php/draft/' + data.draft_id;
             this.opts.clipboardUploadUrl =
@@ -96,10 +86,6 @@ RedactorPlugins.draft = function() {
                 'ajax.php/draft/'+this.opts.draftId+'/attach';
             if (!this.code.get())
                 this.code.set(' ', false);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         }
         // Only show the [Draft Saved] notice if there is content in the
         // field that has been touched
@@ -108,26 +94,7 @@ RedactorPlugins.draft = function() {
             // No change yet — dont't show the button
             return;
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-        if (data && this.code.get()) {
-            this.$draft_saved.show().delay(5000).fadeOut();
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-        }
-        // Only show the [Draft Saved] notice if there is content in the
-        // field that has been touched
-        if (!this.draft.firstSave) {
-            this.draft.firstSave = true;
-            // No change yet — dont't show the button
-            return;
-        }
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         this.$box.find('textarea').attr('data-draft-id', this.opts.draftId);
-=======
->>>>>>> parent of 7093d97... 2020 Update
         if (data && this.code.get()) {
             this.$draft_saved.show().delay(5000).fadeOut();
         }
@@ -307,36 +274,7 @@ $(function() {
                 'syncBeforeCallback': captureImageSizes,
                 'linebreaks': true,
                 'tabFocus': false,
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                'toolbarFixed': true,
-                'callbacks': {
-                    'start': function() {
-                        var $element = $R.dom(this.rootElement),
-                            $editor = this.editor.$editor;
-                        if ($element.data('width'))
-                            $editor.width($element.data('width'));
-                        $editor.addClass('no-pjax');
-                        $editor.attr('spellcheck', 'true');
-                        var lang = $element.closest('[lang]').attr('lang');
-                        if (lang)
-                            $editor.attr('lang', lang);
-                        // Fixup class for
-                        $element.parent().closest(':not(.redactor-box)').addClass('-redactor-container')
-                    },
-=======
-                'toolbarFixedBox': true,
-=======
                 'toolbarFixed': false,
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-                'toolbarFixed': false,
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-                'toolbarFixedBox': true,
->>>>>>> parent of 7093d97... 2020 Update
                 'focusCallback': function() { this.$box.addClass('no-pjax'); },
                 'initCallback': function() {
                     if (this.$element.data('width'))
@@ -345,13 +283,6 @@ $(function() {
                     var lang = this.$editor.closest('[lang]').attr('lang');
                     if (lang)
                         this.$editor.attr('lang', lang);
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 },
                 'linkSize': 100000,
                 'definedLinks': 'ajax.php/config/links'
@@ -360,8 +291,6 @@ $(function() {
         var reset = $('input[type=reset]', el.closest('form'));
         if (reset) {
             reset.click(function() {
-<<<<<<< HEAD
-<<<<<<< HEAD
                 var file = $('.file', el.closest('form'));
                 if (file)
                     file.remove();
@@ -376,41 +305,13 @@ $(function() {
                         el.redactor('insert.set', '', false, false);
                     }
                 }
-=======
-                if (el.hasClass('draft'))
-                    el.redactor('deleteDraft');
-                else
-                    el.redactor('set', '', false, false);
->>>>>>> parent of 7093d97... 2020 Update
             });
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-                if (el.hasClass('draft'))
-                    el.redactor('deleteDraft');
-                else
-                    el.redactor('set', '', false, false);
-            });
-        }
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         $('input[type=submit]', el.closest('form')).on('click', function() {
             // Some setups (IE v10 on Windows 7 at least) seem to have a bug
             // where Redactor does not sync properly after adding an image.
             // Therefore, the ::get() call will not include text added after
             // the image was inserted.
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-            el.redactor('code.sync');
-        });
->>>>>>> parent of 7093d97... 2020 Update
-=======
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             try {
                 el.redactor('code.sync');
             }
@@ -418,14 +319,7 @@ $(function() {
                 el.redactor(); //reinitialize redactor
                 el.redactor('code.sync');
             }
-=======
-            el.redactor('code.sync');
->>>>>>> parent of 7093d97... 2020 Update
         });
-<<<<<<< HEAD
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         if (!$.clientPortal) {
             options['plugins'] = options['plugins'].concat(
                     'fontcolor', 'fontfamily', 'signature');
@@ -479,7 +373,6 @@ $(function() {
     };
     findRichtextBoxes();
     $(document).ajaxStop(findRichtextBoxes);
-    $(document).on('pjax:success', findRichtextBoxes);
     $(document).on('pjax:start', cleanupRedactorElements);
 });
 
@@ -501,3 +394,7 @@ $(document).ajaxError(function(event, request, settings) {
             __('Refresh the current page to restore and continue your draft.'));
     }
 });
+
+// .size() is deprecated as of jQuery 1.8 and should move to .length, but
+// the packed Redactor code uses the deprecated function
+$.fn.size = function() { return this.length; }

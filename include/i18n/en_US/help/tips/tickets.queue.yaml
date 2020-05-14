@@ -76,11 +76,6 @@ adv_date_range:
     title: Search by Date Range
     content: >
         Definition here
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
 
 reply_types:
     title: Reply Types
@@ -91,7 +86,3 @@ reply_types:
           This reply is sent to the User only, no Collaborators.</br>
         <b>Do Not Email Reply:</b>
           No email alerts are sent out, however, the Agent response is visible to <b>ALL</b> Users upon viewing the Ticket.
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7093d97... 2020 Update

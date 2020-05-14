@@ -1,0 +1,123 @@
+// landing page
+
+#landing_page{
+	.welcome-page{
+		padding-bottom: 70px;
+		padding-top:10px;
+		.wptext{
+			color: #fff;
+			text-align: center;
+			h1{
+				font-size: 48px;
+				font-weight: 700;
+				margin:40px 0px;
+			}
+		}
+		#kb-search{
+			margin:50px auto 0px;
+			max-width: 480px;
+			#query{
+				width:360px;
+				border-color: #fff;
+			}
+			#searchSubmit{
+				padding-left:20px;
+				padding-right:20px;
+				background:$primary-color;
+				color: #fff;
+				margin-top:0px;
+			}
+
+		}
+	}
+
+	.home-box{
+		background: #fff;
+		padding: 60px 0px;
+		#new_ticket, #check_status{
+			padding: 0px 20px;
+			text-align: center;
+			i{
+				font-size: 24px;
+				display: block;
+				color: #fff;
+				background: $primary-color;
+				height: 50px;
+				width:50px;
+				line-height: 50px;
+				margin:0px auto;
+				border-radius: 3px;
+
+			}
+			h3{
+				margin:20px 0px 0px 0px;
+				font-size: 24px;
+				text-transform: uppercase;
+				color: #222;
+				font-weight: 700;
+			}
+			div{
+				padding: 20px 0px 25px 0px;
+			}
+			a.btn{
+				background: $second-color;
+				color: #fff;
+			}
+		}
+	}
+}
+
+.faqbanner{
+	padding: 50px 0px;
+	font-size: 32px;
+	text-align: center;
+	color: $primary-color;
+	background: #f4f3f1;
+	p{
+		padding:0px 50px;
+		margin:0px 0px;
+		a{
+			color:$second-color;
+		}
+	}
+}
+
+.featured-faqs{
+    padding: 50px 0px;
+    background: #fff;
+    h1.fkb-title{
+        text-align: center;
+        font-size: 26px;
+        text-transform: uppercase;
+		color: #333;
+        margin-bottom: 70px;
+		font-weight: 300;
+    }
+
+    .featured-category{
+        margin-bottom: 30px;
+        .category-name{
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 30px;
+            font-size: 16px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+			color: $second-color;
+        }
+        .article-headline{
+            margin-bottom: 30px;
+            .article-title{
+                font-size: 24px;
+                line-height: 1.2;
+                margin-bottom: 20px;
+				border-left:5px solid $second-color;
+				padding-left:20px;
+                a{
+                    color: $primary-color;
+                }
+
+            }
+        }
+    }
+}

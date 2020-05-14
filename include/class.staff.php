@@ -23,7 +23,7 @@ include_once(INCLUDE_DIR.'class.user.php');
 include_once(INCLUDE_DIR.'class.auth.php');
 
 class Staff extends VerySimpleModel
-implements AuthenticatedUser, EmailContact, TemplateVariable {
+implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
 
     static $meta = array(
         'table' => STAFF_TABLE,
@@ -69,14 +69,17 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
 
     function get($field, $default=false) {
 
+       // Check primary fields
+        try {
+            return parent::get($field, $default);
+        } catch (Exception $e) {}
+
         // Autoload config if not loaded already
         if (!isset($this->_config))
             $this->getConfig();
 
         if (isset($this->_config[$field]))
             return $this->_config[$field];
-
-        return parent::get($field, $default);
     }
 
     function getConfig() {
@@ -88,21 +91,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
                         'default_from_name' => '',
                         'datetime_format'   => '',
                         'thread_view_order' => '',
-<<<<<<< HEAD
-<<<<<<< HEAD
                         'default_ticket_queue_id' => 0,
                         'reply_redirect' => 'Ticket',
-<<<<<<< HEAD
-<<<<<<< HEAD
-                        'img_att_view' => 'download',
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
->>>>>>> parent of 7093d97... 2020 Update
                         ));
             $this->_config = $_config->getInfo();
         }
@@ -140,6 +130,18 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         case 'phone':
             return Format::phone($this->ht['phone']);
         }
+    }
+
+    static function getSearchableFields() {
+        return array(
+            'email' => new TextboxField(array(
+                'label' => __('Email Address'),
+            )),
+        );
+    }
+
+    static function supportsCustomData() {
+        return false;
     }
 
     function getHashtable() {
@@ -232,6 +234,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
     }
 
     function setPassword($new, $current=false) {
+        global $thisstaff;
+
         // Allow the backend to update the password. This is the preferred
         // method as it allows for integration with password policies and
         // also allows for remotely updating the password where possible and
@@ -255,6 +259,9 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         $this->change_passwd = 0;
         $this->cancelResetTokens();
         $this->passwdreset = SqlFunction::NOW();
+
+        // Clean sessions
+        Signal::send('auth.clean', $this, $thisstaff);
 
         return $rv;
     }
@@ -326,6 +333,10 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         return $this->signature;
     }
 
+    function getDefaultTicketQueueId() {
+        return $this->default_ticket_queue_id;
+    }
+
     function getDefaultSignatureType() {
         return $this->default_signature_type;
     }
@@ -338,26 +349,10 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         return $this->default_paper_size;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     function getReplyRedirect() {
         return $this->reply_redirect;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    function getImageAttachmentView() {
-        return $this->img_att_view;
-    }
-
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
->>>>>>> parent of 7093d97... 2020 Update
     function forcePasswdChange() {
         return $this->change_passwd;
     }
@@ -377,7 +372,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
             $depts = array();
             if (($res=db_query($sql)) && db_num_rows($res)) {
                 while(list($id)=db_fetch_row($res))
-                    $depts[] = $id;
+                    $depts[] = (int) $id;
             }
 
             /* ORM method — about 2.0ms slower
@@ -467,23 +462,40 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         return isset($this->locale) ? $this->locale : 0;
     }
 
-    function getRole($dept=null) {
-        $deptId = is_object($dept) ? $dept->getId() : $dept;
-        if ($deptId && $deptId != $this->dept_id) {
-            if (isset($this->_roles[$deptId]))
-                return $this->_roles[$deptId];
-
-            if ($access = $this->dept_access->findFirst(array('dept_id' => $deptId)))
-                return $this->_roles[$deptId] = $access->role;
-
-            if (!$this->usePrimaryRoleOnAssignment())
-                // View only access
-                return new Role(array());
-
-            // Fall through to primary role
+    function getRoles() {
+        if (!isset($this->_roles)) {
+            $this->_roles = array($this->dept_id => $this->role);
+            foreach($this->dept_access as $da)
+                $this->_roles[$da->dept_id] = $da->role;
         }
-        // For the primary department, use the primary role
-        return $this->role;
+
+        return $this->_roles;
+    }
+
+    function getRole($dept=null, $assigned=false) {
+
+        if (is_null($dept))
+            return $this->role;
+
+       if (is_numeric($dept))
+          $deptId = $dept;
+       elseif($dept instanceof Dept)
+          $deptId = $dept->getId();
+       else
+          return null;
+
+        $roles = $this->getRoles();
+        if (isset($roles[$deptId]))
+            return $roles[$deptId];
+
+        // Default to primary role.
+        if ($assigned && $this->usePrimaryRoleOnAssignment())
+            return $this->role;
+
+        // Ticket Create & View only access
+        $perms = JSONDataEncoder::encode(array(
+                    Ticket::PERM_CREATE => 1));
+        return new Role(array('permissions' => $perms));
     }
 
     function hasPerm($perm, $global=true) {
@@ -497,11 +509,15 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         return false;
     }
 
+    function canSearchEverything() {
+        return $this->hasPerm(SearchBackend::PERM_EVERYTHING);
+    }
+
     function canManageTickets() {
-        return $this->hasPerm(TicketModel::PERM_DELETE, false)
-                || $this->hasPerm(TicketModel::PERM_TRANSFER, false)
-                || $this->hasPerm(TicketModel::PERM_ASSIGN, false)
-                || $this->hasPerm(TicketModel::PERM_CLOSE, false);
+        return $this->hasPerm(Ticket::PERM_DELETE, false)
+                || $this->hasPerm(Ticket::PERM_TRANSFER, false)
+                || $this->hasPerm(Ticket::PERM_ASSIGN, false)
+                || $this->hasPerm(Ticket::PERM_CLOSE, false);
     }
 
     function isManager() {
@@ -512,8 +528,12 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         return TRUE;
     }
 
-    function isactive() {
+    function isActive() {
         return $this->isactive;
+    }
+
+    function getStatus() {
+        return $this->isActive() ? __('Active') : __('Locked');
     }
 
     function isVisible() {
@@ -525,7 +545,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
     }
 
     function isAvailable() {
-        return ($this->isactive() && !$this->onVacation());
+        return ($this->isActive() && !$this->onVacation());
     }
 
     function showAssignedOnly() {
@@ -544,12 +564,13 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         return ($teamId && in_array($teamId, $this->getTeams()));
     }
 
-    function canAccessDept($deptId) {
-        return ($deptId && in_array($deptId, $this->getDepts()) && !$this->isAccessLimited());
-    }
+    function canAccessDept($dept) {
 
-    function showAssignedTickets() {
-        return $this->show_assigned_tickets;
+        if (!$dept instanceof Dept)
+            return false;
+
+        return (!$this->isAccessLimited()
+                && in_array($dept->getId(), $this->getDepts()));
     }
 
     function getTeams() {
@@ -557,26 +578,14 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         if (!isset($this->_teams)) {
             $this->_teams = array();
             foreach ($this->teams as $team)
-                 $this->_teams[] = $team->team_id;
+                 $this->_teams[] = (int) $team->team_id;
         }
 
         return $this->_teams;
     }
-    /* stats */
-<<<<<<< HEAD
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    function getTicketsVisibility($exclude_archived=false) {
-=======
     function getTicketsVisibility() {
 
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-    function getTicketsVisibility() {
-
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         // -- Open and assigned to me
         $assigned = Q::any(array(
             'staff_id' => $this->getId(),
@@ -591,65 +600,27 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         }
 
         $visibility = Q::any(new Q(array('status__state'=>'open', $assigned)));
-=======
 
-    function resetStats() {
-        $this->stats = array();
-    }
->>>>>>> parent of 7093d97... 2020 Update
+        // -- If access is limited to assigned only, return assigned
+        if ($this->isAccessLimited())
+            return $visibility;
 
-    /* returns staff's quick stats - used on nav menu...etc && warnings */
-    function getTicketsStats() {
+        // -- Routed to a department of mine
+        if (($depts=$this->getDepts()) && count($depts)) {
+            $visibility->add(array('dept_id__in' => $depts));
+            $visibility->add(array('thread__referrals__dept__id__in' => $depts));
+        }
 
-        if(!$this->stats['tickets'])
-            $this->stats['tickets'] = Ticket::getStaffStats($this);
-
-        return  $this->stats['tickets'];
+        return $visibility;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    function applyVisibility($query, $exclude_archived=false) {
-        return $query->filter($this->getTicketsVisibility($exclude_archived));
-=======
-=======
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     function applyVisibility($query) {
         return $query->filter($this->getTicketsVisibility());
     }
 
     /* stats */
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
     function resetStats() {
         $this->stats = array();
-=======
-    function getNumAssignedTickets() {
-        return ($stats=$this->getTicketsStats())?$stats['assigned']:0;
-    }
-
-    function getNumClosedTickets() {
-        return ($stats=$this->getTicketsStats())?$stats['closed']:0;
->>>>>>> parent of 7093d97... 2020 Update
-    }
-
-    /* returns staff's quick stats - used on nav menu...etc && warnings */
-    function getTicketsStats() {
-
-        if(!$this->stats['tickets'])
-            $this->stats['tickets'] = Ticket::getStaffStats($this);
-
-        return  $this->stats['tickets'];
-    }
-
-    function getNumAssignedTickets() {
-        return ($stats=$this->getTicketsStats())?$stats['assigned']:0;
->>>>>>> parent of 7093d97... 2020 Update
-    }
-
-    function getNumClosedTickets() {
-        return ($stats=$this->getTicketsStats())?$stats['closed']:0;
     }
 
     function getTasksStats() {
@@ -763,9 +734,6 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         $this->signature = Format::sanitize($vars['signature']);
         $this->timezone = $vars['timezone'];
         $this->locale = $vars['locale'];
-        if (!$cfg->showAssignedTickets())
-            // Allow local unsetting if unset globally
-            $this->show_assigned_tickets = isset($vars['show_assigned_tickets']) ? 1 : 0;
         $this->max_page_size = $vars['max_page_size'];
         $this->auto_refresh_rate = $vars['auto_refresh_rate'];
         $this->default_signature_type = $vars['default_signature_type'];
@@ -788,21 +756,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
                     'datetime_format' => $vars['datetime_format'],
                     'default_from_name' => $vars['default_from_name'],
                     'thread_view_order' => $vars['thread_view_order'],
-<<<<<<< HEAD
-<<<<<<< HEAD
                     'default_ticket_queue_id' => $vars['default_ticket_queue_id'],
                     'reply_redirect' => ($vars['reply_redirect'] == 'Queue') ? 'Queue' : 'Ticket',
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    'img_att_view' => ($vars['img_att_view'] == 'inline') ? 'inline' : 'download',
-=======
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
->>>>>>> parent of 7093d97... 2020 Update
                     )
                 );
         $this->_config = $_config->getInfo();
@@ -913,7 +868,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         return self::getStaffMembers(array('available'=>true));
     }
 
-    static function nsort(QuerySet $qs, $path='', $format=null) {
+    static function getsortby($path='', $format=null) {
         global $cfg;
 
         $format = $format ?: $cfg->getAgentNameFormat();
@@ -921,12 +876,18 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         case 'last':
         case 'lastfirst':
         case 'legal':
-            $qs->order_by("{$path}lastname", "{$path}firstname");
+            $fields = array("{$path}lastname", "{$path}firstname");
             break;
         default:
-            $qs->order_by("${path}firstname", "${path}lastname");
+            $fields = array("${path}firstname", "${path}lastname");
         }
 
+        return $fields;
+    }
+
+    static function nsort(QuerySet $qs, $path='', $format=null) {
+        $fields = self::getsortby($path, $format);
+        $qs->order_by($fields);
         return $qs;
     }
 
@@ -1058,8 +1019,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
                 }
                 else {
                     throw new ImportError(sprintf(__('Unable to import (%s): %s'),
-                        $data['username'],
-                        print_r($errors, true)
+                        Format::htmlchars($data['username']),
+                        print_r(Format::htmlchars($errors), true)
                     ));
                 }
                 $imported++;
@@ -1086,7 +1047,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         $vars['lastname']=Format::striptags($vars['lastname']);
 
         if (isset($this->staff_id) && $this->getId() != $vars['id'])
-            $errors['err']=__('Internal Error');
+            $errors['err']=__('Internal error occurred');
 
         if(!$vars['firstname'])
             $errors['firstname']=__('First name required');
@@ -1118,6 +1079,10 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
             $errors['dept_id']=__('Department is required');
         if(!$vars['role_id'])
             $errors['role_id']=__('Role for primary department is required');
+
+        $dept = Dept::lookup($vars['dept_id']);
+        if($dept && !$dept->isActive())
+          $errors['dept_id'] = sprintf(__('%s selected must be active'), __('Department'));
 
         // Ensure we will still have an administrator with access
         if ($vars['isadmin'] !== '1' || $vars['islocked'] === '1') {
@@ -1212,27 +1177,10 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
             unset($dropped[$dept_id]);
             if (!$role_id || !Role::lookup($role_id))
                 $errors['dept_access'][$dept_id] = __('Select a valid role');
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-            if (!$dept_id || !($dept=Dept::lookup($dept_id)))
-=======
             if (!$dept_id || !Dept::lookup($dept_id))
-<<<<<<< HEAD
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-            if (!$dept_id || !Dept::lookup($dept_id))
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
                 $errors['dept_access'][$dept_id] = __('Select a valid department');
-=======
-            if (!$dept_id || !Dept::lookup($dept_id))
-                $errors['dept_access'][$dept_id] = __('Select a valid departent');
->>>>>>> parent of 7093d97... 2020 Update
-=======
-                $errors['dept_access'][$dept_id] = __('Select a valid departent');
->>>>>>> parent of 7093d97... 2020 Update
             if ($dept_id == $this->getDeptId())
-                $errors['dept_access'][$dept_id] = __('Agent already has access to this department');
+                $errors['dept_access'][$dept_id] = sprintf(__('Agent already has access to %s'), __('this department'));
             $da = $this->dept_access->findFirst(array('dept_id' => $dept_id));
             if (!isset($da)) {
                 $da = new StaffDeptAccess(array(
@@ -1269,6 +1217,15 @@ implements AuthenticatedUser, EmailContact, TemplateVariable {
         }
         $this->permissions = $permissions->toJson();
         return true;
+    }
+
+    static function export($criteria=null, $filename='') {
+        include_once(INCLUDE_DIR.'class.error.php');
+
+        $agents = Staff::objects();
+        // Sort based on name formating
+        $agents = self::nsort($agents);
+        Export::agents($agents, $filename);
     }
 
 }
@@ -1446,7 +1403,7 @@ extends AbstractForm {
         );
     }
 
-    function getClean() {
+    function getClean($validate = true) {
         $clean = parent::getClean();
         // Index permissions as ['ticket.edit' => 1]
         $clean['perms'] = array_keys($clean['perms']);
@@ -1498,7 +1455,7 @@ extends AbstractForm {
         return __('Change the primary department and primary role of the selected agents');
     }
 
-    function getClean() {
+    function getClean($validate = true) {
         $clean = parent::getClean();
         $clean['eavesdrop'] = $clean['eavesdrop'] ? 1 : 0;
         return $clean;
@@ -1593,7 +1550,7 @@ extends AbstractForm {
         );
     }
 
-    function getClean() {
+    function getClean($validate = true) {
         $clean = parent::getClean();
         list($clean['username'],) = preg_split('/[^\w.-]/u', $clean['email'], 2);
         if (mb_strlen($clean['username']) < 3 || Staff::lookup($clean['username']))

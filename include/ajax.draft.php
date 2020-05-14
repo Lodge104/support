@@ -133,30 +133,9 @@ class DraftAjaxAPI extends AjaxController {
             'content_id' => 'cid:'.$f->getKey(),
             // Return draft_id to connect the auto draft creation
             'draft_id' => $draft->getId(),
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-            'url' => $f->getDownloadUrl(
-                ['type' => 'D', 'deposition' => 'inline']),
-        )));
-=======
-            'filelink' => $f->getDownloadUrl(false, 'inline'),
-        ));
->>>>>>> parent of 7093d97... 2020 Update
-=======
             'filelink' => $f->getDownloadUrl(
                 ['type' => 'D', 'deposition' => 'inline']),
         ));
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
-            'filelink' => $f->getDownloadUrl(
-                ['type' => 'D', 'deposition' => 'inline']),
-=======
-            'filelink' => $f->getDownloadUrl(false, 'inline'),
->>>>>>> parent of 7093d97... 2020 Update
-        ));
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
     }
 
     // Client interface for drafts =======================================
@@ -361,32 +340,14 @@ class DraftAjaxAPI extends AjaxController {
             && ($object = $thread->getObject())
             && ($thisstaff->canAccess($object))
         ) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-            $search->add(Q::all([
-                'attachments__thread_entry__thread_id' => $_GET['threadId'],
-                'attachments__inline' => 1,
-            ]));
-=======
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
             $union = ' UNION SELECT f.id, a.id as aid, a.`type`, a.`name` FROM '.THREAD_TABLE.' t
-=======
-            $union = ' UNION SELECT f.id, a.`type`, a.`name` FROM '.THREAD_TABLE.' t
->>>>>>> parent of 7093d97... 2020 Update
                 JOIN '.THREAD_ENTRY_TABLE.' th ON (th.thread_id = t.id)
                 JOIN '.ATTACHMENT_TABLE.' a ON (a.object_id = th.id AND a.`type` = \'H\')
                 JOIN '.FILE_TABLE.' f ON (a.file_id = f.id)
                 WHERE a.`inline` = 1 AND t.id='.db_input($_GET['threadId']);
-<<<<<<< HEAD
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         }
 
-        $sql = 'SELECT distinct f.id, COALESCE(a.type, f.ft), a.`name` FROM '.FILE_TABLE
+        $sql = 'SELECT distinct f.id, a.id as aid, COALESCE(a.type, f.ft), a.`name` FROM '.FILE_TABLE
             .' f LEFT JOIN '.ATTACHMENT_TABLE.' a ON (a.file_id = f.id)
             WHERE ((a.`type` IN (\'C\', \'F\', \'T\', \'P\') AND a.`inline` = 1) OR f.ft = \'L\')'
                 .' AND f.`type` LIKE \'image/%\'';
@@ -394,47 +355,11 @@ class DraftAjaxAPI extends AjaxController {
             Http::response(500, 'Unable to lookup files');
 
         $files = array();
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        foreach ($images as $f) {
-=======
-            $union = ' UNION SELECT f.id, a.`type`, a.`name` FROM '.THREAD_TABLE.' t
-                JOIN '.THREAD_ENTRY_TABLE.' th ON (th.thread_id = t.id)
-                JOIN '.ATTACHMENT_TABLE.' a ON (a.object_id = th.id AND a.`type` = \'H\')
-                JOIN '.FILE_TABLE.' f ON (a.file_id = f.id)
-                WHERE a.`inline` = 1 AND t.id='.db_input($_GET['threadId']);
-        }
-
-        $sql = 'SELECT distinct f.id, COALESCE(a.type, f.ft), a.`name` FROM '.FILE_TABLE
-            .' f LEFT JOIN '.ATTACHMENT_TABLE.' a ON (a.file_id = f.id)
-            WHERE ((a.`type` IN (\'C\', \'F\', \'T\', \'P\') AND a.`inline` = 1) OR f.ft = \'L\')'
-                .' AND f.`type` LIKE \'image/%\'';
-        if (!($res = db_query($sql.$union)))
-            Http::response(500, 'Unable to lookup files');
-
-        $files = array();
-        while (list($id, $type, $name) = db_fetch_row($res)) {
-            $f = AttachmentFile::lookup((int) $id);
->>>>>>> parent of 7093d97... 2020 Update
-            $url = $f->getDownloadUrl();
-=======
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
         while (list($id, $aid, $type, $name) = db_fetch_row($res)) {
             if (!($f = AttachmentFile::lookup((int) $id)))
                 continue;
 
             $url = $f->getDownloadUrl(['id' => $aid]);
-<<<<<<< HEAD
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-        while (list($id, $type, $name) = db_fetch_row($res)) {
-            $f = AttachmentFile::lookup((int) $id);
-            $url = $f->getDownloadUrl();
->>>>>>> parent of 7093d97... 2020 Update
             $files[] = array(
                 // Don't send special sizing for thread items 'cause they
                 // should be cached already by the client

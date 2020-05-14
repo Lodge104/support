@@ -887,29 +887,9 @@ class StaffAuthStrikeBackend extends  AuthStrikeBackend {
                    ._S('Time').": ".date('M j, Y, g:i a T')."\n\n"
                    ._S('Attempts').": {$authsession['strikes']}\n"
                    ._S('Timeout').": ".sprintf(_N('%d minute', '%d minutes', $timeout), $timeout)."\n\n";
+            $admin_alert = ($cfg->alertONLoginError() == 1) ? TRUE : FALSE;
             $ost->logWarning(sprintf(_S('Excessive login attempts (%s)'),$username),
-<<<<<<< HEAD
-<<<<<<< HEAD
                     $alert, $admin_alert);
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-              if ($username) {
-                $agent = Staff::lookup($username);
-                $type = array('type' => 'login', 'msg' => sprintf('Excessive login attempts (%s)', $authsession['strikes']));
-                Signal::send('person.login', $agent, $type);
-              }
-
-=======
-                    $alert, $cfg->alertONLoginError());
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-                    $alert, $cfg->alertONLoginError());
->>>>>>> parent of 7093d97... 2020 Update
             return new AccessDenied(__('Forgot your login info? Contact Admin.'));
         //Log every other third failed login attempt as a warning.
         } elseif($authsession['strikes']%3==0) {
@@ -968,44 +948,15 @@ class UserAuthStrikeBackend extends  AuthStrikeBackend {
                     _S('IP').": {$_SERVER['REMOTE_ADDR']}\n".
                     _S('Time').": ".date('M j, Y, g:i a T')."\n\n".
                     _S('Attempts').": {$authsession['strikes']}";
-<<<<<<< HEAD
-<<<<<<< HEAD
             $admin_alert = ($cfg->alertONLoginError() == 1 ? TRUE : FALSE);
             $ost->logError(_S('Excessive login attempts (user)'), $alert, $admin_alert);
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-            if ($username) {
-              $account = UserAccount::lookupByUsername($username);
-              $id = UserEmailModel::getIdByEmail($username);
-              if ($account)
-                  $user = User::lookup($account->user_id);
-              elseif ($id)
-                $user = User::lookup($id);
-
-              if ($user) {
-                $type = array('type' => 'login', 'msg' => sprintf('Excessive login attempts (%s)', $authsession['strikes']));
-                Signal::send('person.login', $user, $type);
-              }
-            }
-
-=======
-            $ost->logError(_S('Excessive login attempts (user)'), $alert, ($cfg->alertONLoginError()));
->>>>>>> parent of 7093d97... 2020 Update
-=======
->>>>>>> parent of 7a62b76... Merge branch 'master' of https://github.com/Lodge104/support
-=======
->>>>>>> parent of 0fc1436... Kendo 2.5 Update (#10)
-=======
-            $ost->logError(_S('Excessive login attempts (user)'), $alert, ($cfg->alertONLoginError()));
->>>>>>> parent of 7093d97... 2020 Update
             return new AccessDenied(__('Access denied'));
         } elseif($authsession['strikes']%3==0) { //Log every third failed login attempt as a warning.
             $alert=_S('Username').": {$username}\n".
                     _S('IP').": {$_SERVER['REMOTE_ADDR']}\n".
                     _S('Time').": ".date('M j, Y, g:i a T')."\n\n".
                     _S('Attempts').": {$authsession['strikes']}";
-            $ost->logWarning(_S('Failed login attempt (user)'), $alert);
+            $ost->logWarning(_S('Failed login attempt (user)'), $alert, false);
         }
 
     }
@@ -1364,7 +1315,35 @@ abstract class PasswordPolicy {
     static function register($policy) {
         static::$registry[] = $policy;
     }
+
+    static function cleanSessions($model, $user=null) {
+        $criteria = array();
+
+        switch (true) {
+            case ($model instanceof Staff):
+                $criteria['user_id'] = $model->getId();
+
+                if ($user && ($model->getId() == $user->getId()))
+                    array_push($criteria,
+                        Q::not(array('session_id' => $user->session->session_id)));
+                break;
+            case ($model instanceof User):
+                $regexp = '_auth\|.*"user";[a-z]+:[0-9]+:{[a-z]+:[0-9]+:"id";[a-z]+:'.$model->getId();
+                $criteria['user_id'] = 0;
+                $criteria['session_data__regex'] = $regexp;
+
+                if ($user)
+                    array_push($criteria,
+                        Q::not(array('session_id' => $user->session->session_id)));
+                break;
+            default:
+                return false;
+        }
+
+        return SessionData::objects()->filter($criteria)->delete();
+    }
 }
+Signal::connect('auth.clean', array('PasswordPolicy', 'cleanSessions'));
 
 class osTicketPasswordPolicy
 extends PasswordPolicy {

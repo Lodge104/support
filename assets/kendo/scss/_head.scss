@@ -1,0 +1,40 @@
+@import "base";
+.top-bar{
+    background: $primary-color;
+    height: 40px;
+    line-height: 40px;
+    text-align: right;
+    color: #fff;
+    a:link, a:visited{
+        color: #fff;
+        vertical-align: middle;
+        padding: 0px 5px;
+    }
+}
+.head{
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    a#logo{
+        margin:40px 0px;
+        text-align: center;
+        display: block;
+    }
+}
+#nav{
+    list-style:none;
+    text-align: center;
+    margin:0px 0px;
+    padding:0px 0px 30px 0px;
+    border-bottom:1px solid rgba(255, 255, 255, 0.2);
+    li{
+        list-style:none;
+        display: inline;
+        padding: 0px 10px;
+        a:link, a:visited{
+            color: #dceff4;
+        }
+        a:hover{
+            color:#fff;
+        }
+    }
+}
+.tinynav { display: none }

@@ -48,13 +48,17 @@ if (!$selected_page->isActive() || $selected_page->getType() != 'other')
 
 require(CLIENTINC_DIR.'header.inc.php');
 
-$BUTTONS = false;
-include CLIENTINC_DIR.'templates/sidebar.tmpl.php';
+//$BUTTONS = false;
+//include CLIENTINC_DIR.'templates/sidebar.tmpl.php';
 ?>
 <div class="main-content">
+<div class="cover">
+        <div class="container"> <div class="row"> <div class="col-md-12">
 <?php
 print $selected_page->getBodyWithImages();
 ?>
+        </div></div></div>
+    </div>
 </div>
 
 <?php
