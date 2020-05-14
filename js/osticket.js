@@ -182,31 +182,6 @@ getConfig = (function() {
     };
 })();
 
-$.translate_format = function(str) {
-    var translation = {
-        'DD':   'oo',
-        'D':    'o',
-        'EEEE': 'DD',
-        'EEE':  'D',
-        'MMMM': '||',   // Double replace necessary
-        'MMM':  '|',
-        'MM':   'mm',
-        'M':    'm',
-        '||':   'MM',
-        '|':    'M',
-        'yyyy': '`',
-        'yyy':  '`',
-        'yy':   'y',
-        'y':    'yy',
-        '`':    'yy'
-    };
-    // Change PHP formats to datepicker ones
-    $.each(translation, function(php, jqdp) {
-        str = str.replace(php, jqdp);
-    });
-    return str;
-};
-
 $.sysAlert = function (title, msg, cb) {
     var $dialog =  $('.dialog#alert');
     if ($dialog.length) {
@@ -232,11 +207,8 @@ $(document).on('submit', 'form', function() {
     $('.dp', $(this)).each(function(i, e) {
         var $e = $(e),
             d = $e.datepicker('getDate');
-        if (!d) return;
-        var day = ('0'+d.getDate()).substr(-2),
-            month = ('0'+(d.getMonth()+1)).substr(-2),
-            year = d.getFullYear();
-        $e.val(year+'-'+month+'-'+day);
+        if (d)
+            $e.val(d.toISOString());
     });
 });
 

@@ -314,7 +314,7 @@ class Schedule extends VerySimpleModel {
         if (count($this->dirty))
             $this->set('updated', new SqlFunction('NOW'));
         if (isset($this->dirty['description']))
-            $this->description = Format::sanitize($this->notes);
+            $this->description = Format::sanitize($this->description);
 
         return parent::save($refetch);
     }
@@ -788,15 +788,19 @@ class ScheduleEntry extends VerySimpleModel {
 
     function getCurrent($from=null) {
         if (!isset($this->_current) || $from) {
+            // Figure out starting  point (from)
+            $from = is_object($from) ? clone $from : Format::parseDateTime($from ?: 'now');
+            $start =  $this->getStartsDatetime();
+            if ($start->getTimestamp() > $from->getTimestamp())
+                $from = clone $start;
             // Check to make sure we're still in scope
-            $start = is_object($from) ? clone $from : Format::parseDateTime($from ?: 'now');
             $stop = $this->getStopsDatetime();
-            if ($stop && $stop->getTimestamp() < $start->getTimestamp())
+            if ($stop && $stop->getTimestamp() < $from->getTimestamp())
                 return null;
 
             // Figure out start time for the entry.
-            $start->modify($this->getIntervalSpec($start));
-            $this->_current = clone $start;
+            $from->modify($this->getIntervalSpec($from));
+            $this->_current = clone $from;
         }
         return $this->_current;
     }
@@ -842,16 +846,18 @@ class ScheduleEntry extends VerySimpleModel {
         return $current;
     }
 
-    function getOccurrences($start=null, $end=null, $num=2) {
+    function getOccurrences($start=null, $end=null, $num=5) {
         $occurrences = array();
         if (($current = $this->getCurrent($start))) {
-            $occurrences[$current->format('Y-m-d')] = $this;
+            $start = $start ?: $current;
             while (count($occurrences) < $num) {
-                if (!($next=$this->next()))
-                    break;
                 $date = $current->format('Y-m-d');
-                $occurrences[$date] = $this;
-                if ($end && strtotime($date) >= strtotime($end))
+                if ($end && strtotime($date) > strtotime($end))
+                    break;
+                if (strtotime($date) >= strtotime($start->format('Y-m-d')))
+                    $occurrences[$date] = $this;
+
+                if (!($current=$this->next()))
                     break;
             }
         }
@@ -1418,7 +1424,7 @@ extends AbstractForm {
                         'gmt' => false,
                         'future' => false,
                         'max' => time(),
-                        'showtimezone' => false,
+                        'showtimezone' => true,
                         ),
                 )),
                 'hours'  =>  new TextboxField(array(

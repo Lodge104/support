@@ -93,6 +93,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
                         'thread_view_order' => '',
                         'default_ticket_queue_id' => 0,
                         'reply_redirect' => 'Ticket',
+                        'img_att_view' => 'download',
+                        'editor_spacing' => 'double',
                         ));
             $this->_config = $_config->getInfo();
         }
@@ -353,6 +355,14 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
         return $this->reply_redirect;
     }
 
+    function getImageAttachmentView() {
+        return $this->img_att_view;
+    }
+
+    function editorSpacing() {
+        return $this->editor_spacing;
+    }
+
     function forcePasswdChange() {
         return $this->change_passwd;
     }
@@ -426,7 +436,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
         // Grant access to the current department
         $old = $this->dept_id;
         if ($eavesdrop) {
-            $da = StaffDeptAccess::create(array(
+            $da = new StaffDeptAccess(array(
                 'dept_id' => $old,
                 'role_id' => $this->role_id,
             ));
@@ -441,6 +451,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
         ) {
             $this->dept_access->remove($da);
         }
+
+        $this->save();
     }
 
     function usePrimaryRoleOnAssignment() {
@@ -584,38 +596,49 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
         return $this->_teams;
     }
 
-    function getTicketsVisibility() {
-
+    function getTicketsVisibility($exclude_archived=false) {
         // -- Open and assigned to me
         $assigned = Q::any(array(
             'staff_id' => $this->getId(),
         ));
-
         $assigned->add(array('thread__referrals__agent__staff_id' => $this->getId()));
-
+        $childRefAgent = Q::all(new Q(array('child_thread__object_type' => 'C',
+            'child_thread__referrals__agent__staff_id' => $this->getId())));
+        $assigned->add($childRefAgent);
         // -- Open and assigned to a team of mine
         if (($teams = array_filter($this->getTeams()))) {
             $assigned->add(array('team_id__in' => $teams));
             $assigned->add(array('thread__referrals__team__team_id__in' => $teams));
+            $childRefTeam = Q::all(new Q(array('child_thread__object_type' => 'C',
+                'child_thread__referrals__team__team_id__in' => $teams)));
+            $assigned->add($childRefTeam);
         }
-
         $visibility = Q::any(new Q(array('status__state'=>'open', $assigned)));
-
         // -- If access is limited to assigned only, return assigned
         if ($this->isAccessLimited())
             return $visibility;
-
         // -- Routed to a department of mine
         if (($depts=$this->getDepts()) && count($depts)) {
-            $visibility->add(array('dept_id__in' => $depts));
-            $visibility->add(array('thread__referrals__dept__id__in' => $depts));
+            $in_dept = Q::any(array(
+                'dept_id__in' => $depts,
+                'thread__referrals__dept__id__in' => $depts,
+            ));
+            if ($exclude_archived) {
+                $in_dept = Q::all(array(
+                    'status__state__in' => ['open', 'closed'],
+                    $in_dept,
+                ));
+            }
+            $visibility->add($in_dept);
+            $childRefDept = Q::all(new Q(array('child_thread__object_type' => 'C',
+                'child_thread__referrals__dept__id__in' => $depts)));
+            $visibility->add($childRefDept);
         }
-
         return $visibility;
     }
 
-    function applyVisibility($query) {
-        return $query->filter($this->getTicketsVisibility());
+    function applyVisibility($query, $exclude_archived=false) {
+        return $query->filter($this->getTicketsVisibility($exclude_archived));
     }
 
     /* stats */
@@ -725,6 +748,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
             }
         }
 
+        $vars['onvacation'] = isset($vars['onvacation']) ? 1 : 0;
         $this->firstname = $vars['firstname'];
         $this->lastname = $vars['lastname'];
         $this->email = $vars['email'];
@@ -739,7 +763,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
         $this->default_signature_type = $vars['default_signature_type'];
         $this->default_paper_size = $vars['default_paper_size'];
         $this->lang = $vars['lang'];
-        $this->onvacation = isset($vars['onvacation']) ? 1 : 0;
+        $this->onvacation = $vars['onvacation'];
 
         if (isset($vars['avatar_code']))
           $this->setExtraAttr('avatar', $vars['avatar_code']);
@@ -758,6 +782,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
                     'thread_view_order' => $vars['thread_view_order'],
                     'default_ticket_queue_id' => $vars['default_ticket_queue_id'],
                     'reply_redirect' => ($vars['reply_redirect'] == 'Queue') ? 'Queue' : 'Ticket',
+                    'img_att_view' => ($vars['img_att_view'] == 'inline') ? 'inline' : 'download',
+                    'editor_spacing' => ($vars['editor_spacing'] == 'double') ? 'double' : 'single'
                     )
                 );
         $this->_config = $_config->getInfo();
@@ -800,6 +826,9 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
 
         if (!parent::delete())
             return false;
+
+        $type = array('type' => 'deleted');
+        Signal::send('object.deleted', $this, $type);
 
         // DO SOME HOUSE CLEANING
         //Move remove any ticket assignments...TODO: send alert to Dept. manager?
@@ -1041,7 +1070,6 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
     }
 
     function update($vars, &$errors) {
-
         $vars['username']=Format::striptags($vars['username']);
         $vars['firstname']=Format::striptags($vars['firstname']);
         $vars['lastname']=Format::striptags($vars['lastname']);
@@ -1098,38 +1126,21 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
             }
         }
 
-        // Update some things for ::updateAccess to inspect
-        $this->setDepartmentId($vars['dept_id']);
-
-        // Format access update as [array(dept_id, role_id, alerts?)]
-        $access = array();
-        if (isset($vars['dept_access'])) {
-            foreach (@$vars['dept_access'] as $dept_id) {
-                $access[] = array($dept_id, $vars['dept_access_role'][$dept_id],
-                    @$vars['dept_access_alerts'][$dept_id]);
-            }
-        }
-        $this->updateAccess($access, $errors);
-        $this->setExtraAttr('def_assn_role',
-            isset($vars['assign_use_pri_role']), false);
-
-        // Format team membership as [array(team_id, alerts?)]
-        $teams = array();
-        if (isset($vars['teams'])) {
-            foreach (@$vars['teams'] as $team_id) {
-                $teams[] = array($team_id, @$vars['team_alerts'][$team_id]);
-            }
-        }
-        $this->updateTeams($teams, $errors);
-
         // Update the local permissions
         $this->updatePerms($vars['perms'], $errors);
 
+        //checkboxes
+        $vars['isadmin'] = isset($vars['isadmin']) ? 1 : 0;
+        $vars['islocked'] = isset($vars['islocked']) ? 0 : 1;
+        $vars['isvisible'] = isset($vars['isvisible']) ? 1 : 0;
+        $vars['onvacation'] = isset($vars['onvacation']) ? 1 : 0;
+        $vars['assigned_only'] = isset($vars['assigned_only']) ? 1 : 0;
+
         $this->isadmin = $vars['isadmin'];
-        $this->isactive = isset($vars['islocked']) ? 0 : 1;
-        $this->isvisible = isset($vars['isvisible'])?1:0;
-        $this->onvacation = isset($vars['onvacation'])?1:0;
-        $this->assigned_only = isset($vars['assigned_only'])?1:0;
+        $this->isactive = $vars['islocked'];
+        $this->isvisible = $vars['isvisible'];
+        $this->onvacation = $vars['onvacation'];
+        $this->assigned_only = $vars['assigned_only'];
         $this->role_id = $vars['role_id'];
         $this->username = $vars['username'];
         $this->firstname = $vars['firstname'];
@@ -1141,10 +1152,40 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
         $this->mobile = Format::phone($vars['mobile']);
         $this->notes = Format::sanitize($vars['notes']);
 
+        // Set staff password if exists
+        if (!$vars['welcome_email'] && $vars['passwd1']) {
+            $this->setPassword($vars['passwd1'], null);
+            $this->change_passwd = $vars['change_passwd'] ? 1 : 0;
+        }
+
         if ($errors)
             return false;
 
         if ($this->save()) {
+            // Update some things for ::updateAccess to inspect
+            $this->setDepartmentId($vars['dept_id']);
+
+            // Format access update as [array(dept_id, role_id, alerts?)]
+            $access = array();
+            if (isset($vars['dept_access'])) {
+                foreach (@$vars['dept_access'] as $dept_id) {
+                    $access[] = array($dept_id, $vars['dept_access_role'][$dept_id],
+                        @$vars['dept_access_alerts'][$dept_id]);
+                }
+            }
+            $this->updateAccess($access, $errors);
+            $this->setExtraAttr('def_assn_role',
+                isset($vars['assign_use_pri_role']), false);
+
+            // Format team membership as [array(team_id, alerts?)]
+            $teams = array();
+            if (isset($vars['teams'])) {
+                foreach (@$vars['teams'] as $team_id) {
+                    $teams[] = array($team_id, @$vars['team_alerts'][$team_id]);
+                }
+            }
+            $this->updateTeams($teams, $errors);
+
             if ($vars['welcome_email'])
                 $this->sendResetEmail('registration-staff', false);
             return true;
@@ -1177,7 +1218,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
             unset($dropped[$dept_id]);
             if (!$role_id || !Role::lookup($role_id))
                 $errors['dept_access'][$dept_id] = __('Select a valid role');
-            if (!$dept_id || !Dept::lookup($dept_id))
+            if (!$dept_id || !($dept=Dept::lookup($dept_id)))
                 $errors['dept_access'][$dept_id] = __('Select a valid department');
             if ($dept_id == $this->getDeptId())
                 $errors['dept_access'][$dept_id] = sprintf(__('Agent already has access to %s'), __('this department'));
@@ -1187,6 +1228,9 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
                     'dept_id' => $dept_id, 'role_id' => $role_id
                 ));
                 $this->dept_access->add($da);
+                $type = array('type' => 'edited',
+                              'key' => sprintf('%s Department Access Added', $dept->getName()));
+                Signal::send('object.edited', $this, $type);
             }
             else {
                 $da->role_id = $role_id;
@@ -1200,6 +1244,12 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
                 ->filter(array('dept_id__in' => array_keys($dropped)))
                 ->delete();
             $this->dept_access->reset();
+            foreach (array_keys($dropped) as $dept_id) {
+                $deptName = Dept::getNameById($dept_id);
+                $type = array('type' => 'edited',
+                              'key' => sprintf('%s Department Access Removed', $deptName));
+                Signal::send('object.edited', $this, $type);
+            }
         }
         return !$errors;
     }
@@ -1210,8 +1260,19 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
             return;
         }
         $permissions = $this->getPermission();
+        foreach ($vars as $k => $val) {
+             if (!array_key_exists($val, $permissions->perms)) {
+                 $type = array('type' => 'edited', 'key' => $val);
+                 Signal::send('object.edited', $this, $type);
+             }
+         }
+
         foreach (RolePermission::allPermissions() as $g => $perms) {
             foreach ($perms as $k => $v) {
+                if (!in_array($k, $vars) && array_key_exists($k, $permissions->perms)) {
+                     $type = array('type' => 'edited', 'key' => $k);
+                     Signal::send('object.edited', $this, $type);
+                 }
                 $permissions->set($k, in_array($k, $vars) ? 1 : 0);
             }
         }

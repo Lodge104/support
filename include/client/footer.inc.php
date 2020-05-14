@@ -12,7 +12,6 @@
                         <li><a href="https://sr7b.org">OA Section SR-7B</a></li>
                         <li><a href="https://oa-bsa.org/about/official-oa-website-guidelines">OA Web Guidelines</a></li>
                     </ul>
-
                 </div>
                 <div class="col-sm-4">
                     <h2> Lodge Websites </h2>
@@ -43,7 +42,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-sm-4">
+                                <div class="col-sm-4">
                     <h2>Find Us
                         </h2>
                         <p>Occoneechee Council - BSA<br>
@@ -61,7 +60,7 @@
             </div>
         </div></div>
     </div>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
+        <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-37461006-10"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -78,7 +77,7 @@
 </div>
 <?php
 if (($lang = Internationalization::getCurrentLanguage()) && $lang != 'en_US') { ?>
-    <script type="text/javascript" src="ajax.php/i18n/<?php
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>ajax.php/i18n/<?php
         echo $lang; ?>/js"></script>
 <?php } ?>
 <script type="text/javascript">

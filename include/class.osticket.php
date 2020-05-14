@@ -59,6 +59,7 @@ class osTicket {
         if (!defined('DISABLE_SESSION') || !DISABLE_SESSION)
             $this->session = osTicketSession::start(SESSION_TTL); // start DB based session
 
+        $this->config = new OsticketConfig();
 
         $this->csrf = new CSRF('__CSRFToken__');
 
@@ -84,9 +85,6 @@ class osTicket {
     }
 
     function getConfig() {
-        if (!isset($this->config))
-            $this->config = new OsticketConfig();
-
         return $this->config;
     }
 
@@ -611,6 +609,17 @@ class osTicket {
         // Check if SSL was terminated by a loadbalancer
         return (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
                 && !strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https'));
+    }
+
+    /**
+     * Returns TRUE if the current browser is IE and FALSE otherwise
+     */
+    function is_ie() {
+        if (preg_match('/MSIE|Internet Explorer|Trident\/[\d]{1}\.[\d]{1,2}/',
+                $_SERVER['HTTP_USER_AGENT']))
+            return true;
+
+        return false;
     }
 
     /* returns true if script is being executed via commandline */

@@ -317,6 +317,41 @@ if ($avatar->isChangeable()) { ?>
                 <div class="error"><?php echo $errors['reply_redirect']; ?></div>
             </td>
         </tr>
+        <tr>
+            <td><?php echo __('Image Attachment View'); ?>:
+                <div class="faded"><?php echo __('Open image attachments in new tab or directly download. (CTRL + Right Click)');?></div>
+            </td>
+            <td>
+                <select name="img_att_view">
+                  <?php
+                  $options=array('download'=>__('Download'),'inline'=>__('Inline'));
+                  foreach($options as $key=>$opt) {
+                      echo sprintf('<option value="%s" %s>%s</option>',
+                                $key,($staff->img_att_view==$key)?'selected="selected"':'',$opt);
+                  }
+                  ?>
+                </select>
+                <div class="error"><?php echo $errors['img_att_view']; ?></div>
+            </td>
+        </tr>
+        <tr>
+            <td><?php echo __('Editor Spacing'); ?>:
+                <div class="faded"><?php echo __('Set the editor spacing to Single or Double when pressing Enter.');?></div>
+            </td>
+            <td>
+                <select name="editor_spacing">
+                  <?php
+                  $options=array('double'=>__('Double'),'single'=>__('Single'));
+                  $spacing = $staff->editor_spacing;
+                  foreach($options as $key=>$opt) {
+                      echo sprintf('<option value="%s" %s>%s</option>',
+                                $key,($spacing==$key)?'selected="selected"':'',$opt);
+                  }
+                  ?>
+                </select>
+                <div class="error"><?php echo $errors['editor_spacing']; ?></div>
+            </td>
+        </tr>
       </tbody>
       <tbody>
         <tr class="header">

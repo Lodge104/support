@@ -88,6 +88,7 @@ if ($_POST)
                   <tr><td><?php echo __('User'); ?>:</td><td>
                     <div id="user-info">
                       <input type="hidden" name="uid" id="uid" value="<?php echo $user->getId(); ?>" />
+                      <?php if ($thisstaff->hasPerm(User::PERM_EDIT)) { ?>
                       <a href="#" onclick="javascript:
                       $.userLookup('ajax.php/users/<?php echo $user->getId(); ?>/edit',
                       function (user) {
@@ -95,7 +96,11 @@ if ($_POST)
                         $('#user-email').text(user.email);
                       });
                       return false;
-                      "><i class="icon-user"></i>
+                      ">
+                      <?php } else { ?>
+                      <a href="#">
+                      <?php } ?>
+                      <i class="icon-user"></i>
                       <span id="user-name"><?php echo Format::htmlchars($user->getName()); ?></span>
                       &lt;<span id="user-email"><?php echo $user->getEmail(); ?></span>&gt;
                     </a>
@@ -301,17 +306,13 @@ if ($_POST)
                 <?php echo __('Due Date');?>:
             </td>
             <td>
-                <input class="dp" id="duedate" name="duedate" value="<?php echo Format::htmlchars($info['duedate']); ?>" size="12" autocomplete=OFF>
-                &nbsp;&nbsp;
                 <?php
-                $min=$hr=null;
-                if($info['time'])
-                    list($hr, $min)=explode(':', $info['time']);
-
-                echo Misc::timeDropdown($hr, $min, 'time');
+                $duedateField = Ticket::duedateField('duedate', $info['duedate']);
+                $duedateField->render();
                 ?>
                 &nbsp;<font class="error">&nbsp;<?php echo $errors['duedate']; ?> &nbsp; <?php echo $errors['time']; ?></font>
-                <em><?php echo __('Time is based on your time zone');?> (GMT <?php echo Format::date(false, false, 'ZZZ'); ?>)</em>
+                <em><?php echo __('Time is based on your time
+                        zone');?>&nbsp;(<?php echo $cfg->getTimezone($thisstaff); ?>)</em>
             </td>
         </tr>
 
@@ -398,7 +399,7 @@ if ($_POST)
                     name="response" id="response" cols="21" rows="8"
                     style="width:80%;" <?php
     list($draft, $attrs) = Draft::getDraftAndDataAttrs('ticket.staff.response', false, $info['response']);
-    echo $attrs; ?>><?php echo $_POST ? $info['response'] : $draft;
+    echo $attrs; ?>><?php echo ThreadEntryBody::clean($_POST ? $info['response'] : $draft);
                 ?></textarea>
                     <div class="attachments">
 <?php
@@ -467,7 +468,7 @@ print $response_form->getField('attachments')->render();
                     placeholder="<?php echo __('Optional internal note (recommended on assignment)'); ?>"
                     name="note" cols="21" rows="6" style="width:80%;" <?php
     list($draft, $attrs) = Draft::getDraftAndDataAttrs('ticket.staff.note', false, $info['note']);
-    echo $attrs; ?>><?php echo $_POST ? $info['note'] : $draft;
+    echo $attrs; ?>><?php echo ThreadEntryBody::clean($_POST ? $info['note'] : $draft);
                 ?></textarea>
             </td>
         </tr>
@@ -478,7 +479,7 @@ print $response_form->getField('attachments')->render();
     <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick="javascript:
         $(this.form).find('textarea.richtext')
-          .redactor('draft.deleteDraft');
+          .redactor('plugin.draft.deleteDraft');
         window.location.href='tickets.php'; " />
 </p>
 </form>

@@ -131,7 +131,7 @@ implements TemplateVariable, Searchable {
 
     static function getTopicName($id) {
         $names = static::getHelpTopics(false, true);
-        return $names[$id];
+        return is_numeric($id) && isset($names[$id]) ? $names[$id] : '';
     }
 
     function getDeptId() {
@@ -276,6 +276,9 @@ implements TemplateVariable, Searchable {
                 'topic_id' => $this->getId()
             ))->delete();
             db_query('UPDATE '.TICKET_TABLE.' SET topic_id=0 WHERE topic_id='.db_input($this->getId()));
+
+            $type = array('type' => 'deleted');
+            Signal::send('object.deleted', $this, $type);
         }
 
         return true;
@@ -443,6 +446,15 @@ implements TemplateVariable, Searchable {
         if ($errors)
             return false;
 
+        $vars['noautoresp'] = isset($vars['noautoresp']) ? 1 : 0;
+
+        foreach ($vars as $key => $value) {
+            if ($key == 'status' && $this->getStatus() && strtolower($this->getStatus()) != $value && $this->topic) {
+                $type = array('type' => 'edited', 'status' => ucfirst($value));
+                Signal::send('object.edited', $this, $type);
+            }
+        }
+
         $this->topic = $vars['topic'];
         $this->topic_pid = $vars['topic_pid'] ?: 0;
         $this->dept_id = $vars['dept_id'];
@@ -453,16 +465,16 @@ implements TemplateVariable, Searchable {
         $this->isactive = $vars['isactive'];
         $this->ispublic = $vars['ispublic'];
         $this->sequence_id = $vars['custom-numbers'] ? $vars['sequence_id'] : 0;
-        $this->number_format = $vars['custom-numbers'] ? $vars['number_format'] : '';
-        $this->flags = $vars['custom-numbers'] ? self::FLAG_CUSTOM_NUMBERS : $this->flags;
-        $this->noautoresp = !!$vars['noautoresp'];
+        $this->number_format = $vars['number_format'];
+        $this->setFlag(self::FLAG_CUSTOM_NUMBERS, ($vars['custom-numbers']));
+        $this->noautoresp = $vars['noautoresp'];
         $this->notes = Format::sanitize($vars['notes']);
 
         $filter_actions = FilterAction::objects()->filter(array('type' => 'topic', 'configuration' => '{"topic_id":'. $this->getId().'}'));
         if ($filter_actions && $vars['status'] == 'active')
-          FilterAction::setFilterFlag($filter_actions, 'topic', false);
+          FilterAction::setFilterFlags($filter_actions, 'Filter::FLAG_INACTIVE_HT', false);
         else
-          FilterAction::setFilterFlag($filter_actions, 'topic', true);
+          FilterAction::setFilterFlags($filter_actions, 'Filter::FLAG_INACTIVE_HT', true);
 
         switch ($vars['status']) {
           case 'active':

@@ -211,11 +211,13 @@ class Category extends VerySimpleModel {
     function delete() {
         try {
             parent::delete();
-            $this->faqs->expunge();
         }
         catch (OrmException $e) {
             return false;
         }
+        $type = array('type' => 'deleted');
+        Signal::send('object.deleted', $this, $type);
+
         return true;
     }
 

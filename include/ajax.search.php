@@ -202,6 +202,7 @@ class SearchAjaxAPI extends AjaxController {
     }
 
     function _saveSearch(SavedSearch $search) {
+        $_POST['queue-name'] = Format::htmlchars($_POST['queue-name']);
 
         // Validate the form.
         $form = $search->getForm($_POST);
@@ -259,8 +260,8 @@ class SearchAjaxAPI extends AjaxController {
             Http::response(404, 'No such queue sort');
         }
 
+        $data_form = $sort->getDataConfigForm($_POST ?: false);
         if ($_POST) {
-            $data_form = $sort->getDataConfigForm($_POST);
             if ($data_form->isValid()) {
                 $sort->update($data_form->getClean() + $_POST);
                 if ($sort->save())
