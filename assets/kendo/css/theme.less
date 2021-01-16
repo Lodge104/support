@@ -1,0 +1,765 @@
+@primecolor: #1a2836;
+@secondcolor: #04a1b3;
+
+body{
+font-family: 'Arimo',Arial, sans-serif;
+    font-size: 14px;
+  	line-height: 1.6;
+  	color: #777;
+  	background: @primecolor url(../images/body.jpg) top repeat-x;
+}
+
+a:link, a:visited{
+	color:#17a2b2;
+}
+
+a:hover{
+	text-decoration: none;
+}
+.clear{
+	clear:both;
+}
+
+.error {
+  color:#f00;
+  input {
+    border:1px solid #f00;
+  }
+}
+.bordered{
+	border:1px solid #ddd;
+}
+
+
+// Header
+
+#header{
+	.top-bar{
+		background: @primecolor;
+		height: 40px;
+		line-height: 40px;
+		text-align: right;
+		color: #fff;
+		a{
+			color: #fff;
+			vertical-align: middle;
+			padding: 0px 5px;
+		}
+	}
+	.head{
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		a#logo{
+			margin:40px 0px;
+			text-align: center;
+			display: block;
+		}
+	}
+	#nav{
+		list-style:none;
+		text-align: center;
+		margin:0px 0px;
+		padding:0px 0px 30px 0px;
+		border-bottom:1px solid rgba(255, 255, 255, 0.2);
+		li{
+			list-style:none;
+			display: inline;
+			padding: 0px 10px;
+			a:link, a:visited{
+				color: #dceff4;
+			}
+			a:hover{
+				color:#fff;
+			}
+		}
+	}
+}
+.tinynav { display: none }
+// landing page
+
+#landing_page{
+	.welcome-page{
+		padding-bottom: 70px;
+		padding-top:10px;
+		.wptext{
+			color: #fff;
+			text-align: center;
+			h1{
+				font-size: 48px;
+				font-weight: 700;
+				margin:40px 0px;
+			}
+		}
+		#kb-search{
+			margin:50px auto 0px;
+			max-width: 480px;
+			#query{
+				width:360px;
+				border-color: #fff;
+			}
+			.btn{
+				padding-left:20px;
+				padding-right:20px;
+				background: @primecolor;
+				color: #fff;
+			}
+
+		}
+	}
+
+	.home-box{
+		background: #fff;
+		padding: 60px 0px;
+		#new_ticket, #check_status{
+			padding: 0px 20px;
+			text-align: center;
+			i{
+				font-size: 24px;
+				display: block;
+				color: #fff;
+				background: @primecolor;
+				height: 50px;
+				width:50px;
+				line-height: 50px;
+				margin:0px auto;
+				border-radius: 3px;
+				
+			}
+			h3{
+				margin:20px 0px 0px 0px;
+				font-size: 24px;
+				text-transform: uppercase;
+				color: #222;
+				font-weight: 700;
+			}
+			div{
+				padding: 20px 0px 25px 0px;
+			}
+			a.btn{
+				background: @secondcolor;
+				color: #fff;
+			}
+		}
+	}	
+}
+
+.faqbanner{
+	padding: 50px 0px;
+	font-size: 32px;
+	text-align: center;
+	color: @primecolor;
+	background: #f4f3f1;
+	p{
+		padding:0px 50px;
+		margin:0px 0px;
+		a{
+			color: @secondcolor;
+		}
+	}
+}
+
+// Content 
+
+#content{
+	
+}
+.alert-area{
+	background: #f4f3f1;
+	.col-md-12{
+		min-height: 0px;
+	}
+}
+
+#msg_notice { 
+	margin: 0; 
+	border-radius: 3px;
+	padding: 5px 10px 5px 10px; 
+	line-height: 16px; 
+	margin: 30px 0px 0px 0px; 
+	border: 1px solid #0a0; 
+	background: #e0ffe0; 
+}
+
+#msg_warning { 
+	margin: 0; 
+	border-radius: 3px;
+	padding: 5px 10px 5px 36px; 
+	line-height: 16px; 
+	margin: 30px 0px 0px 0px; 
+	border: 1px solid #f26522; 
+	background:#ffffdd; 
+}
+
+#msg_error { 
+	margin: 0; 
+	border-radius: 3px;	
+	padding: 5px 10px 5px 10px; 
+	line-height: 16px; 
+	margin: 30px 0px 0px 0px; 
+	border: 1px solid #a00; 
+	background: #fff0f0; 
+}
+
+.cover{
+	background: #f4f3f1;
+	padding: 50px 0px;
+}
+
+.page-title{
+	margin-bottom: 30px;
+	h1{
+		text-transform: uppercase;
+		font-size: 24px;
+		color: #000;
+
+	}
+}
+
+// Knowledgebase 
+
+#kb {
+	li{
+		i{
+			display: block;
+			float: left;
+			font-size: 24px;
+			line-height: 30px;
+			margin-right: 10px;
+		}
+	    h4 {
+	      padding:5px 0px;
+	      margin:0px;
+	      span {
+	        color:#666;
+	        font-size: 14px;
+	      }
+	      a {
+	        color: #222;
+	      }
+	    }
+	}
+}
+
+.faq-entry{
+	background: #fff;
+	padding: 20px 20px;
+	border-radius: 3px;
+	border:1px solid #ddd;
+	.faq-title{
+		margin-bottom: 20px;
+		h2{
+			font-weight: 700;
+			color: #222;
+			margin:10px 0px;
+		}
+	}
+}
+
+#faq{
+	a{
+		color: #777;
+	}
+}
+
+
+// Dynamic forms 
+
+.form-header{
+	margin: 20px 0px;
+	h3{
+		font-size: 20px;
+		color: #222;
+		margin:0px 0px 0px 0px;
+	}
+}
+
+// Forms 
+
+.login-box{
+	
+}
+#ticketSearchForm{
+	.btn{
+		width:100%;
+	}
+	a.btn{
+		background: @primecolor;
+		color: #fff;
+	}
+
+}
+
+
+
+// Tickets 
+
+#ticketTable{
+	margin:0px 0px 20px 0px;
+	background: #fff;
+	caption{
+		text-align: left;
+		font-weight: bold;
+		padding-bottom: 10px;
+	}
+	thead{
+		background: #666;
+		color: #fff;
+		tr{
+			th{
+				border-color:#666;
+				a{
+					color: #fff;
+				}
+			}
+		}
+	}
+}
+
+.tickinfo{
+	background: #e1e9ef;
+	padding: 10px 10px;
+	color: #444;
+}
+#ticketInfo{
+	
+	tr{
+		td{
+			vertical-align: top;
+		}
+	}
+}
+
+
+.tick-threads{
+	background: #fff;
+	border-radius: 3px;
+	.threads-title{
+		background: @primecolor;
+		color: #fff;
+		border-radius: 3px 3px 0px 0px;
+		padding: 10px 10px;
+		h1{
+			font-size: 18px;
+			margin:10px 10px;
+		}
+		a{
+			color: #fff;
+		}
+	}
+
+	.subject{
+		background: @primecolor;
+		color: #fff;
+		    font-size: 18px;
+		padding: 10px 20px;
+	}	
+}
+
+
+
+
+#ticketThread {
+  table {
+
+
+    th {
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
+      padding: 5px 20px;
+
+      span {
+          font-weight:normal;
+          color:#666;
+          padding-left:20px;
+      }
+    }
+
+    td {
+      padding: 20px;
+    }
+  }
+
+  .message th { background: #d8efff; }
+  .response th { background: #ddd; }
+
+  .info {
+    padding: 2px;
+    background: #fafafa;
+    border-top: 1px solid #ddd;
+    height: 16px;
+    line-height: 16px;
+
+    a {
+      display: inline-block;
+      margin: 5px 10px 5px 0;
+      padding-left: 24px;
+      height: 16px;
+      line-height: 16px;
+      background-position: 0 50%;
+      background-repeat: no-repeat;
+    }
+  }
+}
+
+#reply {
+  padding: 0px 0px 20px 0px;
+  background: #e1e9ef;
+  margin:20px 0px 0px 0px;
+  h2 {
+    margin:0px 0px 0px 0px;
+    background: @primecolor;
+    color: #fff;
+    font-size: 18px;
+    padding: 15px 20px;
+  }
+
+  table {
+    width: 800px;
+
+    td {
+      vertical-align: top;
+    }
+  }
+
+  textarea {
+    width: 628px !important;
+  }
+
+  input[type=text], #response_options textarea {
+    border: 1px solid #aaa;
+    background: #fff;
+  }
+
+  .attachments .uploads div {
+    display: inline-block;
+    padding-right: 20px;
+  }
+
+}
+
+
+
+.uploads {
+  display:inline-block;
+  padding-right:20px;
+
+  label {
+    padding:3px;
+    padding-right:10px;
+    width: auto !important
+  }
+}
+
+
+.filedrop {
+    padding-bottom: 10px;
+}
+.filedrop .dropzone {
+    border: 2px dashed rgba(0, 0, 0, 0.2);
+    padding: 8px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #999;
+}
+.filedrop .dropzone a {
+    color: rgba(24, 78, 129, 0.7);
+}
+.filedrop .files:not(:empty) {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px 5px 0 0;
+    padding: 5px;
+}
+.filedrop .files:not(:empty) + .dropzone {
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+}
+.filedrop .files .file {
+    display: block;
+    padding: 5px 10px 5px 20px;
+    margin: 0;
+    border-radius: 5px;
+}
+.rtl .filedrop .files .file {
+    padding-left: 10px;
+    padding-right: 20px;
+}
+.filedrop .files .file:hover {
+   background-color: rgba(0, 0, 0, 0.05);
+}
+.filedrop .files .file .filesize {
+  margin: 0 1em;
+  color: #999;
+}
+.filedrop .files .file .upload-rate {
+  margin: 0 10px;
+  color: #aaa;
+}
+.filedrop .files .file .trash {
+  cursor: pointer;
+}
+.filedrop .progress {
+  margin-top: 5px;
+}
+.filedrop .cancel {
+  cursor: pointer;
+}
+.filedrop .preview {
+  width: auto;
+  height: auto;
+  max-width: 60px;
+  max-height: 40px;
+  display: inline-block;
+  float: left;
+  padding-right: 10px;
+}
+.rtl .filedrop .preview {
+  padding-right: initial;
+  padding-left: 10px;
+  float: right;
+}
+.redactor_box + .filedrop .dropzone,
+.redactor_box + div > .filedrop .dropzone,
+.redactor_box + div > .filedrop .files {
+    border-top-width: 1px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.tooltip-preview,
+.tooltip-preview img {
+    max-width: 300px;
+    max-height: 300px;
+}
+
+/* Bootstrap 3.2 progress-bar */
+@-webkit-keyframes progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+@-o-keyframes progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+@keyframes progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+.progress {
+  height: 10px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+          box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+}
+.progress-bar {
+  float: left;
+  width: 0;
+  height: 100%;
+  font-size: 12px;
+  line-height: 20px;
+  color: #fff;
+  text-align: center;
+  background-color: #428bca;
+  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .15);
+          box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .15);
+}
+.rtl .progress-bar {
+  float: right;
+}
+.progress-bar:not(.active) {
+  -webkit-transition: width .6s ease;
+       -o-transition: width .6s ease;
+          transition: width .6s ease;
+}
+.progress-striped .progress-bar,
+.progress-bar-striped {
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+  background-image:      -o-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+  background-image:         linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+  -webkit-background-size: 40px 40px;
+          background-size: 40px 40px;
+}
+.progress.active .progress-bar,
+.progress-bar.active {
+  -webkit-animation: progress-bar-stripes 2s linear infinite;
+       -o-animation: progress-bar-stripes 2s linear infinite;
+          animation: progress-bar-stripes 2s linear infinite;
+}
+.progress-bar[aria-valuenow="1"],
+.progress-bar[aria-valuenow="2"] {
+  min-width: 30px;
+}
+.progress-bar[aria-valuenow="0"] {
+  min-width: 30px;
+  color: #777;
+  background-color: transparent;
+  background-image: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+.progress-bar-success {
+  background-color: #5cb85c;
+}
+.progress-striped .progress-bar-success {
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+  background-image:      -o-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+  background-image:         linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+}
+.progress-bar-info {
+  background-color: #5bc0de;
+}
+.progress-striped .progress-bar-info {
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+  background-image:      -o-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+  background-image:         linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+}
+.progress-bar-warning {
+  background-color: #f0ad4e;
+}
+.progress-striped .progress-bar-warning {
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+  background-image:      -o-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+  background-image:         linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+}
+.progress-bar-danger {
+  background-color: #d9534f;
+}
+.progress-striped .progress-bar-danger {
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+  background-image:      -o-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+  background-image:         linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+}
+
+
+
+// Footer 
+
+#footer{
+	background:@primecolor;
+	.fwidgets{
+		padding: 50px 0px;
+		color: #ddd;
+		h2{
+			font-size: 20px;
+			color:#fff;
+			font-weight: 700;
+			margin-bottom: 30px;
+			position: relative;
+			&:after{
+				position: absolute;
+				height: 2px;
+				width:50px;
+				background: @secondcolor;
+				bottom: -15px;
+				left:0px;
+				display: block;
+				content: "";
+
+			}
+		}
+		h3{
+			font-size: 18px;
+			color:#fff;
+			margin: 0px 0px;
+		}
+		ul{
+			margin:0px 0px;
+			padding:0px 0px;			
+			li{
+				list-style: none;
+				margin:0px 0px;
+				padding:0px 0px;
+				a{
+					color: #fff;
+				}
+			}
+		}
+		.social-icons{
+			ul{
+				margin:20px 0px;
+				padding:0px;
+				li{
+					list-style:none;
+					float: left;
+					margin:0px 10px 0px 0px;
+					background: #ddd;
+					width:30px;
+					height: 30px;
+					border-radius: 15px;
+					line-height: 30px;
+					text-align: center;
+					a{
+						color: @primecolor;
+						display: block;
+					}
+					&:hover{
+						background: #fff;
+					}
+				}
+			}
+		}		
+	}
+	.footer-content{
+		padding:40px 0px;
+		text-align: center;
+		font-weight: 300;
+		p{
+			margin:0px 0px;
+			color:#fff;
+		}
+		a{
+			color:#fff;
+		}
+	}
+}
+
+
+
+@media screen and (max-width: 767px) {
+
+	#header #logo{
+		float: none;
+		display: block;
+		text-align: center;
+		margin:30px 0px 0px 0px;
+	}	
+
+	#landing_page .welcome-page .wptext h1{
+		font-size: 36px;
+		margin:30px 0px;
+	}	
+
+	#landing_page .welcome-page #kb-search{
+		width:300px;
+	}
+	#landing_page .welcome-page #kb-search .form-group{
+		display: inline!important;
+		float: left;
+		margin-right: 10px;
+	}	
+	#landing_page .welcome-page #kb-search #query{
+		width:200px;
+	}
+	#landing_page .home-box #new_ticket{
+		margin-bottom: 30px;
+	}
+	.faqbanner{
+		font-size: 24px;
+	}
+    .tinynav { display: block; margin:0px auto 30px; }
+    #nav { display: none }
+
+
+}

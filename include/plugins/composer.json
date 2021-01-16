@@ -1,0 +1,13 @@
+{
+    "name": "senzil/osticket-google-aouth2-plugin",
+    "repositories": [
+        {
+            "type": "pear",
+            "url": "https://pear.php.net"
+        }
+    ],
+    "require": [],
+    "config": {
+        "vendor-dir": "lib"
+    }
+}

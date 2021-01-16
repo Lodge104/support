@@ -17,6 +17,7 @@
                     <h2> Lodge Websites </h2>
                     <ul>
                         <li><a href="https://lodge104.net">Lodge Main Website</a></li>
+                        <li><a href="https://elections.lodge104.net">Unit Election Portal</a></li>
                         <li><a href="https://noac.lodge104.net">NOAC Portal</a></li>
                         <li><a href="https://store.lodge104.net">Online Trading Post</a></li>
                         <li><a href="https://registration.lodge104.net">Registration Portal</a></li>

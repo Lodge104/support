@@ -1,0 +1,47 @@
+[
+    {
+        "name": "ohmy/auth",
+        "version": "0.0.7",
+        "version_normalized": "0.0.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/sudocode/ohmy-auth.git",
+            "reference": "508dfb5ee45f3827330f0627c599807f92ee0324"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/sudocode/ohmy-auth/zipball/508dfb5ee45f3827330f0627c599807f92ee0324",
+            "reference": "508dfb5ee45f3827330f0627c599807f92ee0324",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2014-04-13T06:34:13+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "ohmy": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "New BSD"
+        ],
+        "authors": [
+            {
+                "name": "Daniel Park",
+                "email": "sudocoder@ymail.com",
+                "homepage": "http://sudoco.de/",
+                "role": "Developer"
+            }
+        ],
+        "description": "OAuth so easy.. you won't even believe it's OAuth",
+        "homepage": "https://github.com/sudocode/ohmy-auth",
+        "keywords": [
+            "oauth"
+        ],
+        "abandoned": true
+    }
+]
