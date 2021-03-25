@@ -1319,12 +1319,14 @@ implements TemplateVariable {
 
     /* static */
     function logEmailHeaders($id, $mid, $header=false) {
+        $headerInfo = Mail_Parse::splitHeaders($header);
 
         if (!$id || !$mid)
             return false;
 
         $this->email_info = new ThreadEntryEmailInfo(array(
             'thread_entry_id' => $id,
+            'email_id' => Email::getIdByEmail($headerInfo['Delivered-To']),
             'mid' => $mid,
         ));
 
@@ -1646,6 +1648,9 @@ implements TemplateVariable {
 
         if (!($body = Format::strip_emoticons($vars['body']->getClean())))
             $body = '-'; //Special tag used to signify empty message as stored.
+
+        // Ensure valid external images
+        $body = Format::stripExternalImages($body);
 
         $poster = $vars['poster'];
         if ($poster && is_object($poster))
@@ -1993,6 +1998,12 @@ class ThreadEvent extends VerySimpleModel {
             'topic' => array(
                 'constraint' => array(
                     'topic_id' => 'Topic.topic_id',
+                ),
+                'null' => true,
+            ),
+            'event' => array(
+                'constraint' => array(
+                    'event_id' => 'Event.id',
                 ),
                 'null' => true,
             ),
@@ -2863,7 +2874,13 @@ class HtmlThreadEntryBody extends ThreadEntryBody {
     }
 
     function getClean() {
-        return Format::sanitize(parent::getClean());
+        global $thisclient, $thisstaff;
+
+        $clean = ($thisstaff || $thisclient)
+                ? Format::editor_spacing(parent::getClean())
+                : parent::getClean();
+
+        return Format::sanitize($clean);
     }
 
     function getSearchable() {
@@ -2890,7 +2907,7 @@ class HtmlThreadEntryBody extends ThreadEntryBody {
         case 'email':
             return $this->body;
         case 'pdf':
-            return Format::clickableurls($this->body);
+            return Format::clickableurls(Format::stripExternalImages($this->body, true));
         default:
             return Format::display($this->body, true, !$this->options['balanced']);
         }

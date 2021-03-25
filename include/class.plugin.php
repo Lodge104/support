@@ -161,7 +161,7 @@ class PluginManager {
         if (static::$plugin_list)
             return static::$plugin_list;
 
-        $sql = 'SELECT * FROM '.PLUGIN_TABLE;
+        $sql = 'SELECT * FROM '.PLUGIN_TABLE.' ORDER BY name';
         if (!($res = db_query($sql)))
             return static::$plugin_list;
 
@@ -568,9 +568,7 @@ abstract class Plugin {
         $sig = $P->getSignature();
         $info = array();
         $ignored = null;
-        if ($r = dns_get_record($sig['hash'].'.'.self::$verify_domain.'.',
-            DNS_TXT, $ignored, $ignored, true)
-        ) {
+        if ($r = dns_get_record($sig['hash'].'.'.self::$verify_domain.'.', DNS_TXT)) {
             foreach ($r as $rec) {
                 foreach (explode(';', $rec['txt']) as $kv) {
                     list($k, $v) = explode('=', trim($kv));

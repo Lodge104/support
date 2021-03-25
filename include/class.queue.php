@@ -146,7 +146,11 @@ class CustomQueue extends VerySimpleModel {
     }
 
     function describeCriteria($criteria=false){
-        $all = $this->getSupportedMatches($this->getRoot());
+        global $account;
+
+        if (!($all = $this->getSupportedMatches($this->getRoot())))
+            return '';
+
         $items = array();
         $criteria = $criteria ?: $this->getCriteria(true);
         foreach ($criteria ?: array() as $C) {
@@ -598,6 +602,7 @@ class CustomQueue extends VerySimpleModel {
                 'status__id' =>__('Current Status'),
                 'lastupdate' =>     __('Last Updated'),
                 'est_duedate' =>    __('SLA Due Date'),
+                'sla_id' => __('SLA Plan'),
                 'duedate' =>        __('Due Date'),
                 'closed' =>         __('Closed Date'),
                 'isoverdue' =>      __('Overdue'),
@@ -814,6 +819,9 @@ class CustomQueue extends VerySimpleModel {
                 || !($fields=$this->getExportFields()))
             return false;
 
+        // Do not store results in memory
+        $query->setOption(QuerySet::OPT_NOCACHE, true);
+
         // See if we have cached export preference
         if (isset($_SESSION['Export:Q'.$this->getId()])) {
             $opts = $_SESSION['Export:Q'.$this->getId()];
@@ -855,6 +863,9 @@ class CustomQueue extends VerySimpleModel {
             $query = $C->applySort($query, $sort['dir']);
         else
             $query->order_by('-created');
+
+        // Distinct ticket_id to avoid duplicate results
+        $query->distinct('ticket_id');
 
         // Render Util
         $render = function ($row) use($columns) {
@@ -1940,7 +1951,7 @@ extends QueueColumnAnnotation {
 
 class DataSourceField
 extends ChoiceField {
-    function getChoices($verbose=false) {
+    function getChoices($verbose=false, $options=array()) {
         $config = $this->getConfiguration();
         $root = $config['root'];
         $fields = array();
@@ -2151,7 +2162,7 @@ extends ChoiceField {
             return new $choices(array('name' => $prop));
     }
 
-    function getChoices($verbose=false) {
+    function getChoices($verbose=false, $options=array()) {
         if (isset($this->property))
             return static::$properties[$this->property];
 
