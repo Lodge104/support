@@ -1361,7 +1361,7 @@ $(document).on('click.inline-edit', 'a.inline-edit', function(e) {
                 $('#msg-txt').text(obj.msg);
                 $('div#msg_notice').show();
             }
-            // If Help Topic was set and statuses are returned
+            // If Help Topic was set and statuses are returned 
             if (obj.statuses) {
                 var reply = $('select[name=reply_status_id]');
                 var note = $('select[name=note_status_id]');
@@ -1373,7 +1373,7 @@ $(document).on('click.inline-edit', 'a.inline-edit', function(e) {
                             reply.append(option);
                     if (note)
                         if (note.find('option[value='+key+']').length == 0)
-                            note.append(option);
+                            note.append(option.clone());
                 });
                 // Hide warning banner
                 reply.closest('td').find('.warning-banner').hide();

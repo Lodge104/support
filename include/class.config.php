@@ -186,6 +186,23 @@ extends VerySimpleModel {
                 'updated__lt' => SqlFunction::NOW()->minus(SqlInterval::SECOND($period)),
             ))->delete();
     }
+
+    function getConfigsByNamespace($namespace=false, $key, $value=false) {
+        $filter = array();
+
+         $filter['key'] = $key;
+
+         if ($namespace)
+            $filter['namespace'] = $namespace;
+
+         if ($value)
+            $filter['value'] = $value;
+
+         $token = ConfigItem::objects()
+            ->filter($filter);
+
+         return $namespace ? $token[0] : $token;
+    }
 }
 
 class OsticketConfig extends Config {
@@ -230,6 +247,7 @@ class OsticketConfig extends Config {
         'max_open_tickets' => 0,
         'files_req_auth' => 1,
         'force_https' => '',
+        'allow_external_images' => 1,
     );
 
     function __construct($section=null) {
@@ -450,8 +468,23 @@ class OsticketConfig extends Config {
         return $this->get('overdue_grace_period');
     }
 
+    // This is here for legacy reasons - default osTicket Password Policy
+    // uses it, if previously set.
     function getPasswdResetPeriod() {
         return $this->get('passwd_reset_period');
+    }
+
+
+    function getStaffPasswordPolicy() {
+        return $this->get('agent_passwd_policy');
+    }
+
+    function getClientPasswordPolicy() {
+        return $this->get('client_passwd_policy');
+    }
+
+    function require2FAForAgents() {
+         return $this->get('require_agent_2fa');
     }
 
     function isRichTextEnabled() {
@@ -1035,6 +1068,10 @@ class OsticketConfig extends Config {
         return $this->get('require_topic_to_close');
     }
 
+    function allowExternalImages() {
+        return ($this->get('allow_external_images'));
+    }
+
     function getDefaultTicketQueueId() {
         return $this->get('default_ticket_queue', 1);
     }
@@ -1316,13 +1353,14 @@ class OsticketConfig extends Config {
             return false;
 
         return $this->updateAll(array(
-            'passwd_reset_period'=>$vars['passwd_reset_period'],
+            'agent_passwd_policy'=>$vars['agent_passwd_policy'],
             'staff_max_logins'=>$vars['staff_max_logins'],
             'staff_login_timeout'=>$vars['staff_login_timeout'],
             'staff_session_timeout'=>$vars['staff_session_timeout'],
             'staff_ip_binding'=>isset($vars['staff_ip_binding'])?1:0,
             'allow_pw_reset'=>isset($vars['allow_pw_reset'])?1:0,
             'pw_reset_window'=>$vars['pw_reset_window'],
+            'require_agent_2fa'=> isset($vars['require_agent_2fa']) ? 1 : 0,
             'agent_name_format'=>$vars['agent_name_format'],
             'hide_staff_name'=>isset($vars['hide_staff_name']) ? 1 : 0,
             'agent_avatar'=>$vars['agent_avatar'],
@@ -1343,6 +1381,7 @@ class OsticketConfig extends Config {
             return false;
 
         return $this->updateAll(array(
+            'client_passwd_policy'=>$vars['client_passwd_policy'],
             'client_max_logins'=>$vars['client_max_logins'],
             'client_login_timeout'=>$vars['client_login_timeout'],
             'client_session_timeout'=>$vars['client_session_timeout'],
@@ -1417,6 +1456,7 @@ class OsticketConfig extends Config {
             'allow_client_updates'=>isset($vars['allow_client_updates'])?1:0,
             'ticket_lock' => $vars['ticket_lock'],
             'default_ticket_queue'=>$vars['default_ticket_queue'],
+            'allow_external_images'=>isset($vars['allow_external_images'])?1:0,
         ));
     }
 

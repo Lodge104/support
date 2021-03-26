@@ -97,7 +97,8 @@ if (!$ticket) {
             $_SESSION['advsearch'][$key] = [$criteria];
             $queue_id = "adhoc,{$key}";
         } else {
-            $errors['err'] = __('Search term cannot have more than 3 keywords');
+            $errors['err'] = sprintf(
+                    __('Search term cannot have more than %d keywords', 4));
         }
     }
 
@@ -191,6 +192,25 @@ if($_POST && !$errors):
             }
 
             $alert =  strcasecmp('none', $_POST['reply-to']);
+            if (!$errors) {
+                // Add new collaborators (if any)
+                $_errors = array();
+                if (isset($vars['ccs']) && count($vars['ccs']))
+                    $ticket->addCollaborators($vars['ccs'], array(), $_errors);
+                // set status of collaborators
+                if ($collabs = $ticket->getCollaborators()) {
+                    foreach ($collabs as $collaborator) {
+                        $cid = $collaborator->getUserId();
+                        // Enable collaborators if they were reselected
+                        if (!$collaborator->isActive() && ($vars['ccs'] && in_array($cid, $vars['ccs'])))
+                            $collaborator->setFlag(Collaborator::FLAG_ACTIVE, true);
+                        // Disable collaborators if they were unchecked
+                        elseif ($collaborator->isActive() && (!$vars['ccs'] || !in_array($cid, $vars['ccs'])))
+                            $collaborator->setFlag(Collaborator::FLAG_ACTIVE, false);
+                        $collaborator->save();
+                    }
+                }
+            }
             if (!$errors && ($response=$ticket->postReply($vars, $errors,
                             $alert))) {
                 $msg = sprintf(__('%s: Reply posted successfully'),
@@ -479,8 +499,8 @@ if ($thisstaff->hasPerm(Ticket::PERM_CREATE, false)) {
 }
 
 
-$ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?cba6035"></script>');
-$ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?cba6035"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?cb6766e"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?cb6766e"></script>');
 $ost->addExtraHeader('<meta name="tip-namespace" content="tickets.queue" />',
     "$('#content').data('tipNamespace', 'tickets.queue');");
 

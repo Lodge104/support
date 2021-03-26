@@ -178,7 +178,7 @@ if ($task->isOverdue())
                     <?php
                     foreach ($actions as $a => $action) { ?>
                     <li <?php if ($action['class']) echo sprintf("class='%s'", $action['class']); ?> >
-                        <a class="no-pjax task-action" <?php
+                        <a <?php echo sprintf('class="%s"', ($a == 'print') ? $action['class'] : 'no-pjax task-action'); ?><?php
                             if ($action['dialog'])
                                 echo sprintf("data-dialog-config='%s'", $action['dialog']);
                             if ($action['redirect'])
@@ -367,6 +367,7 @@ if (!$ticket) { ?>
 
                     <tr>
                         <th><?php echo __('Department');?>:</th>
+                        <?php if ($role->hasPerm(Task::PERM_TRANSFER)) {?>
                         <td>
                             <a class="task-action" data-placement="bottom" data-toggle="tooltip" title="<?php echo __('Transfer'); ?>"
                               data-redirect="tasks.php?id=<?php echo $task->getId(); ?>"
@@ -375,6 +376,9 @@ if (!$ticket) { ?>
                                   saveDraft();"
                               ><?php echo Format::htmlchars($task->dept->getName()); ?>
                         </td>
+                        <?php }else {?>
+                          <td><?php echo Format::htmlchars($task->dept->getName()); ?></td>
+                        <?php } ?>
                     </tr>
                     <?php
                     if ($task->isOpen()) { ?>
