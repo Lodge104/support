@@ -30,20 +30,28 @@ if(OSTINSTALLED!=TRUE){
     exit;
 }
 
+$SALT=getenv('SS');
+$EMAIL=getenv('ADMIN_EMAIL');
+$DBHOST=getenv('SERVERNAME');
+$DBNAME=getenv('DBNAME');
+$DBUSER=getenv('DBUSER');
+$DBPASS=getenv('DBPASS');
+
+
 # Encrypt/Decrypt secret key - randomly generated during installation.
-define('SECRET_SALT', getenv('SS'));
+define('SECRET_SALT',$SALT);
 
 #Default admin email. Used only on db connection issues and related alerts.
-define('ADMIN_EMAIL', getenv('ADMIN_EMAIL'));
+define('ADMIN_EMAIL',$EMAIL);
 
 # Database Options
 # ---------------------------------------------------
 # Mysql Login info
 define('DBTYPE','mysql');
-define('DBHOST', getenv('SERVERNAME'));
-define('DBNAME', getenv('DBNAME'));
-define('DBUSER', getenv('DBUSER'));
-define('DBPASS', getenv('DBPASS'));
+define('DBHOST',$DBHOST);
+define('DBNAME',$DBNAME);
+define('DBUSER',$DBUSER);
+define('DBPASS',$DBPASS);
 
 # Table prefix
 define('TABLE_PREFIX','ost_');
