@@ -202,6 +202,10 @@ div.banner:not(:empty) {
     box-sizing: border-box;
 }
 
+.or {
+    display: none;
+}
+
 input[type="submit"],
 input[type="reset"],
 input[type="button"],
@@ -247,6 +251,7 @@ button[type=submit], input[type="submit"], .primary.button {
     font-weight: bold;
     box-shadow: 0 0 0 1px rgba(0,0,0,0.45) inset;
     background-color: rgba(0,0,0,0.07);
+    display: none;
 }
 
 button[type=submit]:hover, input[type=submit]:hover, input[type=submit]:active {
@@ -352,6 +357,7 @@ input[type=password] {
     border-radius: 4px;
     padding: 5px;
     font-size: 0.75em;
+    display: none;
 }
 .hidden {
     display: none;
