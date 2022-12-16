@@ -32,7 +32,7 @@ $page='';
 $ticket = $user = null; //clean start.
 $redirect = false;
 //LOCKDOWN...See if the id provided is actually valid and if the user has access.
-if($_REQUEST['id'] || $_REQUEST['number']) {
+if(isset($_REQUEST['id']) || isset($_REQUEST['number'])) {
     if($_REQUEST['id'] && !($ticket=Ticket::lookup($_REQUEST['id'])))
          $errors['err']=sprintf(__('%s: Unknown or invalid ID.'), __('ticket'));
     elseif($_REQUEST['number'] && !($ticket=Ticket::lookup(array('number' => $_REQUEST['number']))))
@@ -87,10 +87,16 @@ if (!$ticket) {
         $wc = mb_str_wc($_GET['query']);
         if ($wc < 4) {
             $key = substr(md5($_GET['query']), -10);
-            $isEmail = Validator::is_email($_GET['query']);
-            if ($_GET['search-type'] == 'typeahead' || $isEmail) {
+            if ($_GET['search-type'] == 'typeahead'
+                    || Validator::is_emailish($_GET['query'])) {
                 // Use a faster index
-                $criteria = ['user__emails__address', 'equal', $_GET['query']];
+                $criteria = [
+                    'user__emails__address',
+                    Validator::is_valid_email($_GET['query']) ? 'equal' : 'contains',
+                    $_GET['query']
+                ];
+            } elseif (Validator::is_numeric($_GET['query'])) {
+                $criteria = ['number', 'contains', $_GET['query']];
             } else {
                 $criteria = [':keywords', null, $_GET['query']];
             }
@@ -98,13 +104,13 @@ if (!$ticket) {
             $queue_id = "adhoc,{$key}";
         } else {
             $errors['err'] = sprintf(
-                    __('Search term cannot have more than %d keywords', 4));
+                    __('Search term cannot have more than %d keywords'), 4);
         }
     }
 
     $queue_key = sprintf('::Q:%s', ObjectModel::OBJECT_TYPE_TICKET);
     $queue_id = $queue_id ?: @$_GET['queue'] ?: $_SESSION[$queue_key]
-        ?: $thisstaff->getDefaultTicketQueueId() ?: $cfg->getDefaultTicketQueueId();
+        ?? $thisstaff->getDefaultTicketQueueId() ?: $cfg->getDefaultTicketQueueId();
 
     // Recover advanced search, if requested
     if (isset($_SESSION['advsearch'])
@@ -120,7 +126,7 @@ if (!$ticket) {
         $queue = AdhocSearch::load($key);
     }
 
-    if ((int) $queue_id && !$queue)
+    if ((int) $queue_id && !isset($queue))
         $queue = SavedQueue::lookup($queue_id);
 
     if (!$queue && ($qid=$cfg->getDefaultTicketQueueId()))
@@ -428,6 +434,8 @@ if($_POST && !$errors):
                         $response_form->setSource(array());
                         $response_form->getField('attachments')->reset();
                         $_SESSION[':form-data'] = null;
+                        // Regenerate Session ID
+                        $thisstaff->regenerateSession();
                     } elseif(!$errors['err']) {
                         // ensure that we retain the tid if ticket is created from thread
                         if ($_SESSION[':form-data']['ticketId'] || $_SESSION[':form-data']['taskId'])
@@ -495,12 +503,12 @@ if ($thisstaff->hasPerm(Ticket::PERM_CREATE, false)) {
                            'href'=>'tickets.php?a=open',
                            'iconclass'=>'newTicket',
                            'id' => 'new-ticket'),
-                        ($_REQUEST['a']=='open'));
+                        (isset($_REQUEST['a']) && $_REQUEST['a']=='open'));
 }
 
 
-$ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?cb6766e"></script>');
-$ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?cb6766e"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?1d8b790"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?1d8b790"></script>');
 $ost->addExtraHeader('<meta name="tip-namespace" content="tickets.queue" />',
     "$('#content').data('tipNamespace', 'tickets.queue');");
 
@@ -540,7 +548,7 @@ if($ticket) {
     }
 } else {
     $inc = 'templates/queue-tickets.tmpl.php';
-    if ($_REQUEST['a']=='open' &&
+    if ((isset($_REQUEST['a']) && $_REQUEST['a']=='open') &&
             $thisstaff->hasPerm(Ticket::PERM_CREATE, false)) {
         $inc = 'ticket-open.inc.php';
     } elseif ($queue) {
@@ -550,7 +558,7 @@ if($ticket) {
     }
 
     //set refresh rate if the user has it configured
-    if(!$_POST && !$_REQUEST['a'] && ($min=(int)$thisstaff->getRefreshRate())) {
+    if(!$_POST && !isset($_REQUEST['a']) && ($min=(int)$thisstaff->getRefreshRate())) {
         $js = "+function(){ var qq = setInterval(function() { if ($.refreshTicketView === undefined) return; clearInterval(qq); $.refreshTicketView({$min}*60000); }, 200); }();";
         $ost->addExtraHeader('<script type="text/javascript">'.$js.'</script>',
             $js);

@@ -637,6 +637,12 @@ implements Searchable {
             ->delete();
     }
 
+    function deleteReferrals() {
+        return ThreadReferral::objects()
+            ->filter(array('thread_id'=>$this->getId()))
+            ->delete();
+    }
+
     function setExtra($mergedThread, $info='') {
 
         if ($info && $info['extra']) {
@@ -664,7 +670,7 @@ implements Searchable {
      * email communication without a thread entry, for instance, like
      * tickets created without an initial message.
      */
-    function lookupByEmailHeaders(&$mailinfo) {
+    static function lookupByEmailHeaders(&$mailinfo) {
         $possibles = array();
         foreach (array('mid', 'in-reply-to', 'references') as $header) {
             $matches = array();
@@ -698,7 +704,7 @@ implements Searchable {
             // osTicket, the Mailer class can break it apart. If it came
             // from this help desk, the 'loopback' property will be set
             // to true.
-            $mid_info = Mailer::decodeMessageId($mid);
+            $mid_info = osTicket\Mail\Mailer::decodeMessageId($mid);
             if (!$mid_info || !$mid_info['loopback'])
                 continue;
             if (isset($mid_info['uid'])
@@ -748,6 +754,7 @@ implements Searchable {
         // Mass delete entries
         $this->deleteAttachments();
         $this->removeCollaborators();
+        $this->deleteReferrals();
 
         $this->entries->delete();
 
@@ -883,14 +890,14 @@ implements TemplateVariable {
         // Mail sent by this system will have a predictable message-id
         // If this incoming mail matches the code, then it very likely
         // originated from this system and looped
-        $info = Mailer::decodeMessageId($mailinfo['mid']);
+        $info = osTicket\Mail\Mailer::decodeMessageId($mailinfo['mid']);
         if ($info && $info['loopback']) {
             // This mail was sent by this system. It was received due to
             // some kind of mail delivery loop. It should not be considered
             // a response to an existing thread entry
             if ($ost)
                 $ost->log(LOG_ERR, _S('Email loop detected'), sprintf(
-                _S('It appears as though &lt;%s&gt; is being used as a forwarded or fetched email account and is also being used as a user / system account. Please correct the loop or seek technical assistance.'),
+                _S('It appears as though %s is being used as a forwarded or fetched email account and is also being used as a user / system account. Please correct the loop or seek technical assistance.'),
                 $mailinfo['email']),
 
                 // This is quite intentional -- don't continue the loop
@@ -1002,7 +1009,7 @@ implements TemplateVariable {
 
     function getEmailReferences($include_mid=true) {
         $references = '';
-        $headers = self::getEmailHeaderArray();
+        $headers = $this->getEmailHeaderArray();
         if (isset($headers['References']) && $headers['References'])
             $references = $headers['References']." ";
         if ($include_mid && ($mid = $this->getEmailMessageId()))
@@ -1020,7 +1027,7 @@ implements TemplateVariable {
      * not received via email.
      */
     function getAllEmailRecipients() {
-        $headers = self::getEmailHeaderArray();
+        $headers = $this->getEmailHeaderArray();
         $recipients = array();
         if (!$headers)
             return $recipients;
@@ -1321,7 +1328,7 @@ implements TemplateVariable {
     function logEmailHeaders($id, $mid, $header=false) {
         $headerInfo = Mail_Parse::splitHeaders($header);
 
-        if (!$id || !$mid)
+        if (is_null($id) || !$mid)
             return false;
 
         $this->email_info = new ThreadEntryEmailInfo(array(
@@ -1394,7 +1401,7 @@ implements TemplateVariable {
      *      previously seen. This is useful if no thread-id is associated
      *      with the email (if it was rejected for instance).
      */
-    function lookupByEmailHeaders(&$mailinfo, &$seen=false) {
+    static function lookupByEmailHeaders(&$mailinfo, &$seen=false) {
         // Search for messages using the References header, then the
         // in-reply-to header
         if ($mailinfo['mid'] &&
@@ -1447,7 +1454,7 @@ implements TemplateVariable {
             // osTicket, the Mailer class can break it apart. If it came
             // from this help desk, the 'loopback' property will be set
             // to true.
-            $mid_info = Mailer::decodeMessageId($mid);
+            $mid_info = osTicket\Mail\Mailer::decodeMessageId($mid);
             if (!$mid_info || !$mid_info['loopback'])
                 continue;
             if (isset($mid_info['uid'])
@@ -1525,7 +1532,7 @@ implements TemplateVariable {
      * Find a thread entry from a message-id created from the
      * ::asMessageId() method.
      *
-     * *DEPRECATED* use Mailer::decodeMessageId() instead
+     * *DEPRECATED* use osTicket\Mail\Mailer::decodeMessageId() instead
      */
     function lookupByRefMessageId($mid, $from) {
         global $ost;
@@ -1563,7 +1570,7 @@ implements TemplateVariable {
         return $entry;
     }
 
-    function setExtra($entries, $info=NULL, $thread_id=NULL) {
+    static function setExtra($entries, $info=NULL, $thread_id=NULL) {
         foreach ($entries as $entry) {
             $mergeInfo = ThreadEntryMergeInfo::objects()
                 ->filter(array('thread_entry_id'=>$entry->getId()))
@@ -1591,7 +1598,7 @@ implements TemplateVariable {
         return $this->merge_info ? $this->merge_info->data : null;
     }
 
-    function sortEntries($entries, $ticket) {
+    static function sortEntries($entries, $ticket) {
         $buckets = array();
         $childEntries = array();
         foreach ($entries as $i=>$E) {
@@ -2170,7 +2177,7 @@ class ThreadEvent extends VerySimpleModel {
         $inst->timestamp = SqlFunction::NOW();
 
         global $thisstaff, $thisclient;
-        $user = is_object($user) ? $user : $thisstaff ?: $thisclient;
+        $user = (is_object($user) ? $user : $thisstaff) ?: $thisclient;
         if ($user instanceof Staff) {
             $inst->uid_type = 'S';
             $inst->uid = $user->getId();
@@ -2344,7 +2351,7 @@ class ThreadEvents extends InstrumentedList {
         }
 
         $username = $user;
-        $user = is_object($user) ? $user : $thisclient ?: $thisstaff;
+        $user = (is_object($user) ? $user : $thisclient) ?: $thisstaff;
         if (!is_string($username)) {
             if ($user instanceof Staff) {
                 $username = $user->getUserName();
@@ -2483,7 +2490,7 @@ class CollaboratorEvent extends ThreadEvent {
                         break;
                     }
                 }
-                $collabs[] = Format::htmlchars($U ? $U->getName() : @$c['name'] ?: $c);
+                $collabs[] = Format::htmlchars($U ? $U->getName() : (@$c['name'] ?: $c));
             }
             $desc = sprintf($base, implode(', ', $collabs));
             break;
@@ -2501,7 +2508,7 @@ class CollaboratorEvent extends ThreadEvent {
                         }
                     }
                     $c = sprintf("%s %s",
-                        Format::htmlchars($U ? $U->getName() : @$c['name'] ?: $c),
+                        Format::htmlchars($U ? $U->getName() : (@$c['name'] ?: $c)),
                         $c['src'] ? sprintf(__('via %s'
                             /* e.g. "Added collab "Me <me@company.me>" via Email (to)" */
                             ), $c['src']) : ''
@@ -2534,6 +2541,12 @@ class EditEvent extends ThreadEvent {
     function getDescription($mode=self::MODE_STAFF) {
         $data = $this->getData();
         switch (true) {
+        case isset($data['filter']):
+            $desc = sprintf(__('%s set %s %s {timestamp}'),
+                    '<b>' . $data['filter'] . '</b> Filter ',
+                    __($data['type']),
+                    $data['value'] ? 'to <strong>' . $data['value'] . '</strong>' :  '');
+            break;
         case isset($data['owner']):
             $desc = __('<b>{somebody}</b> changed ownership to {<User>data.owner} {timestamp}');
             break;

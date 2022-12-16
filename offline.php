@@ -22,6 +22,8 @@ if(is_object($ost) && $ost->isSystemOnline()) {
 $nav=null;
 require(CLIENTINC_DIR.'header.inc.php');
 ?>
+<div class="cover">
+    <div class="container"> <div class="row"> <div class="col-md-12">
 <div id="landing_page">
 <?php
 if(($page=$cfg->getOfflinePage())) {
@@ -30,5 +32,7 @@ if(($page=$cfg->getOfflinePage())) {
     echo '<h1>'.__('Support Ticket System Offline').'</h1>';
 }
 ?>
+</div>
+</div></div></div>
 </div>
 <?php require(CLIENTINC_DIR.'footer.inc.php'); ?>

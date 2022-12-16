@@ -21,7 +21,7 @@ class Bootstrap {
         session_cache_limiter('nocache');
 
         #Error reporting...Good idea to ENABLE error reporting to a file. i.e display_errors should be set to false
-        $error_reporting = E_ALL & ~E_NOTICE;
+        $error_reporting = E_ALL & ~E_NOTICE & ~E_WARNING;
         if (defined('E_STRICT')) # 5.4.0
             $error_reporting &= ~E_STRICT;
         if (defined('E_DEPRECATED')) # 5.3.0
@@ -49,7 +49,7 @@ class Bootstrap {
             $_SERVER['REMOTE_ADDR'] = '';
     }
 
-    function https() {
+    static function https() {
        return osTicket::is_https();
     }
 
@@ -125,6 +125,7 @@ class Bootstrap {
         define('SLA_TABLE', $prefix.'sla');
 
         define('EMAIL_TABLE',$prefix.'email');
+        define('EMAIL_ACCOUNT_TABLE', $prefix.'email_account');
         define('EMAIL_TEMPLATE_GRP_TABLE',$prefix.'email_template_group');
         define('EMAIL_TEMPLATE_TABLE',$prefix.'email_template');
 
@@ -133,6 +134,7 @@ class Bootstrap {
         define('FILTER_ACTION_TABLE', $prefix.'filter_action');
 
         define('PLUGIN_TABLE', $prefix.'plugin');
+        define('PLUGIN_INSTANCE_TABLE', $prefix.'plugin_instance');
         define('SEQUENCE_TABLE', $prefix.'sequence');
         define('TRANSLATION_TABLE', $prefix.'translation');
         define('QUEUE_TABLE', $prefix.'queue');
@@ -150,7 +152,7 @@ class Bootstrap {
         define('TIMEZONE_TABLE',$prefix.'timezone');
     }
 
-    function loadConfig() {
+    static function loadConfig() {
         #load config info
         $configfile='';
         if(file_exists(INCLUDE_DIR.'ost-config.php')) //NEW config file v 1.6 stable ++
@@ -180,7 +182,7 @@ class Bootstrap {
         define('SESSION_TTL', 86400); // Default 24 hours
     }
 
-    function connect() {
+    static function connect() {
         #Connect to the DB && get configuration from database
         $ferror=null;
         $options = array();
@@ -201,9 +203,10 @@ class Bootstrap {
             self::croak($ferror);
     }
 
-    function loadCode() {
+    static function loadCode() {
         #include required files
         require_once INCLUDE_DIR.'class.util.php';
+        include_once INCLUDE_DIR.'class.controller.php';
         require_once INCLUDE_DIR.'class.translation.php';
         require_once(INCLUDE_DIR.'class.signal.php');
         require(INCLUDE_DIR.'class.model.php');
@@ -214,14 +217,13 @@ class Bootstrap {
         require(INCLUDE_DIR.'class.crypto.php');
         require(INCLUDE_DIR.'class.page.php');
         require_once(INCLUDE_DIR.'class.format.php'); //format helpers
-        require_once(INCLUDE_DIR.'class.validator.php'); //Class to help with basic form input validation...please help improve it.
-        require(INCLUDE_DIR.'class.mailer.php');
+        require_once(INCLUDE_DIR.'class.validator.php');
         require_once INCLUDE_DIR.'mysqli.php';
         require_once INCLUDE_DIR.'class.i18n.php';
         require_once INCLUDE_DIR.'class.queue.php';
     }
 
-    function i18n_prep() {
+    static function i18n_prep() {
         ini_set('default_charset', 'utf-8');
         ini_set('output_encoding', 'utf-8');
 
@@ -310,7 +312,7 @@ class Bootstrap {
         }
     }
 
-    function croak($message) {
+    static function croak($message) {
         $msg = $message."\n\n".THISPAGE;
         Mailer::sendmail(ADMIN_EMAIL, 'osTicket Fatal Error', $msg,
             sprintf('"osTicket Alerts"<%s>', ADMIN_EMAIL));
@@ -339,9 +341,9 @@ define('CLI_DIR', INCLUDE_DIR.'cli/');
 /*############## Do NOT monkey with anything else beyond this point UNLESS you really know what you are doing ##############*/
 
 #Current version && schema signature (Changes from version to version)
-define('GIT_VERSION', 'cb6766e'); // Set by installer
-define('MAJOR_VERSION', '1.15');
-define('THIS_VERSION', 'v1.15.2'); // Set by installer
+define('GIT_VERSION', '1d8b790'); // Set by installer
+define('MAJOR_VERSION', '1.17');
+define('THIS_VERSION', 'v1.17'); // Set by installer
 //Path separator
 if(!defined('PATH_SEPARATOR')){
     if(strpos($_ENV['OS'],'Win')!==false || !strcasecmp(substr(PHP_OS, 0, 3),'WIN'))

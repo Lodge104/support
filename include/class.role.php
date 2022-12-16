@@ -184,7 +184,7 @@ class Role extends RoleModel {
         if (isset($this->dirty['notes']))
             $this->notes = Format::sanitize($this->notes);
 
-        return parent::save($refetch | $this->dirty);
+        return parent::save($refetch || $this->dirty);
     }
 
     function delete() {
@@ -295,6 +295,10 @@ class RolePermission {
             $this->perms = JsonDataParser::parse($this->perms);
         elseif (!$this->perms)
             $this->perms = array();
+    }
+
+    function exists($perm) {
+        return array_key_exists($perm, $this->perms ?: array());
     }
 
     function has($perm) {

@@ -22,7 +22,7 @@ require_once(INCLUDE_DIR.'class.page.php');
 
 // Determine the requested page
 // - Strip extension
-$slug = Format::slugify($ost->get_path_info());
+$slug = Format::slugify(Osticket::get_path_info());
 
 // Get the part before the first dash
 $first_word = explode('-', $slug);
@@ -49,12 +49,16 @@ if (!$selected_page->isActive() || $selected_page->getType() != 'other')
 require(CLIENTINC_DIR.'header.inc.php');
 
 $BUTTONS = false;
-include CLIENTINC_DIR.'templates/sidebar.tmpl.php';
+//include CLIENTINC_DIR.'templates/sidebar.tmpl.php';
 ?>
+<div class="cover">
+    <div class="container"> <div class="row"> <div class="col-md-12">
 <div class="main-content">
 <?php
 print $selected_page->getBodyWithImages();
 ?>
+</div>
+</div></div></div>
 </div>
 
 <?php

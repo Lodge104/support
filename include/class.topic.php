@@ -383,6 +383,7 @@ implements TemplateVariable, Searchable {
               $n .= " - ".__("(disabled)");
           $requested_names[$id] = $n;
           $topicsClean[$id] = $info;
+          $topicsClean[$id]['topic'] = $n;
       }
 
       if ($allData)
@@ -550,11 +551,11 @@ implements TemplateVariable, Searchable {
 
     function updateForms($vars, &$errors) {
         $find_disabled = function($form) use ($vars) {
-            $fields = $vars['fields'];
+            $fields = $vars['fields'] ?: null;
             $disabled = array();
             foreach ($form->fields->values_flat('id') as $row) {
                 list($id) = $row;
-                if (false === ($idx = array_search($id, $fields))) {
+                if (is_array($fields) && (false === ($idx = array_search($id, $fields)))) {
                     $disabled[] = $id;
                 }
             }

@@ -7,7 +7,7 @@ if (!isset($info['timezone']))
 if (isset($user) && $user instanceof ClientCreateRequest) {
     $bk = $user->getBackend();
     $info = array_merge($info, array(
-        'backend' => $bk::$id,
+        'backend' => $bk->getBkId(),
         'username' => $user->getUsername(),
     ));
 }
@@ -62,7 +62,7 @@ $info = Format::htmlchars(($errors && $_POST)?$_POST:$info);
                     <input type="hidden" name="backend" value="<?php echo $info['backend']; ?>"/>
                     <input type="hidden" name="username" value="<?php echo $info['username']; ?>"/>
             <?php foreach (UserAuthenticationBackend::allRegistered() as $bk) {
-                if ($bk::$id == $info['backend']) {
+                if ($bk->getBkId() == $info['backend']) {
                     echo $bk->getName();
                     break;
                 }
@@ -102,7 +102,7 @@ $info = Format::htmlchars(($errors && $_POST)?$_POST:$info);
 
 <?php if (!isset($info['timezone'])) { ?>
 <!-- Auto detect client's timezone where possible -->
-<script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jstz.min.js?fe1d1f8"></script>
+<script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jstz.min.js?1d8b790"></script>
 <script type="text/javascript">
 $(function() {
     var zone = jstz.determine();

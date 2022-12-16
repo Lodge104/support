@@ -330,6 +330,15 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
         return $this->email;
     }
 
+    function getEmailAddress() {
+        $emailaddr =  (string) $this->getEmail();
+        if (($name=$this->getName()))
+            $emailaddr = sprintf('"%s" <%s>',
+                    (string) $name,
+                    $emailaddr);
+        return $emailaddr;
+    }
+
     function getAvatar($size=null) {
         global $cfg;
         $source = $cfg->getStaffAvatarSource();
@@ -901,7 +910,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
             $dropped[$TM->team_id] = 1;
 
         reset($membership);
-        while(list(, list($team_id, $alerts)) = each($membership)) {
+        foreach ($membership as $mem) {
+            list($team_id, $alerts) = $mem;
             $member = $this->teams->findFirst(array('team_id' => $team_id));
             if (!$member) {
                 $this->teams->add($member = new TeamMember(array(
@@ -966,11 +976,11 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
         if (is_array($var))
             return parent::lookup($var);
         elseif (is_numeric($var))
-            return parent::lookup(array('staff_id'=>$var));
+            return parent::lookup(array('staff_id' => (int) $var));
         elseif (Validator::is_email($var))
-            return parent::lookup(array('email'=>$var));
-        elseif (is_string($var))
-            return parent::lookup(array('username'=>$var));
+            return parent::lookup(array('email' => $var));
+        elseif (is_string($var) &&  Validator::is_username($var))
+            return parent::lookup(array('username' => (string) $var));
         else
             return null;
     }
@@ -1312,7 +1322,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
             }
             $this->updateAccess($access, $errors);
             $this->setExtraAttr('def_assn_role',
-                isset($vars['assign_use_pri_role']), false);
+                isset($vars['assign_use_pri_role']), true);
 
             // Format team membership as [array(team_id, alerts?)]
             $teams = array();
@@ -1351,7 +1361,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
         $dropped = array();
         foreach ($this->dept_access as $DA)
             $dropped[$DA->dept_id] = 1;
-        while (list(, list($dept_id, $role_id, $alerts)) = each($access)) {
+        foreach ($access as $acc) {
+            list($dept_id, $role_id, $alerts) = $acc;
             unset($dropped[$dept_id]);
             if (!$role_id || !Role::lookup($role_id))
                 $errors['dept_access'][$dept_id] = __('Select a valid role');
@@ -1398,7 +1409,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
         }
         $permissions = $this->getPermission();
         foreach ($vars as $k => $val) {
-             if (!array_key_exists($val, $permissions->perms)) {
+             if (!$permissions->exists($val)) {
                  $type = array('type' => 'edited', 'key' => $val);
                  Signal::send('object.edited', $this, $type);
              }
@@ -1406,7 +1417,7 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
 
         foreach (RolePermission::allPermissions() as $g => $perms) {
             foreach ($perms as $k => $v) {
-                if (!in_array($k, $vars) && array_key_exists($k, $permissions->perms)) {
+                if (!in_array($k, $vars) && $permissions->exists($k)) {
                      $type = array('type' => 'edited', 'key' => $k);
                      Signal::send('object.edited', $this, $type);
                  }
@@ -1603,6 +1614,10 @@ extends AbstractForm {
     }
 
     function validate($clean) {
+        global $thisstaff;
+
+        if (isset($clean['current']) && !$thisstaff->cmp_passwd($clean['current']))
+            $this->getField('current')->addError(__('Current password is incorrect.'));
         if ($clean['passwd1'] != $clean['passwd2'])
             $this->getField('passwd1')->addError(__('Passwords do not match'));
     }

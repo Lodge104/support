@@ -3,8 +3,10 @@
 use Aws\S3\Exception\SignatureDoesNotMatchException;
 use Aws\S3\Model\MultipartUpload\UploadBuilder;
 use Aws\S3\S3Client;
-use Guzzle\Http\EntityBody;
-use Guzzle\Stream\PhpStreamRequestFactory;
+use GuzzleHttp\Psr7\Stream;
+require_once INCLUDE_DIR . 'class.json.php';
+require_once 'lib/Aws/functions.php';
+require_once 'lib/GuzzleHttp/functions.php';
 
 class S3StorageBackend extends FileStorageBackend {
     static $desc;
@@ -14,6 +16,8 @@ class S3StorageBackend extends FileStorageBackend {
     private $body;
     private $upload_hash;
     private $upload_hash_final;
+    static $version = '2006-03-01';
+    static $sig_vers = 'v4';
 
     static $blocksize = 8192; # Default read size for sockets
 
@@ -27,18 +31,21 @@ class S3StorageBackend extends FileStorageBackend {
 
     function __construct($meta) {
         parent::__construct($meta);
-        $credentials = array(
+        $credentials['credentials'] = array(
             'key' => static::$config['aws-key-id'],
             'secret' => Crypto::decrypt(static::$config['secret-access-key'],
-                SECRET_SALT, static::getConfig()->getNamespace()),
+                SECRET_SALT, $this->getConfig()->getNamespace())
         );
-        if ($config['aws-region'])
-            $credentials['region'] = $config['aws-region'];
+        if (static::$config['aws-region'])
+            $credentials['region'] = static::$config['aws-region'];
 
-        $this->client = S3Client::factory($credentials);
+        $credentials['version'] = self::$version;
+        $credentials['signature_version'] = self::$sig_vers;
+
+        $this->client = new S3Client($credentials);
     }
 
-    function read($bytes=false) {
+    function read($bytes=false, $offset=0) {
         try {
             if (!$this->body)
                 $this->openReadStream();
@@ -54,21 +61,18 @@ class S3StorageBackend extends FileStorageBackend {
             return $chunk;
         }
         catch (Aws\S3\Exception\NoSuchKeyException $e) {
-            throw new IOException($this->meta->getKey()
+            throw new IOException(self::getKey()
                 .': Unable to locate file: '.(string)$e);
         }
     }
 
-    function fpassthru() {
+    function passthru() {
         try {
-            $res = $this->client->getObject(array(
-                'Bucket' => static::$config['bucket'],
-                'Key' => $this->meta->getKey(),
-            ));
-            fpassthru($res['Body']);
+            while ($block = $this->read())
+                print $block;
         }
         catch (Aws\S3\Exception\NoSuchKeyException $e) {
-            throw new IOException($this->meta->getKey()
+            throw new IOException(self::getKey()
                 .': Unable to locate file: '.(string)$e);
         }
     }
@@ -87,7 +91,7 @@ class S3StorageBackend extends FileStorageBackend {
     }
 
     function upload($filepath) {
-        if ($filepath instanceof EntityBody) {
+        if ($filepath instanceof Stream) {
             $filepath->rewind();
             // Hashing already performed in the ::write() method
         }
@@ -109,7 +113,7 @@ class S3StorageBackend extends FileStorageBackend {
 
             $info = $this->client->upload(
                 static::$config['bucket'],
-                $this->meta->getKey(),
+                self::getKey(true),
                 $filepath,
                 static::$config['acl'] ?: 'private',
                 array('params' => $params)
@@ -136,17 +140,18 @@ class S3StorageBackend extends FileStorageBackend {
     }
 
     // Send a redirect when the file is requested locally
-    function sendRedirectUrl($disposition='inline') {
+    function sendRedirectUrl($disposition='inline', $ttl = false) {
+        // expire based on ttl (if given), otherwise expire at midnight
         $now = time();
-        Http::redirect($this->client->getObjectUrl(
-            static::$config['bucket'],
-            $this->meta->getKey(),
-            $now + 86400 - ($now % 86400), # Expire at midnight
-            array(
+        $ttl = $ttl ? $now + $ttl : ($now + 86400 - ($now % 86400));
+        Http::redirect($this->getSignedRequest(
+            $this->client->getCommand('GetObject', [
+                'Bucket' => static::$config['bucket'],
+                'Key'    => self::getKey(),
                 'ResponseContentDisposition' => sprintf("%s; %s;",
                     $disposition,
                     Http::getDispositionFilename($this->meta->getName())),
-            )));
+            ]), $ttl)->getUri());
         return true;
     }
 
@@ -154,7 +159,7 @@ class S3StorageBackend extends FileStorageBackend {
         try {
             $this->client->deleteObject(array(
                 'Bucket' => static::$config['bucket'],
-                'Key' => $this->meta->getKey()
+                'Key'    => self::getKey()
             ));
             return true;
         }
@@ -166,56 +171,75 @@ class S3StorageBackend extends FileStorageBackend {
 
     // Adapted from Aws\S3\StreamWrapper
     /**
-     * Serialize and sign a command, returning a request object
+     * Create a pre-signed Request for the given S3 command object.
      *
-     * @param CommandInterface $command Command to sign
+     * @param Aws\CommandInterface          $command Command to create a pre-signed
+     *                                               URL for.
+     * @param int|string|\DateTimeInterface $expires The time at which the URL should
+     *                                               expire. This can be a Unix
+     *                                               timestamp, a PHP DateTime object,
+     *                                               or a string that can be evaluated
+     *                                               by strtotime().
      *
      * @return RequestInterface
      */
-    protected function getSignedRequest($command)
+    protected function getSignedRequest($command, $expires=0)
     {
-        $request = $command->prepare();
-        $request->dispatch('request.before_send',
-            array('request' => $request));
-
-        return $request;
+        return $this->client->createPresignedRequest($command, $expires ?: '+30 minutes');
     }
 
     /**
      * Initialize the stream wrapper for a read only stream
      *
-     * @param array $params Operation parameters
-     * @param array $errors Any encountered errors to append to
-     *
      * @return bool
      */
     protected function openReadStream() {
-        $params = array(
-            'Bucket' => static::$config['bucket'],
-            'Key' => $this->meta->getKey(),
-        );
-
-        // Create the command and serialize the request
-        $request = $this->getSignedRequest(
-            $this->client->getCommand('GetObject', $params));
-        // Create a stream that uses the EntityBody object
-        $factory = new PhpStreamRequestFactory();
-        $this->body = $factory->fromRequest($request, array(),
-            array('stream_class' => 'Guzzle\Http\EntityBody'));
-
+        $this->getBody(true);
         return true;
     }
 
     /**
-     * Initialize the stream wrapper for a write only stream
-     *
-     * @param array $params Operation parameters
-     * @param array $errors Any encountered errors to append to
-     *
-     * @return bool
+     * Initialize the stream wrapper for a read/write stream
      */
     protected function openWriteStream() {
-        $this->body = new EntityBody(fopen('php://temp', 'r+'));
+        $this->body = new Stream(fopen('php://temp', 'r+'));
+    }
+
+    protected function getBody($stream=false) {
+        $params = array(
+            'Bucket' => static::$config['bucket'],
+            'Key'    => self::getKey(),
+        );
+
+        $command = $this->client->getCommand('GetObject', $params);
+        $command['@http']['stream'] = $stream;
+        $result = $this->client->execute($command);
+        $this->body = $result['Body'];
+
+        // Wrap the body in a caching entity body if seeking is allowed
+        //if ($this->getOption('seekable') && !$this->body->isSeekable()) {
+        //    $this->body = new CachingStream($this->body);
+        //}
+        return $this->body;
+    }
+
+    function getKey($create=false) {
+        $attrs = $create ? self::getAttrs() : $this->meta->getAttrs();
+        $attrs = JsonDataParser::parse($attrs);
+
+        $key = ($attrs && $attrs['folder']) ?
+            sprintf('%s/%s', $attrs['folder'], $this->meta->getKey()) :
+            $this->meta->getKey();
+
+        return $key;
+    }
+
+    function getAttrs() {
+        $bucket = static::$config['bucket'];
+        $folder = (static::$config['folder'] ? static::$config['folder'] : '');
+        $attr = JsonDataEncoder::encode(array('bucket' => $bucket, 'folder' => $folder));
+
+        return $attr;
     }
 }
 
@@ -224,10 +248,18 @@ require_once 'config.php';
 class S3StoragePlugin extends Plugin {
     var $config_class = 'S3StoragePluginConfig';
 
+    function isMultiInstance() {
+        return false;
+    }
+
     function bootstrap() {
         require_once 'storage.php';
+
+        //TODO: This needs to target a specific instance
+         $bucketPath = sprintf('%s%s', $this->getConfig()->get('bucket'),
+             $this->getConfig()->get('folder') ? '/'. $this->getConfig()->get('folder') : '');
         S3StorageBackend::setConfig($this->getConfig());
-        S3StorageBackend::$desc = sprintf('S3 (%s)', $this->getConfig()->get('bucket'));
+        S3StorageBackend::$desc = sprintf('S3 (%s)', $bucketPath);
         FileStorageBackend::register('3', 'S3StorageBackend');
     }
 }

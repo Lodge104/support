@@ -4,52 +4,39 @@
         <div class="container"> <div class="row">
             <div class="fwidgets">
                 <div class="col-sm-4">
-                    <h2> Official Sites </h2>
-                    <ul>
-                        <li><a href="https://scouting.org">Boy Scouts of America</a></li>
-                        <li><a href="https://oa-bsa.org">National Order of the Arrow</a></li>
-                        <li><a href="https://southern.oa-bsa.org">OA Southern Region</a></li>
-                        <li><a href="https://sr7b.org">OA Section SR-7B</a></li>
-                        <li><a href="https://oa-bsa.org/about/official-oa-website-guidelines">OA Web Guidelines</a></li>
-                    </ul>
+                    <h2> Reach Us </h2>
+
+                    Company Name<br>
+                    221, 2nd floor <br>
+                    Baker street, London, <br>
+                    England
+
                 </div>
                 <div class="col-sm-4">
-                    <h2> Lodge Websites </h2>
+                    <h2> Important links </h2>
                     <ul>
-                        <li><a href="https://lodge104.net">Lodge Main Website</a></li>
-                        <li><a href="https://elections.lodge104.net">Unit Election Portal</a></li>
-                        <li><a href="https://noac.lodge104.net">NOAC Portal</a></li>
-                        <li><a href="https://store.lodge104.net">Online Trading Post</a></li>
-                        <li><a href="https://registration.lodge104.net">Registration Portal</a></li>
-                        <li><a href="https://camping.lodge104.net">Where to go Camping Guide</a></li>
-                        <li><a href="https://survey.lodge104.net">Survey System</a></li>
-                        <li><a href="https://at.lodge104.net">Link Shartener Tool</a></li>
+                        <li><a href="#">First link</a></li>
+                        <li><a href="#">Second link</a></li>
+                        <li><a href="#">Third link</a></li>
+                        <li><a href="#">Fourth link</a></li>
                     </ul>
 
                 </div>
                 <div class="col-sm-4">
                     <h2> Contact US </h2>
 
-                    <i class="icon-phone-sign"></i> 919-872-4884 <br>
-                    <i class="icon-envelope"></i> support@lodge104.net
+                    <i class="icon-phone-sign"></i> 1800-9876-5432 <br>
+                    <i class="icon-envelope"></i> mymail@company.com
 
                     <div class="social-icons">
                         <ul>
-                            <li> <a href="https://fb.com/lodge104"> <i class="icon-facebook"></i> </a> </li>
-                            <li> <a href="https://twitter.com/lodge104"> <i class="icon-twitter"></i> </a> </li>
-                            <li> <a href="https://instagram.com/lodge104"> <i class="icon-instagram"></i> </a> </li>
-<li> <a href="https://youtube.com/oalodge104"> <i class="icon-youtube"></i> </a> </li>
-<li> <a href="https://www.flickr.com/photos/144663840@N05/albums"> <i class="icon-flickr"></i> </a> </li>
+                            <li> <a href="#"> <i class="icon-facebook"></i> </a> </li>
+                            <li> <a href="#"> <i class="icon-twitter"></i> </a> </li>
+                            <li> <a href="#"> <i class="icon-google-plus"></i> </a> </li>
+                            <li> <a href="#"> <i class="icon-linkedin"></i> </a> </li>
+                            <li> <a href="#"> <i class="icon-github"></i> </a> </li>
                         </ul>
                     </div>
-                </div>
-                                <div class="col-sm-4">
-                    <h2>Find Us
-                        </h2>
-                        <p>Occoneechee Council - BSA<br>
-                    3231 Atlantic Avenue <br>
-                    Raleigh, NC 27604</p>
-                    
                 </div>
 
             <div class="clear"></div>
@@ -57,20 +44,12 @@
 
             <div class="col-md-12">
                 <div class="footer-content">
-                    <p>Copyright &copy; <?php echo date('Y'); ?> <?php echo (string) $ost->company ?: 'Occoneechee Lodge'; ?> - All rights reserved.</p>                </div>
+                    <p>Copyright &copy; <?php echo date('Y'); ?> <?php echo (string) $ost->company ?: 'osTicket.com'; ?> - All rights reserved.</p>
+                    <a id="poweredBy" href="http://osticket.com" target="_blank"><?php echo __('Helpdesk software - powered by osTicket'); ?></a>
+                </div>
             </div>
         </div></div>
     </div>
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-37461006-10"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-37461006-10');
-</script>
-    <!-- end footer -->
 <div id="overlay"></div>
 <div id="loading">
     <h4><?php echo __('Please Wait!');?></h4>

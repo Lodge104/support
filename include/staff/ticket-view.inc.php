@@ -317,7 +317,7 @@ if($ticket->isOverdue())
 <table class="ticket_info" cellspacing="0" cellpadding="0" width="940" border="0">
     <tr>
         <td width="50%">
-            <table border="0" cellspacing="" cellpadding="4" width="100%">
+            <table border="0" cellspacing="0" cellpadding="4" width="100%">
                 <tr>
                     <th width="100"><?php echo __('Status');?>:</th>
                     <?php
@@ -376,7 +376,7 @@ if($ticket->isOverdue())
             </table>
         </td>
         <td width="50%" style="vertical-align:top">
-            <table border="0" cellspacing="" cellpadding="4" width="100%">
+            <table border="0" cellspacing="0" cellpadding="4" width="100%">
                 <tr>
                     <th width="100"><?php echo __('User'); ?>:</th>
                     <td><a href="#tickets/<?php echo $ticket->getId(); ?>/user"
@@ -585,12 +585,16 @@ if($ticket->isOverdue())
                          if ($role->hasPerm(Ticket::PERM_EDIT)) {
                              $duedate = $ticket->getField('duedate'); ?>
                            <td>
-                      <a class="inline-edit" data-placement="bottom"
+                      <a class="inline-edit" data-placement="bottom" data-toggle="tooltip"
+                          title="<?php echo __('Update'); ?>"
                           href="#tickets/<?php echo $ticket->getId();
                            ?>/field/duedate/edit">
-                           <span id="field_duedate"><?php echo Format::datetime($ticket->getEstDueDate()); ?></span>
+                           <?php $due_date = Format::datetime($ticket->getEstDueDate()); ?>
+                           <span id="field_duedate" <?php if (!$due_date) echo 'class="faded"'; ?>>
+                               <?php echo $due_date ?: '&mdash;'.__('Empty').'&mdash;'; ?>
+                           </span>
                       </a>
-                    <td>
+                           </td>
                       <?php } else { ?>
                            <td><?php echo Format::datetime($ticket->getEstDueDate()); ?></td>
                       <?php } ?>
@@ -837,11 +841,11 @@ if ($errors['err'] && isset($_POST['a'])) {
                                  Format::htmlchars($e->getAddress()));
                      }
                      $staffDepts = $thisstaff->getDepts();
+                     if (in_array($cfg->getDefaultDeptId(), $staffDepts))
+                         $staffDepts[] = 0;
                      // Optional SMTP addreses user can send email via
                      if (($emails = Email::getAddresses(array('smtp' => true,
                                  'depts' => $staffDepts), false)) && count($emails)) {
-                         echo '<option value=""
-                             disabled="disabled">&nbsp;</option>';
                          $emailId = $_POST['from_email_id'] ?: 0;
                          foreach ($emails as $e) {
                              if ($dept->getEmail()->getId() == $e->getId())
@@ -1038,6 +1042,7 @@ if ($errors['err'] && isset($_POST['a'])) {
                         break;
                     } ?>
                     <input type="hidden" name="draft_id" value=""/>
+                    <br/>
                     <textarea name="response" id="response" cols="50"
                         data-signature-field="signature" data-dept-id="<?php echo $dept->getId(); ?>"
                         data-signature="<?php

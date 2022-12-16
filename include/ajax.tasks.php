@@ -269,7 +269,7 @@ class TasksAjaxAPI extends AjaxController {
                         break;
                     default:
                         $clean =  $field->getClean();
-                        $clean = is_array($clean) ? implode($clean, ',') :
+                        $clean = is_array($clean) ? implode(',', $clean) :
                             (string) $clean;
                         if (strlen($clean) > 200)
                              $clean = Format::truncate($clean, 200);
@@ -451,7 +451,7 @@ class TasksAjaxAPI extends AjaxController {
         case 'transfer':
             $inc = 'transfer.tmpl.php';
             $info[':action'] = '#tasks/mass/transfer';
-            $info[':title'] = sprintf('Transfer %s',
+            $info[':title'] = sprintf(__('Transfer %s'),
                     _N('selected task', 'selected tasks', $count));
             $form = TransferForm::instantiate($_POST);
             $form->hideDisabled();

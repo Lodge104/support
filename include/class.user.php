@@ -527,7 +527,7 @@ implements TemplateVariable, Searchable {
         return $imported;
     }
 
-    function importFromPost($stream, $extra=array()) {
+    static function importFromPost($stream, $extra=array()) {
         if (!is_array($stream))
             $stream = sprintf('name, email%s %s',PHP_EOL, $stream);
 
@@ -737,6 +737,8 @@ implements TemplateVariable {
             $this->address = sprintf('"%s" <%s>',
                     $this->getName(),
                     $this->email);
+        else
+             $this->address =  $this->email;
     }
 
     function __toString() {
@@ -745,7 +747,7 @@ implements TemplateVariable {
 
     function getVar($what) {
 
-        if (!$this->_info)
+        if (!isset($this->_info))
             return '';
 
         switch ($what) {
@@ -760,7 +762,11 @@ implements TemplateVariable {
     }
 
     function getAddress() {
-        return $this->address ?: $this->email;
+        return $this->address ?: $this->getEmail();
+    }
+
+    function getEmail() {
+        return $this->email;
     }
 
     function getHost() {
@@ -782,9 +788,8 @@ implements TemplateVariable {
     // Parse and email adddress (RFC822) into it's parts.
     // @address - one address is expected
     static function parse($address) {
-        require_once PEAR_DIR . 'Mail/RFC822.php';
         require_once PEAR_DIR . 'PEAR.php';
-        if (($parts = Mail_RFC822::parseAddressList($address))
+        if (($parts = Mail_Parse::parseAddressList($address))
                 && !PEAR::isError($parts))
             return current($parts);
     }
@@ -847,8 +852,22 @@ implements TemplateVariable {
         return $this->parts['middle'];
     }
 
+    function getFirstInitial() {
+        if ($this->parts['first'])
+            return mb_substr($this->parts['first'],0,1).'.';
+        return '';
+    }
+
     function getMiddleInitial() {
-        return mb_substr($this->parts['middle'],0,1).'.';
+        if ($this->parts['middle'])
+            return mb_substr($this->parts['middle'],0,1).'.';
+        return '';
+    }
+
+    function getLastInitial() {
+        if ($this->parts['last'])
+            return mb_substr($this->parts['last'],0,1).'.';
+        return '';
     }
 
     function getFormal() {
@@ -862,10 +881,9 @@ implements TemplateVariable {
     function getLegal() {
         $parts = array(
             $this->parts['first'],
-            mb_substr($this->parts['middle'],0,1),
+            $this->getMiddleInitial(),
             $this->parts['last'],
         );
-        if ($parts[1]) $parts[1] .= '.';
         return implode(' ', array_filter($parts));
     }
 
@@ -873,27 +891,27 @@ implements TemplateVariable {
         $parts = array(
             $this->parts['salutation'],
             $this->parts['first'],
-            mb_substr($this->parts['middle'],0,1),
+            $this->getMiddleInitial(),
             $this->parts['last'],
             $this->parts['suffix']
         );
-        if ($parts[2]) $parts[2] .= '.';
         return implode(' ', array_filter($parts));
     }
 
     function getLastFirst() {
         $name = $this->parts['last'].', '.$this->parts['first'];
+        $name = trim($name, ', ');
         if ($this->parts['suffix'])
             $name .= ', '.$this->parts['suffix'];
         return $name;
     }
 
     function getShort() {
-        return $this->parts['first'].' '.mb_substr($this->parts['last'],0,1).'.';
+        return $this->parts['first'].' '.$this->getLastInitial();
     }
 
     function getShortFormal() {
-        return mb_substr($this->parts['first'],0,1).'. '.$this->parts['last'];
+        return $this->getFirstInitial().' '.$this->parts['last'];
     }
 
     function getOriginal() {
@@ -1109,6 +1127,10 @@ class UserAccount extends VerySimpleModel {
         return $this->getStatus()->isLocked();
     }
 
+    function isActive() {
+        return (!$this->isLocked() && $this->isConfirmed());
+    }
+
     function forcePasswdReset() {
         $this->setStatus(UserAccountStatus::REQUIRE_PASSWD_RESET);
         return $this->save();
@@ -1200,11 +1222,11 @@ class UserAccount extends VerySimpleModel {
     }
 
     function sendResetEmail() {
-        return static::sendUnlockEmail('pwreset-client') === true;
+        return $this->sendUnlockEmail('pwreset-client') === true;
     }
 
     function sendConfirmEmail() {
-        return static::sendUnlockEmail('registration-client') === true;
+        return $this->sendUnlockEmail('registration-client') === true;
     }
 
     function setPassword($new) {
@@ -1344,10 +1366,10 @@ class UserAccount extends VerySimpleModel {
     }
 
     static function lookupByUsername($username) {
-        if (strpos($username, '@') !== false)
-            $user = static::lookup(array('user__emails__address'=>$username));
-        else
-            $user = static::lookup(array('username'=>$username));
+        if (Validator::is_email($username))
+            $user = static::lookup(array('user__emails__address' => $username));
+        elseif (Validator::is_userid($username))
+            $user = static::lookup(array('username' => $username));
 
         return $user;
     }

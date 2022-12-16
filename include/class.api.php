@@ -13,6 +13,8 @@
 
     vim: expandtab sw=4 ts=4 sts=4:
 **********************************************************************/
+include_once INCLUDE_DIR.'class.controller.php';
+
 class API {
 
     var $id;
@@ -91,15 +93,15 @@ class API {
     }
 
     /** Static functions **/
-    function add($vars, &$errors) {
+    static function add($vars, &$errors) {
         return API::save(0, $vars, $errors);
     }
 
-    function validate($key, $ip) {
+    static function validate($key, $ip) {
         return ($key && $ip && self::getIdByKey($key, $ip));
     }
 
-    function getIdByKey($key, $ip='') {
+    static function getIdByKey($key, $ip='') {
 
         $sql='SELECT id FROM '.API_KEY_TABLE.' WHERE apikey='.db_input($key);
         if($ip)
@@ -111,15 +113,15 @@ class API {
         return $id;
     }
 
-    function lookupByKey($key, $ip='') {
+    static function lookupByKey($key, $ip='') {
         return self::lookup(self::getIdByKey($key, $ip));
     }
 
-    function lookup($id) {
+    static function lookup($id) {
         return ($id && is_numeric($id) && ($k= new API($id)) && $k->getId()==$id)?$k:null;
     }
 
-    function save($id, $vars, &$errors) {
+    static function save($id, $vars, &$errors) {
 
         if(!$id && (!$vars['ipaddr'] || !Validator::is_ip($vars['ipaddr'])))
             $errors['ipaddr'] = __('Valid IP is required');
@@ -165,7 +167,7 @@ class API {
  * API request.
  */
 
-class ApiController {
+class ApiController extends Controller {
 
     var $apikey;
 
@@ -195,19 +197,23 @@ class ApiController {
      * work will be done for XML requests
      */
     function getRequest($format) {
-        global $ost;
-
         $input = osTicket::is_cli()?'php://stdin':'php://input';
-
         if (!($stream = @fopen($input, 'r')))
             $this->exerr(400, __("Unable to read request body"));
 
+        return $this->parseRequest($stream, $format);
+    }
+
+    function getEmailRequest() {
+        return $this->getRequest('email');
+    }
+
+    function parseRequest($stream, $format, $validate=true) {
         $parser = null;
         switch(strtolower($format)) {
             case 'xml':
                 if (!function_exists('xml_parser_create'))
                     $this->exerr(501, __('XML extension not supported'));
-
                 $parser = new ApiXmlDataParser();
                 break;
             case 'json':
@@ -217,22 +223,24 @@ class ApiController {
                 $parser = new ApiEmailDataParser();
                 break;
             default:
-                $this->exerr(415, __('Unsupported data format'));
+                return $this->exerr(415, __('Unsupported data format'));
         }
 
-        if (!($data = $parser->parse($stream)))
+        if (!($data = $parser->parse($stream))) {
             $this->exerr(400, $parser->lastError());
+            throw new Exception($parser->lastError());
+        }
 
         //Validate structure of the request.
-        $this->validate($data, $format, false);
+        if ($validate && $data)
+            $this->validate($data, $format, false);
 
         return $data;
     }
 
-    function getEmailRequest() {
-        return $this->getRequest('email');
+    function parseEmail($content) {
+        return $this->parseRequest($content, 'email', false);
     }
-
 
     /**
      * Structure to validate the request against -- must be overridden to be
@@ -298,10 +306,7 @@ class ApiController {
             $msg.="\n*[".$_SERVER['HTTP_X_API_KEY']."]*\n";
         $ost->logWarning(__('API Error')." ($code)", $msg, false);
 
-        if (PHP_SAPI == 'cli') {
-            fwrite(STDERR, "({$code}) $error\n");
-        }
-        else {
+        if (PHP_SAPI != 'cli') {
             $this->response($code, $error); //Responder should exit...
         }
         return false;
@@ -381,10 +386,10 @@ class ApiXmlDataParser extends XmlDataParser {
 
 include_once "class.json.php";
 class ApiJsonDataParser extends JsonDataParser {
-    function parse($stream, $tidy=false) {
-        return $this->fixup(parent::parse($stream));
+    static function parse($stream, $tidy=false) {
+        return self::fixup(parent::parse($stream));
     }
-    function fixup($current) {
+    static function fixup($current) {
         if (!is_array($current))
             return $current;
         foreach ($current as $key=>&$value) {

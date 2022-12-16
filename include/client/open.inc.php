@@ -7,10 +7,6 @@ if($thisclient && $thisclient->isValid()) {
                 'phone'=>$thisclient->getPhoneNumber());
 }
 
-if(isset($_REQUEST["tid"])){
-    $info['topicId']=$_REQUEST["tid"];
-    }
-
 $info=($_POST && $errors)?Format::htmlchars($_POST):$info;
 
 $form = null;

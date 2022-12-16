@@ -47,11 +47,12 @@ if ($_POST) {
         // Drop session-backed form data
         unset($_SESSION[':form-data']);
         //Logged in...simply view the newly created ticket.
-        if($thisclient && $thisclient->isValid()) {
-            session_regenerate_id();
-            session_write_close();
+        if ($thisclient && $thisclient->isValid()) {
+            // Regenerate session id
+            $thisclient->regenerateSession();
             @header('Location: tickets.php?id='.$ticket->getId());
-        }
+        } else
+            $ost->getCSRF()->rotate();
     }else{
         $errors['err'] = $errors['err'] ?: sprintf('%s %s',
             __('Unable to create a ticket.'),
@@ -82,12 +83,19 @@ if ($ticket
     )
 ) {
     // Thank the user and promise speedy resolution!
+    ?>
+<div class="cover">
+    <div class="container"> <div class="row"> <div class="col-md-12">
+    <?php 
     echo Format::viewableImages(
         $ticket->replaceVars(
             $page->getLocalBody()
         ),
         ['type' => 'P']
-    );
+    ); ?>
+    </div></div></div>
+</div>
+<?php 
 }
 else {
     require(CLIENTINC_DIR.'open.inc.php');

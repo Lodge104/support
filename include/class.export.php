@@ -322,7 +322,7 @@ static function departmentMembers($dept, $agents, $filename='', $how='csv') {
     exit;
   }
 
-  static function audits($type, $filename='', $tableInfo='', $object='', $how='csv', $show_viewed=true, $data=array(), CsvExporter $exporter) {
+  static function audits($type, ?string $filename=null, ?string $tableInfo=null, ?string $object=null, ?string $how='csv', ?bool $show_viewed=true, ?array $data=array(), CsvExporter $exporter) {
       $headings = array('Description', 'Timestamp', 'IP');
       switch ($type) {
           case 'audit':
@@ -680,7 +680,7 @@ class ResultSetExporter {
                 }
             }
             // Evalutate :: function call on target current
-            if ($func && (method_exists($current, $func) || method_exists($current, '__call'))) {
+            if (($current && $func) && (method_exists($current, $func) || method_exists($current, '__call'))) {
                 $current = $current->{$func}();
             }
 
@@ -743,12 +743,11 @@ class CsvResultsExporter extends ResultSetExporter {
 class JsonResultsExporter extends ResultSetExporter {
     function dump() {
         require_once(INCLUDE_DIR.'class.json.php');
-        $exp = new JsonDataEncoder();
         $rows = array();
         while ($row=$this->nextArray()) {
             $rows[] = $row;
         }
-        echo $exp->encode($rows);
+        echo JsonDataEncoder::encode($rows);
     }
 }
 
@@ -899,6 +898,18 @@ class TicketZipExporter {
             $zip->addFromString("{$prefix}/{$att->getFilename()}",
                 $att->getFile()->getData());
         }
+
+        // Include custom fields attachments
+        foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
+            $answers = $form->getAnswers()->filter(
+                    array('field__type' => 'files'));
+            foreach ($answers as $answer) {
+                $field = $answer->getField();
+                foreach ($field->getAttachments() as $a)
+                    $zip->addFromString("{$prefix}/{$a->getFilename()}",
+                            $a->getFile()->getData());
+            }
+        }
     }
 
     function addTask($task, $zip, $prefix, $notes=true, $psize=null) {
@@ -923,6 +934,17 @@ class TicketZipExporter {
         foreach ($attachments as $att) {
             $zip->addFromString("{$prefix}/{$task->getNumber()}/{$att->getFilename()}",
                 $att->getFile()->getData());
+        }
+        // Include custom fields attachments
+        foreach (DynamicFormEntry::forTask($task->getId()) as $form) {
+            $answers = $form->getAnswers()->filter(
+                    array('field__type' => 'files'));
+            foreach ($answers as $answer) {
+                $field = $answer->getField();
+                foreach ($field->getAttachments() as $a)
+                    $zip->addFromString("{$prefix}/{$task->getNumber()}/{$a->getFilename()}",
+                            $a->getFile()->getData());
+            }
         }
     }
 

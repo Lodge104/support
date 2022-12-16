@@ -1,12 +1,6 @@
 {
-    "name": "senzil/osticket-google-aouth2-plugin",
-    "repositories": [
-        {
-            "type": "pear",
-            "url": "https://pear.php.net"
-        }
-    ],
-    "require": [],
+    "name": "osticket/core-plugins",
+    "require": {"league\/oauth2-client":"*","aws\/aws-sdk-php":"3.*"},
     "config": {
         "vendor-dir": "lib"
     }

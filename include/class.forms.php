@@ -25,6 +25,7 @@ class Form {
     var $options = array();
     var $fields = array();
     var $title = '';
+    var $notice = '';
     var $instructions = '';
 
     var $validators = array();
@@ -39,6 +40,8 @@ class Form {
             $this->title = $options['title'];
         if (isset($options['instructions']))
             $this->instructions = $options['instructions'];
+        if (isset($options['notice']))
+            $this->notice = $options['notice'];
         if (isset($options['id']))
             $this->id = $options['id'];
 
@@ -51,6 +54,10 @@ class Form {
     }
     function setId($id) {
         $this->id = $id;
+    }
+
+    function setNotice($notice) {
+        $this->notice = $notice;
     }
 
     function data($source) {
@@ -112,6 +119,7 @@ class Form {
     }
 
     function getTitle() { return $this->title; }
+    function getNotice() { return $this->notice; }
     function getInstructions() { return Format::htmldecode($this->instructions); }
     function getSource() { return $this->_source; }
     function setSource($source) { $this->_source = $source; }
@@ -159,30 +167,54 @@ class Form {
         }
         return $this->_clean;
     }
+    /*
+     * Transform form data to database ready clean data.
+     *
+     */
+    function to_db($clean=null, $validate=true) {
+        if (!$clean
+                && !$this->isValid()
+                && !($clean=$this->getClean($validate)))
+            return false;
+        $data = [];
+        foreach ($clean as $name => $val) {
+            if (!($f = $this->getField($name)))
+                continue;
+            try {
+                $data[$name] = $f->to_database($val);
+            } catch (FieldUnchanged $e) {
+                // Unset field if it's unchanged...mainly
+                // useful for Secret/PasswordField
+                unset($data[$name]);
+            }
+        }
+        return $data;
+    }
 
     /*
      * Process the form input and return clean data.
      *
-     * It's similar to getClean but forms downstream can use it to return
-     * database ready data.
+     * It's similar to to_db but forms downstream can use it to skip or add
+     * extra validations
+
      */
     function process($validate=true) {
-        return $this->getClean($validate);
+        return $this->to_db($validate);
     }
+
 
     function errors($formOnly=false) {
         return ($formOnly) ? $this->_errors['form'] : $this->_errors;
     }
 
     function addError($message, $index=false) {
-
         if ($index)
             $this->_errors[$index] = $message;
         else
             $this->_errors['form'][] = $message;
     }
 
-    function addErrors($errors=array()) {
+    function addErrors($errors=[]) {
         foreach ($errors as $k => $v) {
             if (($f=$this->getField($k)))
                 $f->addError($v);
@@ -202,6 +234,9 @@ class Form {
             $this->title = $options['title'];
         if (isset($options['instructions']))
             $this->instructions = $options['instructions'];
+        if (isset($options['notice']))
+            $this->notice = $options['notice'];
+
         $form = $this;
         $template = $options['template'] ?: 'dynamic-form.tmpl.php';
         if (isset($options['staff']) && $options['staff'])
@@ -434,9 +469,14 @@ implements FormRenderer {
 ?>
       <table class="<?php echo 'grid form' ?>">
           <caption><?php echo Format::htmlchars($this->title ?: $form->getTitle()); ?>
-                  <div><small><?php echo Format::viewableImages($form->getInstructions()); ?></small></div>
-          </caption>
-          <tbody><tr><?php for ($i=0; $i<12; $i++) echo '<td style="width:8.3333%"/>'; ?></tr></tbody>
+            <div><small><?php echo Format::viewableImages($form->getInstructions()); ?></small></div>
+            <?php
+            if ($form->getNotice())
+                echo sprintf('<div><small><p id="msg_warning">%s</p></small></div>',
+                        Format::htmlchars($form->getNotice()));
+            ?>
+        </caption>
+        <tbody><tr><?php for ($i=0; $i<12; $i++) echo '<td style="width:8.3333%"/>'; ?></tr></tbody>
 <?php
       $row_size = 12;
       $cols = $row = 0;
@@ -580,7 +620,7 @@ class FormField {
     static $more_types = array();
     static $uid = null;
 
-    function _uid() {
+    static function _uid() {
         return ++self::$uid;
     }
 
@@ -604,7 +644,7 @@ class FormField {
             foreach (static::$more_types as $group => $entries)
                 foreach ($entries as $c)
                     static::$types[$group] = array_merge(
-                            static::$types[$group] ?: array(), call_user_func($c));
+                            static::$types[$group] ?? array(), call_user_func($c));
 
             static::$more_types = array();
         }
@@ -677,6 +717,12 @@ class FormField {
     function errors() {
         return $this->_errors;
     }
+
+    function resetErrors() {
+        $this->_errors = [];
+        return !($this->_errors);
+    }
+
     function addError($message, $index=false) {
         if ($index)
             $this->_errors[$index] = $message;
@@ -1234,7 +1280,7 @@ class FormField {
      * the default value will be reflected in the returned configuration.
      */
     function getConfiguration() {
-        if (!$this->_config) {
+        if (!isset($this->_config)) {
             $this->_config = $this->get('configuration');
             if (is_string($this->_config))
                 $this->_config = JsonDataParser::parse($this->_config);
@@ -1539,6 +1585,15 @@ class PasswordField extends TextboxField {
             $this->set('validator', 'password');
     }
 
+    protected function getMasterKey() {
+        return SECRET_SALT;
+    }
+
+    protected function getSubKey() {
+        $config = $this->getConfiguration();
+        return $config['key'] ?: 'pwfield';
+    }
+
     function parse($value) {
         // Don't trim the value
         return $value;
@@ -1548,11 +1603,13 @@ class PasswordField extends TextboxField {
         // If not set in UI, don't save the empty value
         if (!$value)
             throw new FieldUnchanged();
-        return Crypto::encrypt($value, SECRET_SALT, 'pwfield');
+        return Crypto::encrypt($value, $this->getMasterKey(),
+                $this->getSubKey());
     }
 
     function to_php($value) {
-        return Crypto::decrypt($value, SECRET_SALT, 'pwfield');
+        return Crypto::decrypt($value, $this->getMasterKey(),
+                $this->getSubKey());
     }
 }
 
@@ -1806,7 +1863,10 @@ class ChoiceField extends FormField {
                 'id'=>1, 'label'=>__('Choices'), 'required'=>false, 'default'=>'',
                 'hint'=>__('List choices, one per line. To protect against spelling changes, specify key:value names to preserve entries if the list item names change.</br><b>Note:</b> If you have more than two choices, use a List instead.'),
                 'validator'=>'choices',
-                'configuration'=>array('html'=>false)
+                'configuration'=>array(
+                    'html' => false,
+                    'disabled' => false,
+                    )
             )),
             'default' => new TextboxField(array(
                 'id'=>3, 'label'=>__('Default'), 'required'=>false, 'default'=>'',
@@ -2058,18 +2118,19 @@ class ChoiceField extends FormField {
     function applyQuickFilter($query, $qf_value, $name=false) {
         global $thisstaff;
 
+        $field = new AssigneeChoiceField();
         //special assignment quick filters
         switch (true) {
             case ($qf_value == 'assigned'):
             case ($qf_value == '!assigned'):
-                $result = AssigneeChoiceField::getSearchQ($qf_value, $qf_value);
+                $result = $field->getSearchQ($qf_value, $qf_value);
                 return $query->filter($result);
             case (strpos($qf_value, 's') !== false):
             case (strpos($qf_value, 't') !== false):
             case ($qf_value == 'M'):
             case ($qf_value == 'T'):
                 $value = array($qf_value => $qf_value);
-                $result = AssigneeChoiceField::getSearchQ('includes', $value);
+                $result = $field->getSearchQ('includes', $value);
                 return $query->filter($result);
                 break;
         }
@@ -2207,7 +2268,7 @@ class DatetimeField extends FormField {
         return $this->max;
     }
 
-    function getPastPresentLabels() {
+    static function getPastPresentLabels() {
       return array(__('Create Date'), __('Reopen Date'),
                     __('Close Date'), __('Last Update'));
     }
@@ -2853,7 +2914,7 @@ class TopicField extends ChoiceField {
     }
 
     function whatChanged($before, $after) {
-        return FormField::whatChanged($before, $after);
+        return parent::whatChanged($before, $after);
     }
 
     function searchable($value) {
@@ -2961,7 +3022,7 @@ class SLAField extends ChoiceField {
     }
 
     function whatChanged($before, $after) {
-        return FormField::whatChanged($before, $after);
+        return parent::whatChanged($before, $after);
     }
 
     function searchable($value) {
@@ -3037,16 +3098,19 @@ class PriorityField extends ChoiceField {
     function to_php($value, $id=false) {
         if ($value instanceof Priority)
             return $value;
+
         if (is_array($id)) {
             reset($id);
             $id = key($id);
-        }
-        elseif (is_array($value))
+        } elseif (is_array($value)) {
             list($value, $id) = $value;
-        elseif ($id === false)
+        } elseif ($id === false && is_numeric($value))
             $id = $value;
 
-        return $this->getPriority($id);
+        if (is_numeric($id))
+            return $this->getPriority($id);
+
+        return $value;
     }
 
     function to_database($value) {
@@ -3074,7 +3138,7 @@ class PriorityField extends ChoiceField {
     }
 
     function whatChanged($before, $after) {
-        return FormField::whatChanged($before, $after);
+        return parent::whatChanged($before, $after);
     }
 
     function searchable($value) {
@@ -3155,7 +3219,7 @@ class TimezoneField extends ChoiceField {
     }
 
     function whatChanged($before, $after) {
-        return FormField::whatChanged($before, $after);
+        return parent::whatChanged($before, $after);
     }
 
     function searchable($value) {
@@ -3196,7 +3260,7 @@ class DepartmentField extends ChoiceField {
 
         $config = $this->getConfiguration();
         $staff = $config['staff'] ?: $thisstaff;
-        $selected = self::getWidget();
+        $selected = $this->getWidget();
         if($selected && $selected->value) {
           if(is_array($selected->value)) {
             foreach ($selected->value as $k => $v) {
@@ -3243,6 +3307,15 @@ class DepartmentField extends ChoiceField {
          }
 
         return $choices;
+    }
+
+    function display($dept, &$styles=null) {
+        if (!is_numeric($dept) && is_string($dept))
+            return Format::htmlchars($dept);
+        elseif ($dept instanceof Dept)
+            return Format::htmlchars($dept->getName());
+
+        return parent::display($dept);
     }
 
     function parse($id) {
@@ -3465,7 +3538,15 @@ class AssigneeField extends ChoiceField {
 
     function to_php($value, $id=false) {
         if (is_string($value))
-            $value = JsonDataParser::parse($value);
+            $value = JsonDataParser::parse($value) ?: $value;
+
+        if (is_string($value) && strpos($value, ',')) {
+            $values = array();
+            list($key, $V) = array_map('trim', explode(',', $value));
+
+            $values[$key] = $V;
+            $value = $values;
+        }
 
         $type = '';
         if (is_array($id)) {
@@ -3477,8 +3558,11 @@ class AssigneeField extends ChoiceField {
         if (is_array($value)) {
             $type = key($value)[0];
             if (!$id)
-                $id = key($value)[1];
+                $id = substr(key($value), 1);
         }
+
+        if (!$type && is_numeric($value))
+            return Staff::lookup($value);
 
         switch ($type) {
         case 's':
@@ -3503,10 +3587,10 @@ class AssigneeField extends ChoiceField {
                 $name = $value->getName();
             }
 
-            return array(JsonDataEncoder::encode(array($key => $name)));
+            return JsonDataEncoder::encode(array($key => $name));
         }
         if (is_array($value)) {
-            return array(JsonDataEncoder::encode($value[0]));
+            return JsonDataEncoder::encode($value[0]);
         }
         return $value;
     }
@@ -3539,7 +3623,7 @@ class AssigneeField extends ChoiceField {
         // Compare old and new
         return ($old == $new)
             ? false
-            : array($old[0], $new[0]);
+            : array($old, $new);
     }
 
     function whatChanged($before, $after) {
@@ -4325,6 +4409,8 @@ class TextboxWidget extends Widget {
                     if ($v)
                         $attrs['data-translate-tag'] =  '"'.$v.'"';
                     break;
+                case 'length':
+                    $k = 'maxlength';
                 case 'size':
                 case 'maxlength':
                     if ($v && is_numeric($v))
@@ -4392,8 +4478,9 @@ class PasswordWidget extends TextboxWidget {
 
     function render($mode=false, $extra=false) {
         $extra = array();
-        if ($this->field->value) {
-            $extra['placeholder'] = '••••••••••••';
+        if (isset($this->field->value)) {
+            $extra['placeholder'] = str_repeat('•',
+                    strlen($this->field->value));
         }
         return parent::render($mode, $extra);
     }
@@ -4448,7 +4535,7 @@ class TextareaWidget extends Widget {
                 array_filter($attrs)); ?>
             id="<?php echo $this->id; ?>"
             name="<?php echo $this->name; ?>"><?php
-                echo Format::htmlchars($this->value, true);
+                echo Format::htmlchars($this->value, ($config['html']));
             ?></textarea>
         </span>
         <?php
@@ -4563,8 +4650,10 @@ class ChoicesWidget extends Widget {
                 echo ' data-'.$D.'="'.Format::htmlchars($V).'"';
             ?>
             data-placeholder="<?php echo Format::htmlchars($prompt); ?>"
+            <?php if ($config['disabled'])
+                echo ' disabled="disabled"'; ?>
             <?php if ($config['multiselect'])
-                echo ' multiple="multiple"'; ?> class="form-control">
+                echo ' multiple="multiple"'; ?>>
             <?php if ($showdefault || (!$have_def && !$config['multiselect'])) { ?>
             <option value="<?php echo $showdefault ? '' : $def_key; ?>">&mdash; <?php
                 echo $def_val; ?> &mdash;</option>
@@ -4825,7 +4914,7 @@ class CheckboxWidget extends Widget {
             $classes = array_merge($classes, (array) $config['classes']);
         ?>
         <label class="<?php echo implode(' ', $classes); ?>">
-        <input class="form-check-input" id="<?php echo $this->id; ?>"
+        <input id="<?php echo $this->id; ?>"
             type="checkbox" name="<?php echo $this->name; ?>[]" <?php
             if ($this->value) echo 'checked="checked"'; ?> value="<?php
             echo $this->field->get('id'); ?>"/>
@@ -5596,7 +5685,7 @@ class AssignmentForm extends Form {
                     'id'=>2, 'label'=>'', 'required'=>false,
                     'default'=>false,
                     'configuration'=>array(
-                        'desc' => 'Maintain referral access to current assignees')
+                        'desc' => __('Maintain referral access to current assignees'))
                     )
                 ),
             'comments' => new TextareaField(array(
