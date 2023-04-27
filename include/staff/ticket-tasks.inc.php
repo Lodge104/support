@@ -92,7 +92,7 @@ if ($count) { ?>
                     Format::truncate($task->getAssigned(),40));
         }
 
-        $status = $task->isOpen() ? '<strong>open</strong>': 'closed';
+        $status = $task->isOpen() ? '<strong>'.__('Open').'</strong>': __('Closed');
 
         $title = Format::htmlchars(Format::truncate($task->getTitle(),40));
         $threadcount = $task->getThread() ?
@@ -106,8 +106,9 @@ if ($count) { ?>
         ?>
         <tr id="<?php echo $id; ?>">
             <td align="center" class="nohover">
-                <input class="ckb" type="checkbox" name="tids[]"
-                value="<?php echo $id; ?>" <?php echo $sel?'checked="checked"':''; ?>>
+                <!--osta-->
+                <p class="checkbox"><input class="ckb" type="checkbox" name="tids[]"
+                value="<?php echo $id; ?>" <?php echo $sel?'checked="checked"':''; ?>><label></label></p>
             </td>
             <td align="center" nowrap>
               <a class="Icon no-pjax preview"
@@ -139,7 +140,7 @@ if ($count) { ?>
                 ?>
             </td>
             <td><?php echo Format::truncate($task->dept->getName(), 40); ?></td>
-            <td>&nbsp;<?php echo $assigned; ?></td>
+            <td><!--osta--><?php echo $assigned; ?></td>
         </tr>
    <?php
     }

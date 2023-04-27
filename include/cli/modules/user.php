@@ -168,6 +168,7 @@ class UserManager extends Module {
         default:
             $this->stderr->write('Unknown action!');
         }
+        if (is_resource($this->stream))
         @fclose($this->stream);
     }
 

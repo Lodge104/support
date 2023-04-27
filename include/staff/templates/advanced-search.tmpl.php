@@ -1,9 +1,9 @@
 <?php
 global $thisstaff;
 
-$parent_id = (isset($_REQUEST['parent_id']) && is_numeric($_REQUEST['parent_id']))
+$parent_id = (int) ((isset($_REQUEST['parent_id']) && is_numeric($_REQUEST['parent_id']))
         ? $_REQUEST['parent_id']
-        : $search->parent_id;
+        : $search->parent_id);
 if ($parent_id
     && is_numeric($parent_id)
     && (!($parent = SavedQueue::lookup($parent_id)))
@@ -281,4 +281,10 @@ if ($search->isSaved()) { ?>
             window.location.href = 'tickets.php?queue='+id;
     });
 }();
+//osta
+$(document).ready(function() {
+  $("select#parent").select2({
+		minimumResultsForSearch: Infinity
+	});
+});	
 </script>

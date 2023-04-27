@@ -29,8 +29,9 @@ class Bootstrap {
         error_reporting($error_reporting); //Respect whatever is set in php.ini (sysadmin knows better??)
 
         #Don't display errors
-        ini_set('display_errors', '0'); // Set by installer
-        ini_set('display_startup_errors', '0'); // Set by installer
+        // osta
+        //ini_set('display_errors', '0'); // Set by installer
+        //ini_set('display_startup_errors', '0'); // Set by installer
 
         //Default timezone
         if (!ini_get('date.timezone')) {
@@ -44,6 +45,24 @@ class Bootstrap {
             }
         }
         date_default_timezone_set('UTC');
+
+        if (!function_exists('exif_imagetype')) {
+            function exif_imagetype ($filename) {
+                if ((list($width,$height,$type,) = getimagesize($filename)) !== false)
+                    return $type;
+
+                return false;
+            }
+        }
+
+        if (!function_exists('exif_imagetype')) {
+            function exif_imagetype ($filename) {
+                if ((list($width,$height,$type,) = getimagesize($filename)) !== false)
+                    return $type;
+
+                return false;
+            }
+        }
 
         if (!isset($_SERVER['REMOTE_ADDR']))
             $_SERVER['REMOTE_ADDR'] = '';
@@ -193,13 +212,21 @@ class Bootstrap {
                 'key' => DBSSLKEY
             );
 
-        if (!db_connect(DBHOST, DBUSER, DBPASS, $options)) {
-            $ferror=sprintf('Unable to connect to the database — %s',db_connect_error());
+        $hosts = explode(',', DBHOST);
+        foreach ($hosts as $host) {
+            $ferror  = null;
+            if (!db_connect($host, DBUSER, DBPASS, $options)) {
+                $ferror = sprintf('Unable to connect to the database — %s',
+                        db_connect_error());
         }elseif(!db_select_database(DBNAME)) {
-            $ferror=sprintf('Unknown or invalid database: %s',DBNAME);
+                $ferror = sprintf('Unknown or invalid database: %s',
+                        DBNAME);
+           }
+           // break if no error
+           if (!$ferror) break;
         }
 
-        if($ferror) //Fatal error
+        if ($ferror) //Fatal error
             self::croak($ferror);
     }
 
@@ -314,7 +341,7 @@ class Bootstrap {
 
     static function croak($message) {
         $msg = $message."\n\n".THISPAGE;
-        Mailer::sendmail(ADMIN_EMAIL, 'osTicket Fatal Error', $msg,
+        osTicket\Mail\Mailer::sendmail(ADMIN_EMAIL, 'osTicket Fatal Error', $msg,
             sprintf('"osTicket Alerts"<%s>', ADMIN_EMAIL));
         //Display generic error to the user
         Http::response(500, "<b>Fatal Error:</b> Contact system administrator.");
@@ -341,9 +368,9 @@ define('CLI_DIR', INCLUDE_DIR.'cli/');
 /*############## Do NOT monkey with anything else beyond this point UNLESS you really know what you are doing ##############*/
 
 #Current version && schema signature (Changes from version to version)
-define('GIT_VERSION', '1d8b790'); // Set by installer
+define('GIT_VERSION', 'ca95150'); // Set by installer
 define('MAJOR_VERSION', '1.17');
-define('THIS_VERSION', 'v1.17'); // Set by installer
+define('THIS_VERSION', 'v1.17.3'); // Set by installer
 //Path separator
 if(!defined('PATH_SEPARATOR')){
     if(strpos($_ENV['OS'],'Win')!==false || !strcasecmp(substr(PHP_OS, 0, 3),'WIN'))
@@ -368,7 +395,7 @@ if (!defined('ROOT_PATH') && ($rp = osTicket::get_root_path(dirname(__file__))))
 Bootstrap::init();
 
 #CURRENT EXECUTING SCRIPT.
-define('THISPAGE', Misc::currentURL());
+define('THISPAGE', Http::url());
 
 define('DEFAULT_MAX_FILE_UPLOADS', ini_get('max_file_uploads') ?: 5);
 define('DEFAULT_PRIORITY_ID', 1);

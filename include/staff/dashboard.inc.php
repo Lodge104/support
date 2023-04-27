@@ -3,14 +3,22 @@ $report = new OverviewReport($_POST['start'], $_POST['period']);
 $plots = $report->getPlotData();
 
 ?>
-<script type="text/javascript" src="js/raphael-min.js?1d8b790"></script>
-<script type="text/javascript" src="js/g.raphael.js?1d8b790"></script>
-<script type="text/javascript" src="js/g.line-min.js?1d8b790"></script>
-<script type="text/javascript" src="js/g.dot-min.js?1d8b790"></script>
-<script type="text/javascript" src="js/dashboard.inc.js?1d8b790"></script>
+<script type="text/javascript" src="js/raphael-min.js?ca95150"></script>
+<script type="text/javascript" src="js/g.raphael.js?ca95150"></script>
+<script type="text/javascript" src="js/g.line-min.js?ca95150"></script>
+<script type="text/javascript" src="js/g.dot-min.js?ca95150"></script>
+<script type="text/javascript" src="js/dashboard.inc.js?ca95150"></script>
 
-<link rel="stylesheet" type="text/css" href="css/dashboard.css?1d8b790"/>
+<link rel="stylesheet" type="text/css" href="css/dashboard.css?ca95150"/>
 
+<!--osta-->
+<div class="clear"></div>
+<div style="margin-bottom:20px; padding-top:5px;">
+    <div class="pull-left flush-left">
+        <h2><?php echo __('Ticket Activity');
+            ?>&nbsp;<i class="help-tip icon-question-sign" href="#ticket_activity"></i></h2>
+    </div>
+</div>
 <form method="post" action="dashboard.php">
 <div id="basic_search">
     <div style="min-height:25px;">
@@ -25,23 +33,10 @@ $plots = $report->getPlotData();
                     ?>" />
             </label>
             <label>
-                <?php echo __( 'period');?>:
+                <?php echo __('period');?>:
                 <select name="period">
-                    <option value="now" selected="selected">
-                        <?php echo __( 'Up to today');?>
-                    </option>
-                    <option value="+7 days">
-                        <?php echo __( 'One Week');?>
-                    </option>
-                    <option value="+14 days">
-                        <?php echo __( 'Two Weeks');?>
-                    </option>
-                    <option value="+1 month">
-                        <?php echo __( 'One Month');?>
-                    </option>
-                    <option value="+3 months">
-                        <?php echo __( 'One Quarter');?>
-                    </option>
+                    <?php foreach ($report::$end_choices as $val=>$desc)
+                            echo "<option value='$val'>" . __($desc) . "</option>"; ?>
                 </select>
             </label>
             <button class="green button action-button muted" type="submit">
@@ -50,13 +45,7 @@ $plots = $report->getPlotData();
             <i class="help-tip icon-question-sign" href="#report_timeframe"></i>
     </div>
 </div>
-<div class="clear"></div>
-<div style="margin-bottom:20px; padding-top:5px;">
-    <div class="pull-left flush-left">
-        <h2><?php echo __('Ticket Activity');
-            ?>&nbsp;<i class="help-tip icon-question-sign" href="#ticket_activity"></i></h2>
-    </div>
-</div>
+<!--osta-->
 <div class="clear"></div>
 <!-- Create a graph and fetch some data to create pretty dashboard -->
 <div style="position:relative">

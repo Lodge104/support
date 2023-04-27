@@ -35,7 +35,7 @@ if ($_POST) {
     if (!$errors) {
         $vars['message'] = $messageField->getClean();
         if ($messageField->isAttachmentsEnabled())
-            $vars['files'] = $attachments->getFiles();
+        $vars['files'] = $attachments->getFiles();
     }
 
     // Drop the draft.. If there are validation errors, the content
@@ -83,19 +83,12 @@ if ($ticket
     )
 ) {
     // Thank the user and promise speedy resolution!
-    ?>
-<div class="cover">
-    <div class="container"> <div class="row"> <div class="col-md-12">
-    <?php 
     echo Format::viewableImages(
         $ticket->replaceVars(
             $page->getLocalBody()
         ),
         ['type' => 'P']
-    ); ?>
-    </div></div></div>
-</div>
-<?php 
+    );
 }
 else {
     require(CLIENTINC_DIR.'open.inc.php');

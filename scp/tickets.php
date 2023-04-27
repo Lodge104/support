@@ -37,7 +37,7 @@ if(isset($_REQUEST['id']) || isset($_REQUEST['number'])) {
          $errors['err']=sprintf(__('%s: Unknown or invalid ID.'), __('ticket'));
     elseif($_REQUEST['number'] && !($ticket=Ticket::lookup(array('number' => $_REQUEST['number']))))
          $errors['err']=sprintf(__('%s: Unknown or invalid number.'), __('ticket'));
-     elseif(!$ticket->checkStaffPerm($thisstaff)) {
+     elseif(!$ticket || !$ticket->checkStaffPerm($thisstaff)) {
          $errors['err']=__('Access denied. Contact admin if you believe this is in error');
          $ticket=null; //Clear ticket obj.
      }
@@ -507,8 +507,8 @@ if ($thisstaff->hasPerm(Ticket::PERM_CREATE, false)) {
 }
 
 
-$ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?1d8b790"></script>');
-$ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?1d8b790"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="js/ticket.js?ca95150"></script>');
+$ost->addExtraHeader('<script type="text/javascript" src="js/thread.js?ca95150"></script>');
 $ost->addExtraHeader('<meta name="tip-namespace" content="tickets.queue" />',
     "$('#content').data('tipNamespace', 'tickets.queue');");
 

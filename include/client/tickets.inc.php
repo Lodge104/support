@@ -79,9 +79,9 @@ $visibility = $basic_filter->copy()
     ->values_flat('ticket_id')
     ->filter(array('user_id' => $thisclient->getId()));
 
-    // Add visibility of Tickets where the User is a Collaborator if enabled
-    if ($cfg->collaboratorTicketsVisibility())
-        $visibility = $visibility
+// Add visibility of Tickets where the User is a Collaborator if enabled
+if ($cfg->collaboratorTicketsVisibility())
+    $visibility = $visibility
     ->union($basic_filter->copy()
         ->values_flat('ticket_id')
         ->filter(array('thread__collaborators__user_id' => $thisclient->getId()))
@@ -137,101 +137,87 @@ $tickets->values(
 );
 
 ?>
-<div class="cover">
-    <div class="container"> <div class="row">
+<div class="search well">
+<!--osta-->
+<div class="flush-left">
+<form action="tickets.php" method="get" id="ticketSearchForm">
+<div id="search-container">
+	<input type="hidden" name="a" value="search">
+	<input type="text" name="keywords" size="30" value="<?php echo Format::htmlchars($settings['keywords']); ?>" placeholder="<?php echo __('Search'); ?>"/><button type="submit" class="button ticket-search"><i class="icon-search"></i></button> 
+		</div>
+		<div class="pull-right">
+		<select name="topic_id" class="nowarn" onchange="javascript: this.form.submit(); ">
+		<option value=""><!--osta--><?php echo __('All Help Topics');?></option>
+<?php
+foreach (Topic::getHelpTopics(true) as $id=>$name) {
+	$count = $thisclient->getNumTopicTickets($id, $org_tickets);
+	if ($count == 0)
+	    continue;
+?>
+        <option value="<?php echo $id; ?>"i
+            <?php if ($settings['topic_id'] == $id) echo 'selected="selected"'; ?>
+            ><?php echo sprintf('%s (%d)', Format::htmlchars($name),
+                $thisclient->getNumTopicTickets($id)); ?></option>
+<?php } ?>
+    </select>
+<!--osta-->
+<div id="help-topic"><?php echo __('Help Topic'); ?>:</div>
+</div>
+</form>
+</div>
 
-    <div class="col-md-12">
+<?php if ($settings['keywords'] || $settings['topic_id'] || $_REQUEST['sort']) { ?>
+<!--osta-->
+<div id="clear-filters" style="margin-top:10px"><strong><a href="?clear" style="color:#777"><i class="icon-remove-circle"></i> <?php echo __('Clear all filters and sort'); ?></a></strong></div>
+<?php } ?>
 
-    <div class="search well">
-        <div class="row">
-        <div class="col-md-12 ">
-        <form action="tickets.php" method="get" id="ticketSearchForm">
-            <div class="row">
-            <div class="col-md-6">
-                <input type="hidden" name="a"  value="search">
-                <div class="form-group">
-                <input class="form-control" type="text" name="keywords" size="30" placeholder="Search" value="<?php echo Format::htmlchars($settings['keywords']); ?>">
-                </div>
-            </div>
+</div>
 
-            <div class="col-md-6">
-                <select class="form-control" name="topic_id" class="nowarn" onchange="javascript: this.form.submit(); ">
-                    <option value="">&mdash; <?php echo __('All Help Topics');?> &mdash;</option>
-                        <?php
-                        foreach (Topic::getHelpTopics(true) as $id=>$name) {
-                                $count = $thisclient->getNumTopicTickets($id, $org_tickets);
-                                if ($count == 0)
-                                    continue;
-                        ?>
-                                <option value="<?php echo $id; ?>"i
-                                    <?php if ($settings['topic_id'] == $id) echo 'selected="selected"'; ?>
-                                    ><?php echo sprintf('%s (%d)', Format::htmlchars($name),
-                                        $thisclient->getNumTopicTickets($id)); ?></option>
-                        <?php } ?>
-                </select>
-            </div>
-            </div>
-        </form>
-        </div>
-        <div class="col-md-12">
-            <?php if ($settings['keywords'] || $settings['topic_id'] || $_REQUEST['sort']) { ?>
-            <div style="margin-top:10px"><strong><a href="?clear" style="color:#777"><i class="icon-remove-circle"></i> <?php echo __('Clear all filters and sort'); ?></a></strong></div>
-            <?php } ?>
-        </div>
-        </div>
-    </div>
 
-<div class="tickets-topbar">
-<h1 style="margin:10px 0">
-    <div class="row">
-    <div class="col-xs-6">
+<!--osta-->
+<h1 id="tickets-title"><!--osta-->
     <a href="<?php echo Format::htmlchars($_SERVER['REQUEST_URI']); ?>"
         ><i class="refresh icon-refresh"></i>
     <?php echo __('Tickets'); ?>
     </a>
-    </div>
 
-    <div class="col-xs-6">
-    <div class="states">
-        <small>
-        <?php if ($openTickets) { ?>
-            <i class="icon-file-alt"></i>
-            <a class="state <?php if ($status == 'open') echo 'active'; ?>"
-                href="?<?php echo Http::build_query(array('a' => 'search', 'status' => 'open')); ?>">
-                <?php echo __('Open'); if ($openTickets > 0) echo sprintf(' (%d)', $openTickets); ?>
-            </a>
-            <?php if ($closedTickets) { ?>
-            &nbsp;
-            <span style="color:lightgray">|</span>
-            <?php }
-        }
-        if ($closedTickets) {?>
-            &nbsp;
-            <i class="icon-file-text"></i>
-            <a class="state <?php if ($status == 'closed') echo 'active'; ?>"
-                href="?<?php echo Http::build_query(array('a' => 'search', 'status' => 'closed')); ?>">
-            <?php echo __('Closed'); if ($closedTickets > 0) echo sprintf(' (%d)', $closedTickets); ?>
-            </a>
-        <?php } ?>
-        </small>
-    </div>
-    </div>
-    </div>
-</h1>
+<div class="pull-right states">
+    <small>
+<?php if ($openTickets) { ?>
+    <i class="icon-file-alt"></i>
+    <a class="state <?php if ($status == 'open') echo 'active'; ?>"
+        href="?<?php echo Http::build_query(array('a' => 'search', 'status' => 'open')); ?>">
+    <?php echo __('Open'); if ($openTickets > 0) echo sprintf(' <span class="number">(%d)</span>', $openTickets); ?>
+    </a><!--osta-->
+    <?php if ($closedTickets) { ?>
+    &nbsp;
+    <span style="color:lightgray">|</span>
+    <?php }
+}
+if ($closedTickets) {?>
+    &nbsp;
+    <i class="icon-file-text"></i>
+    <a class="state <?php if ($status == 'closed') echo 'active'; ?>"
+        href="?<?php echo Http::build_query(array('a' => 'search', 'status' => 'closed')); ?>">
+    <!--osta-->
+    <?php echo __('Closed'); if ($closedTickets > 0) echo sprintf(' <span class="number">(%d)</span>', $closedTickets); ?>
+    </a>
+<?php } ?>
+    </small>
 </div>
-
-<div class="table-responsive">
-<table class="table table-bordered" id="ticketTable" width="800" border="0" cellspacing="0" cellpadding="0">
-    <caption><?php echo $showing; ?></caption>
+</h1>
+<!--osta-->
+<caption><?php echo $showing; ?></caption><br /><br /><!--osta-->
+<table id="ticketTable" width="800" border="0" cellspacing="0" cellpadding="0">
     <thead>
-    <tr>
-            <th width="80">
+        <tr>
+            <th nowrap>
                 <a href="tickets.php?sort=ID&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="<?php echo sprintf('%s %s', __('Sort By'), __('Ticket ID')); ?>"><?php echo __('Ticket #');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
             <th width="120">
                 <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="<?php echo sprintf('%s %s', __('Sort By'), __('Date')); ?>"><?php echo __('Create Date');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
-            <th width="80">
+            <th width="100">
                 <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="<?php echo sprintf('%s %s', __('Sort By'), __('Status')); ?>"><?php echo __('Status');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
             <th width="320">
@@ -265,21 +251,22 @@ $tickets->values(
             }
             $thisclient->getId() != $T['user_id'] ? $isCollab = true : $isCollab = false;
             ?>
-            <tr id="<?php echo $T['ticket_id']; ?>">
-                <td>
+            <tr class="<?php echo $T['ticket_id']; ?>">
+            <!--osta-->
+                <td class="ticket-number"><div id="new-reply-icon"><span class="dot"></span></div>
                 <a class="Icon <?php echo strtolower($T['source']); ?>Ticket" title="<?php echo $T['user__default_email__address']; ?>"
                     href="tickets.php?id=<?php echo $T['ticket_id']; ?>"><?php echo $ticketNumber; ?></a>
                 </td>
-                <td><?php echo Format::date($T['created']); ?></td>
-                <td><?php echo $status; ?></td>
-                <td>
+                <td class="ticket-updated"><?php echo Format::date($T['created']); ?></td>
+                <td class="ticket-status"><span class="dot"></span><?php echo $status; ?></td>
+                <td class="ticket-subject">
                   <?php if ($isCollab) {?>
                     <div style="max-height: 1.2em; max-width: 320px;" class="link truncate" href="tickets.php?id=<?php echo $T['ticket_id']; ?>"><i class="icon-group"></i> <?php echo $subject; ?></div>
                   <?php } else {?>
                     <div style="max-height: 1.2em; max-width: 320px;" class="link truncate" href="tickets.php?id=<?php echo $T['ticket_id']; ?>"><?php echo $subject; ?></div>
                     <?php } ?>
                 </td>
-                <td><span class="truncate"><?php echo $dept; ?></span></td>
+                <td class="ticket-department"><span class="truncate"><?php echo $dept; ?></span></td>
             </tr>
         <?php
         }
@@ -287,15 +274,23 @@ $tickets->values(
      } else {
          echo '<tr><td colspan="5">'.__('Your query did not match any records').'</td></tr>';
      }
-    ?>
-    </tbody>
+    ?>    
+  </tbody>
 </table>
+<!--osta-->
+<script>
+	$('b').closest('td').addClass("new-reply-waiting");
+	$('.new-reply-waiting').closest('tr').addClass("new");
+	jQuery(".truncate").each(function(i, value) {
+	   var $link = jQuery(value);
+	   var text = $link.text();
+	   if(text.length > 55) {
+		  $link.text(text.substring(0, 55) + "...");
+	   }
+	});
+</script>
 <?php
 if ($total) {
-    echo '<div>&nbsp;'.__('Page').':'.$pageNav->getPageLinks().'&nbsp;</div>';
+    echo '<div id="table-foot-options">&nbsp;'.__('Page').':'.$pageNav->getPageLinks().'&nbsp;</div>';
 }
 ?>
-</div>
-</div>
-</div></div>
-</div>

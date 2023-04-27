@@ -53,11 +53,10 @@ class DraftAjaxAPI extends AjaxController {
     static function _uploadInlineImage($draft) {
         global $cfg;
 
-        if (!isset($_POST['data']) && !isset($_FILES['file']))
+        if (!isset($_FILES['file']))
             Http::response(422, "File not included properly");
 
         # Fixup for expected multiple attachments
-        if (isset($_FILES['file'])) {
             $file = AttachmentFile::format($_FILES['file']);
 
             # Allow for data-uri uploaded files
@@ -75,8 +74,7 @@ class DraftAjaxAPI extends AjaxController {
             }
             fclose($fp);
 
-            # TODO: Detect unacceptable attachment extension
-            # TODO: Verify content-type and check file-content to ensure image
+        // Check file type to ensure image
             $type = $file[0]['type'];
             if (strpos($file[0]['type'], 'image/') !== 0)
                 return Http::response(403,
@@ -85,7 +83,15 @@ class DraftAjaxAPI extends AjaxController {
                     ))
                 );
 
-            # TODO: Verify file size is acceptable
+        // Check if file is truly an image
+        if (!FileUploadField::isValidFile($file[0]))
+            return Http::response(403,
+                JsonDataEncoder::encode(array(
+                    'error' => 'File is not valid',
+                ))
+            );
+
+        // Verify file size is acceptable
             if ($file[0]['size'] > $cfg->getMaxFileSize())
                 return Http::response(403,
                     JsonDataEncoder::encode(array(
@@ -106,25 +112,13 @@ class DraftAjaxAPI extends AjaxController {
                             'error' => $file[0]['error'],
                         ))
                     );
+
                 }
                 else
                     return Http::response(500, 'Unable to attach image');
             }
 
             $id = (is_array($ids)) ? $ids[0] : $ids;
-        }
-        else {
-            $type = explode('/', $_POST['contentType']);
-            $info = array(
-                'data' => base64_decode($_POST['data']),
-                'name' => Misc::randCode(10).'.'.$type[1],
-                // TODO: Ensure _POST['contentType']
-                'type' => $_POST['contentType'],
-            );
-            // TODO: Detect unacceptable filetype
-            // TODO: Verify content-type and check file-content to ensure image
-            $id = $draft->attachments->save($info);
-        }
         if (!($f = AttachmentFile::lookup($id)))
             return Http::response(500, 'Unable to attach image');
 

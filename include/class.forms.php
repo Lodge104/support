@@ -469,14 +469,14 @@ implements FormRenderer {
 ?>
       <table class="<?php echo 'grid form' ?>">
           <caption><?php echo Format::htmlchars($this->title ?: $form->getTitle()); ?>
-            <div><small><?php echo Format::viewableImages($form->getInstructions()); ?></small></div>
+                  <div><small><?php echo Format::viewableImages($form->getInstructions()); ?></small></div>
             <?php
             if ($form->getNotice())
                 echo sprintf('<div><small><p id="msg_warning">%s</p></small></div>',
                         Format::htmlchars($form->getNotice()));
             ?>
-        </caption>
-        <tbody><tr><?php for ($i=0; $i<12; $i++) echo '<td style="width:8.3333%"/>'; ?></tr></tbody>
+          </caption>
+          <tbody><tr><?php for ($i=0; $i<12; $i++) echo '<td style="width:8.3333%"/>'; ?></tr></tbody>
 <?php
       $row_size = 12;
       $cols = $row = 0;
@@ -509,13 +509,13 @@ implements FormRenderer {
               <fieldset class="field <?php if (!$f->isVisible()) echo 'hidden'; ?>"
                 id="field<?php echo $f->getWidget()->id; ?>"
                 data-field-id="<?php echo $f->get('id'); ?>">
+<!--osta-->
 <?php         $label = $f->get('label'); ?>
               <label class="<?php if ($f->isRequired()) echo 'required'; ?>"
-                  for="<?php echo $f->getWidget()->id; ?>">
-                  <?php echo $label ? (Format::htmlchars($label).':') : '&nbsp;'; ?>
+                  for="<?php echo $f->getWidget()->id; ?>"></label>
+                  <?php echo $label ? (Format::htmlchars($label).':') : ''; ?>
                 <?php if ($f->isRequired()) { ?>
-                <span class="error">*</span>
-              </label>
+<!--osta-->
 <?php         }
               if ($f->get('hint')) { ?>
                   <div class="field-hint-text">
@@ -1582,7 +1582,7 @@ class PasswordField extends TextboxField {
     function __construct($options=array()) {
         parent::__construct($options);
         if (!isset($options['validator']))
-            $this->set('validator', 'password');
+        $this->set('validator', 'password');
     }
 
     protected function getMasterKey() {
@@ -2761,6 +2761,14 @@ class SectionBreakField extends FormField {
     function isBlockLevel() {
         return true;
     }
+
+    function isEditableToStaff() {
+        return $this->isVisibleToStaff();
+    }
+
+    function isEditableToUsers() {
+        return $this->isVisibleToUsers();
+    }
 }
 
 class ThreadEntryField extends FormField {
@@ -3108,7 +3116,7 @@ class PriorityField extends ChoiceField {
             $id = $value;
 
         if (is_numeric($id))
-            return $this->getPriority($id);
+        return $this->getPriority($id);
 
         return $value;
     }
@@ -3274,7 +3282,7 @@ class DepartmentField extends ChoiceField {
           }
         }
 
-        $choices = array();
+            $choices = array();
 
         //get all depts unfiltered
         $depts = $config['hideDisabled'] ? Dept::getDepartments(array('activeonly' => true)) :
@@ -3286,7 +3294,7 @@ class DepartmentField extends ChoiceField {
 
             if ($staff->hasPerm(Dept::PERM_DEPT))
                 return $depts;
-        }
+            }
         //filter custom department fields when there is no staff
         else {
             $userDepts = Dept::getDepartments(array('publiconly' => true, 'activeonly' => true));
@@ -3294,17 +3302,17 @@ class DepartmentField extends ChoiceField {
             return $userDepts;
         }
 
-         //add selected dept to list
-         if($current_id)
+          //add selected dept to list
+          if($current_id)
             $active[$current_id] = $current_name;
-         else
+          else
             return $active;
 
-         foreach ($depts as $id => $name) {
+          foreach ($depts as $id => $name) {
             $choices[$id] = $name;
             if(!array_key_exists($id, $active) && $current_id)
                 unset($choices[$id]);
-         }
+          }
 
         return $choices;
     }
@@ -3893,7 +3901,7 @@ class FileUploadField extends FormField {
         $file = array_shift($files);
         $file['name'] = urldecode($file['name']);
 
-        if (!$this->isValidFile($file))
+        if (!self::isValidFile($file))
             Http::response(413, 'Invalid File');
 
         if (!$bypass && !$this->isValidFileType($file['name'], $file['type']))
@@ -3922,7 +3930,7 @@ class FileUploadField extends FormField {
         if (!$this->isValidFileType($file['name'], $file['type']))
             throw new FileUploadError(__('File type is not allowed'));
 
-        if (!$this->isValidFile($file))
+        if (!self::isValidFile($file))
              throw new FileUploadError(__('Invalid File'));
 
         $config = $this->getConfiguration();
@@ -3962,12 +3970,15 @@ class FileUploadField extends FormField {
         return $F;
     }
 
-    function isValidFile($file) {
+    static function isValidFile($file) {
+        // Make sure mime type is valid
+        if (strcasecmp(FileObject::mime_type($file['tmp_name']),
+                    $file['type']) !== 0)
+            return false;
 
         // Check invalid image hacks
         if ($file['tmp_name']
                 && stripos($file['type'], 'image/') === 0
-                && function_exists('exif_imagetype')
                 && !exif_imagetype($file['tmp_name']))
             return false;
 
@@ -4025,7 +4036,11 @@ class FileUploadField extends FormField {
     }
 
     function getConfiguration() {
+        global $cfg;
+
         $config = parent::getConfiguration();
+        // If no size present default to system setting
+        $config['size'] ??= $cfg->getMaxFileSize();
         $_types = self::getFileTypes();
         $mimetypes = array();
         $extensions = array();
@@ -4085,7 +4100,7 @@ class FileUploadField extends FormField {
         if (isset($this->attachments) && $this->attachments) {
             $this->attachments->keepOnlyFileIds($value);
         }
-        return JsonDataEncoder::encode($value);
+        return JsonDataEncoder::encode($value) ?? NULL;
     }
 
     function parse($value) {
@@ -4442,7 +4457,7 @@ class TextboxWidget extends Widget {
         if ($type == 'text' && isset($types[$config['validator']]))
             $type = $types[$config['validator']];
         ?>
-        <input class="form-control" type="<?php echo $type; ?>"
+        <input type="<?php echo $type; ?>"
             id="<?php echo $this->id; ?>"
             <?php echo $autofocus .' '.Format::array_implode('=', ' ',
                     array_filter($attrs)); ?>
@@ -4517,11 +4532,11 @@ class TextareaWidget extends Widget {
                     break;
                 case 'html':
                     if ($v) {
-                        $class = array('richtext', 'no-bar');
-                        $class[] = @$config['size'] ?: 'small';
+            $class = array('richtext', 'no-bar');
+            $class[] = @$config['size'] ?: 'small';
                         $attrs['class'] =  '"'.implode(' ', $class).'"';
-                        $this->value = Format::viewableImages($this->value);
-                    }
+            $this->value = Format::viewableImages($this->value);
+        }
                     break;
             }
         }
@@ -4562,12 +4577,12 @@ class PhoneNumberWidget extends Widget {
         $config = $this->field->getConfiguration();
         list($phone, $ext) = explode("X", $this->value);
         ?>
-        <input class="form-control" id="<?php echo $this->id; ?>" type="tel" name="<?php echo $this->name; ?>" value="<?php
+        <input id="<?php echo $this->id; ?>" type="tel" name="<?php echo $this->name; ?>" value="<?php
         echo Format::htmlchars($phone); ?>"/><?php
         // Allow display of extension field even if disabled if the phone
         // number being edited has an extension
         if ($ext || $config['ext']) { ?> <?php echo __('Ext'); ?>:
-            <input class="form-control" type="text" name="<?php
+            <input type="text" name="<?php
             echo $this->name; ?>-ext" value="<?php echo Format::htmlchars($ext);
                 ?>" size="5"/>
         <?php }
@@ -5401,6 +5416,14 @@ class FreeTextField extends FormField {
         return true;
     }
 
+    function isEditableToStaff() {
+        return $this->isVisibleToStaff();
+    }
+
+    function isEditableToUsers() {
+        return $this->isVisibleToUsers();
+    }
+
     /* utils */
 
     function to_config($config) {
@@ -5934,12 +5957,12 @@ class ReferralForm extends Form {
                     'label' => '',
                     'flags' => hexdec(0X450F3),
                     'required' => true,
-                    'validator-error' => __('Agent selection required'),
+                            'validator-error' => __('Agent selection required'),
                     'configuration'=>array('prompt'=>__('Select Agent')),
-                            'visibility' => new VisibilityConstraint(
-                                    new Q(array('target__eq'=>'agent')),
-                                    VisibilityConstraint::HIDDEN
-                              ),
+                    'visibility' => new VisibilityConstraint(
+                        new Q(array('target__eq'=>'agent')),
+                        VisibilityConstraint::HIDDEN
+                      ),
                             )
                 ),
             'team' => new ChoiceField(array(
