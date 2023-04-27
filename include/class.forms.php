@@ -2761,6 +2761,14 @@ class SectionBreakField extends FormField {
     function isBlockLevel() {
         return true;
     }
+
+    function isEditableToStaff() {
+        return $this->isVisibleToStaff();
+    }
+
+    function isEditableToUsers() {
+        return $this->isVisibleToUsers();
+    }
 }
 
 class ThreadEntryField extends FormField {
@@ -3893,7 +3901,7 @@ class FileUploadField extends FormField {
         $file = array_shift($files);
         $file['name'] = urldecode($file['name']);
 
-        if (!$this->isValidFile($file))
+        if (!self::isValidFile($file))
             Http::response(413, 'Invalid File');
 
         if (!$bypass && !$this->isValidFileType($file['name'], $file['type']))
@@ -3922,7 +3930,7 @@ class FileUploadField extends FormField {
         if (!$this->isValidFileType($file['name'], $file['type']))
             throw new FileUploadError(__('File type is not allowed'));
 
-        if (!$this->isValidFile($file))
+        if (!self::isValidFile($file))
              throw new FileUploadError(__('Invalid File'));
 
         $config = $this->getConfiguration();
@@ -3962,12 +3970,15 @@ class FileUploadField extends FormField {
         return $F;
     }
 
-    function isValidFile($file) {
+    static function isValidFile($file) {
+        // Make sure mime type is valid
+        if (strcasecmp(FileObject::mime_type($file['tmp_name']),
+                    $file['type']) !== 0)
+            return false;
 
         // Check invalid image hacks
         if ($file['tmp_name']
                 && stripos($file['type'], 'image/') === 0
-                && function_exists('exif_imagetype')
                 && !exif_imagetype($file['tmp_name']))
             return false;
 
@@ -4025,7 +4036,11 @@ class FileUploadField extends FormField {
     }
 
     function getConfiguration() {
+        global $cfg;
+
         $config = parent::getConfiguration();
+        // If no size present default to system setting
+        $config['size'] ??= $cfg->getMaxFileSize();
         $_types = self::getFileTypes();
         $mimetypes = array();
         $extensions = array();
@@ -4085,7 +4100,7 @@ class FileUploadField extends FormField {
         if (isset($this->attachments) && $this->attachments) {
             $this->attachments->keepOnlyFileIds($value);
         }
-        return JsonDataEncoder::encode($value);
+        return JsonDataEncoder::encode($value) ?? NULL;
     }
 
     function parse($value) {
@@ -4442,7 +4457,7 @@ class TextboxWidget extends Widget {
         if ($type == 'text' && isset($types[$config['validator']]))
             $type = $types[$config['validator']];
         ?>
-        <input class="form-control" type="<?php echo $type; ?>"
+        <input type="<?php echo $type; ?>"
             id="<?php echo $this->id; ?>"
             <?php echo $autofocus .' '.Format::array_implode('=', ' ',
                     array_filter($attrs)); ?>
@@ -4562,12 +4577,12 @@ class PhoneNumberWidget extends Widget {
         $config = $this->field->getConfiguration();
         list($phone, $ext) = explode("X", $this->value);
         ?>
-        <input class="form-control" id="<?php echo $this->id; ?>" type="tel" name="<?php echo $this->name; ?>" value="<?php
+        <input id="<?php echo $this->id; ?>" type="tel" name="<?php echo $this->name; ?>" value="<?php
         echo Format::htmlchars($phone); ?>"/><?php
         // Allow display of extension field even if disabled if the phone
         // number being edited has an extension
         if ($ext || $config['ext']) { ?> <?php echo __('Ext'); ?>:
-            <input class="form-control" type="text" name="<?php
+            <input type="text" name="<?php
             echo $this->name; ?>-ext" value="<?php echo Format::htmlchars($ext);
                 ?>" size="5"/>
         <?php }
@@ -5399,6 +5414,14 @@ class FreeTextField extends FormField {
 
     function isBlockLevel() {
         return true;
+    }
+
+    function isEditableToStaff() {
+        return $this->isVisibleToStaff();
+    }
+
+    function isEditableToUsers() {
+        return $this->isVisibleToUsers();
     }
 
     /* utils */

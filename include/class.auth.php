@@ -419,7 +419,7 @@ abstract class AuthenticationBackend extends ServiceRegistry {
             if ($bk instanceof AuthDirectorySearch)
                 $backends[$bk->getBkId()] = $bk;
 
-        return array_unique($backends);
+        return array_unique($backends, SORT_REGULAR);
     }
 
     static function searchUsers($query) {
@@ -1594,7 +1594,7 @@ abstract class PasswordPolicy extends ServiceRegistry {
                 return false;
         }
 
-        return SessionData::objects()->filter($criteria)->delete();
+        return DatabaseSessionRecord::objects()->filter($criteria)->delete();
     }
 }
 Signal::connect('auth.clean', array('PasswordPolicy', 'cleanSessions'));
