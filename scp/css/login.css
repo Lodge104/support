@@ -119,7 +119,7 @@ body, input {
     border-radius: 5px;
     z-index: -1;
     mix-blend-mode: normal;
-    border: unset;
+    border: 1px solid rgba(0,0,0,0.3);
 }
 /* IE 9-10 */
 @media screen\0 {
@@ -308,7 +308,6 @@ input.submit:hover, input.submit:active {
     display: inline-block;
     padding: 0 15px;
     color: white;
-    display: none;
 }
 
 .external-auth {
@@ -356,17 +355,5 @@ input[type=password] {
     font-size: 0.75em;
 }
 .hidden {
-    display: none;
-}
-
-form#login {
-    display: none;
-}
-
-.or {
-    display: none;
-}
-
-div#poweredBy {
     display: none;
 }
