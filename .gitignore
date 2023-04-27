@@ -1,1 +1,3 @@
 include/ost-config.php
+include/ost-config-prod.php
+include/ost-config-test.php
