@@ -35,42 +35,33 @@ if (osTicket::is_ie())
     <meta name="description" content="customer support platform">
     <meta name="keywords" content="osTicket, Customer support system, support ticket system">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link href='//fonts.googleapis.com/css?family=Arimo:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="<?php echo ASSETS_PATH; ?>css/bootstrap.css?19292ad" media="screen"/>
-    
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/osticket.css?1d8b790" media="screen"/>
-    <link rel="stylesheet" href="<?php echo ASSETS_PATH; ?>css/theme.css?1d8b790" media="screen"/>
-    <link rel="stylesheet" href="<?php echo ASSETS_PATH; ?>css/print.css?1d8b790" media="print"/>
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>scp/css/typeahead.css?1d8b790"
+	<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/osticket.css?ca95150" media="screen"/>
+    <link rel="stylesheet" href="<?php echo ASSETS_PATH; ?>css/theme.css?ca95150" media="screen"/>
+    <link rel="stylesheet" href="<?php echo ASSETS_PATH; ?>css/print.css?ca95150" media="print"/>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>scp/css/typeahead.css?ca95150"
          media="screen" />
-    <link type="text/css" href="<?php echo ROOT_PATH; ?>css/ui-lightness/jquery-ui-1.13.1.custom.min.css?1d8b790"
+    <link type="text/css" href="<?php echo ROOT_PATH; ?>css/ui-lightness/jquery-ui-1.13.2.custom.min.css?ca95150"
         rel="stylesheet" media="screen" />
-    <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/jquery-ui-timepicker-addon.css?1d8b790" media="all"/>
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/thread.css?1d8b790" media="screen"/>
-    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/redactor.css?1d8b790" media="screen"/>
-    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome.min.css?1d8b790"/>
-    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/flags.css?1d8b790"/>
-    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css?1d8b790"/>
-    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/select2.min.css?1d8b790"/>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/jquery-ui-timepicker-addon.css?ca95150" media="all"/>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/thread.css?ca95150" media="screen"/>
+    <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/redactor.css?ca95150" media="screen"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome.min.css?ca95150"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/flags.css?ca95150"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css?ca95150"/>
+    <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/select2.min.css?ca95150"/>
     <!-- Favicons -->
     <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/oscar-favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/oscar-favicon-16x16.png" sizes="16x16" />
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-3.5.1.min.js?1d8b790"></script>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.13.1.custom.min.js?1d8b790"></script>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-timepicker-addon.js?1d8b790"></script>
-    <script src="<?php echo ROOT_PATH; ?>js/osticket.js?1d8b790"></script>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/filedrop.field.js?1d8b790"></script>
-    <script src="<?php echo ROOT_PATH; ?>scp/js/bootstrap-typeahead.js?1d8b790"></script>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor.min.js?1d8b790"></script>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-plugins.js?1d8b790"></script>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-osticket.js?1d8b790"></script>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/select2.min.js?1d8b790"></script>
-    
-    <script type="text/javascript" src="<?php echo ASSETS_PATH; ?>js/popper.js?cb6766e"></script>
-    <script type="text/javascript" src="<?php echo ASSETS_PATH; ?>js/tinynav.js?cb6766e"></script>
-    <script type="text/javascript" src="<?php echo ASSETS_PATH; ?>js/bootstrap.js?cb6766e"></script>
-
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-3.6.3.min.js?ca95150"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.13.2.custom.min.js?ca95150"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-timepicker-addon.js?ca95150"></script>
+    <script src="<?php echo ROOT_PATH; ?>js/osticket.js?ca95150"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/filedrop.field.js?ca95150"></script>
+    <script src="<?php echo ROOT_PATH; ?>scp/js/bootstrap-typeahead.js?ca95150"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor.min.js?ca95150"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-plugins.js?ca95150"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-osticket.js?ca95150"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/select2.min.js?ca95150"></script>
     <?php
     if($ost && ($headers=$ost->getExtraHeaders())) {
         echo "\n\t".implode("\n\t", $headers)."\n";
@@ -97,8 +88,8 @@ if (osTicket::is_ie())
     ?>
 </head>
 <body>
-<div id="container">
-<?php
+    <div id="container">
+        <?php
         if($ost->getError())
             echo sprintf('<div class="error_bar">%s</div>', $ost->getError());
         elseif($ost->getWarning())
@@ -107,10 +98,8 @@ if (osTicket::is_ie())
             echo sprintf('<div class="notice_bar">%s</div>', $ost->getNotice());
         ?>
         <div id="header">
-            <div class="top-bar">
-                <div class="container"> <div class="row">
-                    <div class="col-md-12">
-
+            <div class="pull-right flush-right">
+            <p>
              <?php
                 if ($thisclient && is_object($thisclient) && $thisclient->isValid()
                     && !$thisclient->isGuest()) {
@@ -129,87 +118,57 @@ if (osTicket::is_ie())
                 }
                 elseif ($cfg->getClientRegistrationMode() != 'disabled') { ?>
                     <a href="<?php echo $signin_url; ?>"><?php echo __('Sign In'); ?></a>
-            <?php
+<?php
                 }
             } ?>
-
-            <?php
-            if (($all_langs = Internationalization::getConfiguredSystemLanguages())
-                && (count($all_langs) > 1)
-            ) {
-                $qs = array();
-                parse_str($_SERVER['QUERY_STRING'], $qs);
-                foreach ($all_langs as $code=>$info) {
-                    list($lang, $locale) = explode('_', $code);
-                    $qs['lang'] = $code;
-            ?>
-                    <a class="flag flag-<?php echo strtolower($locale ?: $info['flag'] ?: $lang); ?>"
-                        href="?<?php echo http_build_query($qs);
-                        ?>" title="<?php echo Internationalization::getLanguageDescription($code); ?>">&nbsp;</a>
-            <?php }
-            } ?>
-
-                        </div>
-                </div></div>
+            </p>
+            <p>
+<?php
+if (($all_langs = Internationalization::getConfiguredSystemLanguages())
+    && (count($all_langs) > 1)
+) {
+    $qs = array();
+    parse_str($_SERVER['QUERY_STRING'], $qs);
+    foreach ($all_langs as $code=>$info) {
+        list($lang, $locale) = explode('_', $code);
+        $qs['lang'] = $code;
+?>
+        <a class="flag flag-<?php echo strtolower($info['flag'] ?: $locale ?: $lang); ?>"
+            href="?<?php echo http_build_query($qs);
+            ?>" title="<?php echo Internationalization::getLanguageDescription($code); ?>">&nbsp;</a>
+<?php }
+} ?>
+            </p>
             </div>
-
-
-            <!-- begin head -->
-            <div class="head">
-                <div class="container"> <div class="row">
-                    <div class="col-md-12">
-                        <a id="logo" href="<?php echo ROOT_PATH; ?>index.php"
-                        title="<?php echo __('Support Center'); ?>">
-                            <span class="valign-helper"></span>
-                            <img src="<?php echo ROOT_PATH; ?>logo.php" border=0 alt="<?php
-                            echo $ost->getConfig()->getTitle(); ?>">
-                        </a>
-                    </div>
-                </div></div>
-            </div>
-
-
-        <div class="clear"></div>
-        <div class="container"> <div class="row">
-            <div class="col-md-12">
-                <!-- begin nav -->
-                <?php
-                if($nav){ ?>
-                <ul id="nav" class="flush-left">
-                    <?php
-                    if($nav && ($navs=$nav->getNavLinks()) && is_array($navs)){
-                        foreach($navs as $name =>$nav) {
-                            echo sprintf('<li><a class="%s %s" href="%s">%s</a></li>%s',$nav['active']?'active':'',$name,(ROOT_PATH.$nav['href']),$nav['desc'],"\n");
-                        }
-                    } ?>
-                </ul>
-                <?php
-                }else{ ?>
-                <?php
-                } ?>
-            </div>
-            <script>
-              $(function () {
-                $("#nav").tinyNav({
-                    header: 'Navigation'
-                });
-              });
-            </script>
-        </div></div>
-        <!-- end nav -->
+            <a class="pull-left" id="logo" href="<?php echo ROOT_PATH; ?>index.php"
+            title="<?php echo __('Support Center'); ?>">
+                <span class="valign-helper"></span>
+                <img src="<?php echo ROOT_PATH; ?>logo.php" border=0 alt="<?php
+                echo $ost->getConfig()->getTitle(); ?>">
+            </a>
         </div>
-
         <div class="clear"></div>
+        <?php
+        if($nav){ ?>
+        <ul id="nav" class="flush-left">
+            <?php
+            if($nav && ($navs=$nav->getNavLinks()) && is_array($navs)){
+                foreach($navs as $name =>$nav) {
+                    echo sprintf('<li><a class="%s %s" href="%s">%s</a></li>%s',$nav['active']?'active':'',$name,(ROOT_PATH.$nav['href']),$nav['desc'],"\n");
+                }
+            } ?>
+        </ul>
+        <?php
+        }else{ ?>
+         <hr>
+        <?php
+        } ?>
+        <div id="content">
 
-         <div id="content">
-         <div class="alert-area">
-             <div class="container"> <div class="row"> <div class="col-md-12">
-                 <?php if($errors['err']) { ?>
-                    <div id="msg_error"><?php echo $errors['err']; ?></div>
-                 <?php }elseif($msg) { ?>
-                    <div id="msg_notice"><?php echo $msg; ?></div>
-                 <?php }elseif($warn) { ?>
-                    <div id="msg_warning"><?php echo $warn; ?></div>
-                 <?php } ?>
-             </div></div></div>
-         </div>
+         <?php if($errors['err']) { ?>
+            <div id="msg_error"><?php echo $errors['err']; ?></div>
+         <?php }elseif($msg) { ?>
+            <div id="msg_notice"><?php echo $msg; ?></div>
+         <?php }elseif($warn) { ?>
+            <div id="msg_warning"><?php echo $warn; ?></div>
+         <?php } ?>

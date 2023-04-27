@@ -6,15 +6,15 @@ if (!$form->hasAnyVisibleFields($thisclient))
 
 $isCreate = (isset($options['mode']) && $options['mode'] == 'create');
 ?>
+    <tr><td colspan="2"><hr />
     <div class="form-header" style="margin-bottom:0.5em">
     <h3><?php echo Format::htmlchars($form->getTitle()); ?></h3>
-    <span><?php echo Format::display($form->getInstructions()); ?></span>
+    <div><?php echo Format::display($form->getInstructions()); ?></div>
     </div>
-        <table width="100%">
+    </td></tr>
     <?php
     // Form fields, each with corresponding errors follows. Fields marked
     // 'private' are not included in the output for clients
-   // global $thisclient;
     foreach ($form->getFields() as $field) {
         try {
             if (!$field->isEnabled())
@@ -31,7 +31,7 @@ $isCreate = (isset($options['mode']) && $options['mode'] == 'create');
             continue;
         }
         ?>
-            <tr class="form-group">
+        <tr>
             <td colspan="2" style="padding-top:10px;">
             <?php if (!$field->isBlockLevel()) { ?>
                 <label for="<?php echo $field->getFormName(); ?>"><span class="<?php
@@ -43,8 +43,8 @@ $isCreate = (isset($options['mode']) && $options['mode'] == 'create');
             <?php }
             ?></span><?php
                 if ($field->get('hint')) { ?>
-                    <em style="color:gray;display:inline-block"><?php
-                        echo Format::viewableImages($field->getLocal('hint')); ?> </em>
+                    <br /><em style="color:gray;display:inline-block"><?php
+                        echo Format::viewableImages($field->getLocal('hint')); ?></em>
                 <?php
                 } ?>
             <br/>
@@ -69,8 +69,6 @@ $isCreate = (isset($options['mode']) && $options['mode'] == 'create');
             ?>
             </td>
         </tr>
-
         <?php
     }
 ?>
-    </table>

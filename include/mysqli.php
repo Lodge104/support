@@ -62,6 +62,10 @@ function db_connect($host, $user, $passwd, $options = array()) {
 
     // Connect
     $start = microtime(true);
+    // Specify the connection timeout (if defined)
+    if (defined('DBCONNECT_TIMEOUT'))
+        $__db->options(MYSQLI_OPT_CONNECT_TIMEOUT, DBCONNECT_TIMEOUT);
+
     if (!@$__db->real_connect($host, $user, $passwd, null, $port, $socket))
         return NULL;
 
@@ -116,7 +120,11 @@ function db_version() {
 }
 
 function db_timezone() {
-    return db_get_variable('system_time_zone', 'global');
+    $timezone = db_get_variable('time_zone', 'global');
+    if ($timezone == 'SYSTEM')
+        $timezone = db_get_variable('system_time_zone', 'global');
+
+    return $timezone;
 }
 
 function db_get_variable($variable, $type='session') {
