@@ -90,6 +90,13 @@ $info = Format::htmlchars(($errors && $_POST)?$_POST:$info);
 <?php } ?>
 </tbody>
 </table>
+<!--osta-->
+<script>
+$('.required').closest('td').addClass("client-required");
+$(".required").html(function(i, html){
+    return html.replace("*", "");
+});
+</script>  
 <hr>
 <p style="text-align: center;">
     <input type="submit" value="<?php echo __('Register'); ?>"/>

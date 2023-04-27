@@ -19,6 +19,9 @@ define('THIS_DIR', str_replace('\\', '/', Misc::realpath(dirname(__FILE__))) . '
 
 require_once(INCLUDE_DIR.'mpdf/vendor/autoload.php');
 
+// unregister phar stream to mitigate vulnerability in mpdf library
+@stream_wrapper_unregister('phar');
+
 class mPDFWithLocalImages extends Mpdf {
     function WriteHtml($html, $sub = 0, $init = true, $close = true) {
         static $filenumber = 1;
@@ -44,11 +47,7 @@ class mPDFWithLocalImages extends Mpdf {
             },
             $html
         );
-        // unregister phar stream to mitigate vulnerability in mpdf library
-       @stream_wrapper_unregister('phar');
-       call_user_func_array(array('parent', 'WriteHtml'), $args);
-       // restore phar stream
-       @stream_wrapper_restore('phar');
+        return call_user_func_array(array('parent', 'WriteHtml'), $args);
     }
 
     function output($name = '', $dest = '') {

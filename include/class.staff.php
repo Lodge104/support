@@ -879,6 +879,8 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
 
         if (isset($vars['avatar_code']))
           $this->setExtraAttr('avatar', $vars['avatar_code']);
+        // OSTA UPDATE TED 2022 DEC 12 - Added below line to save dark_mode
+        $this->setExtraAttr('dark_mode', isset($vars['dark_mode']) ? $vars['dark_mode'] : false);
 
         if ($errors)
             return false;

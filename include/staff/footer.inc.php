@@ -1,13 +1,14 @@
 </div>
-</div>
+<!--osta-->
 <?php if (!isset($_SERVER['HTTP_X_PJAX'])) { ?>
+	<div class="clear"></div>  
+	<?php show_consent_message($custom)?>
     <div id="footer">
-        <?php echo __('Copyright &copy;') ?> 2006-<?php echo date('Y'); ?>&nbsp;<?php
-        echo Format::htmlchars((string) $ost->company ?: 'osTicket.com'); ?>&nbsp;<?php echo __('All Rights Reserved.'); ?>
+		<?php include ROOT_DIR . 'osta/inc/staff-foot.html'; ?>
     </div>
 <?php
 if(is_object($thisstaff) && $thisstaff->isStaff()) { ?>
-    <div>
+    <div id="autocron"><!--osta-->
         <!-- Do not remove <img src="autocron.php" alt="" width="1" height="1" border="0" /> or your auto cron will cease to function -->
         <img src="<?php echo ROOT_PATH; ?>scp/autocron.php" alt="" width="1" height="1" border="0" />
         <!-- Do not remove <img src="autocron.php" alt="" width="1" height="1" border="0" /> or your auto cron will cease to function -->

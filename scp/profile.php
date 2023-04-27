@@ -58,7 +58,7 @@ elseif($thisstaff->onVacation() && !$warn)
 
 $inc='profile.inc.php';
 if ($nav)
-    $nav->setTabActive('dashboard');
+$nav->setTabActive('dashboard');
 $ost->addExtraHeader('<meta name="tip-namespace" content="dashboard.my_profile" />',
     "$('#content').data('tipNamespace', 'dashboard.my_profile');");
 require_once(STAFFINC_DIR.'header.inc.php');
