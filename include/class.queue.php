@@ -1798,8 +1798,7 @@ extends QueueColumnAnnotation {
 
     function getDecoration($row, $text) {
         if ($row['isoverdue'])
-            // osta
-            return '<div class="osta show overdueTicket-container"><span class="Icon overdueTicket" data-placement="top" data-toggle="tooltip" title="' .  __('Ticket is Overdue!') . '"></span></div>';
+            return '<span class="Icon overdueTicket"></span>';
     }
 
     function isVisible($row) {
@@ -2514,19 +2513,6 @@ extends VerySimpleModel {
             if ($this->annotations
                 && ($anns = JsonDataParser::decode($this->annotations))
             ) {
-                // osta
-                $anns = array();
-                if( $this->ht["name"] == "Subject" ) { 
-                    $anns[] = ["c"=>"MergedFlagDecoration", "p"=>"<"];
-                    $anns[] = ["c"=>"LinkedFlagDecoration", "p"=>"<"]; 
-                    $anns[] = ["c"=>"OverdueFlagDecoration", "p"=>"<"];
-                    $anns[] = ["c"=>"ThreadAttachmentCount", "p"=>">"]; 
-                    $anns[] = ["c"=>"TicketThreadCount", "p"=>">"]; 
-                } 
-                if( $this->ht["name"] == "User Name" ) { 
-                    $anns[] = ["c"=>"ThreadCollaboratorCount", "p"=>">"];
-                } 
-       
                 foreach ($anns as $D)
                     if ($T = QueueColumnAnnotation::fromJson($D))
                         $this->_annotations[] = $T;
@@ -3124,10 +3110,7 @@ extends TicketLinkFilter {
 
     function filter($text, $row) {
         $link = $this->getLink($row);
-        // osta		
-        return sprintf('<a style="display: inline" class="preview" data-preview="#tickets/%d/preview" href="%s">%s</a>
-		<span class="icon-code-fork" data-placement="top" data-toggle="tooltip" title="" data-original-title="' .  __('Merged Ticket') . '"></span>
-		<span class="icon-code-link" data-placement="top" data-toggle="tooltip" title="" data-original-title="' .  __('Linked Ticket') . '"></span>',
+        return sprintf('<a style="display: inline" class="preview" data-preview="#tickets/%d/preview" href="%s">%s</a>',
             $row['ticket_id'], $link, $text);
     }
 }

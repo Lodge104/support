@@ -29,9 +29,8 @@ class Bootstrap {
         error_reporting($error_reporting); //Respect whatever is set in php.ini (sysadmin knows better??)
 
         #Don't display errors
-        // osta
-        //ini_set('display_errors', '0'); // Set by installer
-        //ini_set('display_startup_errors', '0'); // Set by installer
+        ini_set('display_errors', '0'); // Set by installer
+        ini_set('display_startup_errors', '0'); // Set by installer
 
         //Default timezone
         if (!ini_get('date.timezone')) {
@@ -218,7 +217,7 @@ class Bootstrap {
             if (!db_connect($host, DBUSER, DBPASS, $options)) {
                 $ferror = sprintf('Unable to connect to the database — %s',
                         db_connect_error());
-        }elseif(!db_select_database(DBNAME)) {
+            }elseif(!db_select_database(DBNAME)) {
                 $ferror = sprintf('Unknown or invalid database: %s',
                         DBNAME);
            }

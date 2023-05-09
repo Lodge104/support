@@ -75,8 +75,8 @@ $showing = $pageNav->showing().' '._N('department', 'departments', $count);
                     </li>
                     <li class="danger"><a class="confirm" data-name="delete" href="departments.php?a=delete">
                         <i class="icon-trash icon-fixed-width"></i>
-                        <?php echo __('Delete'); ?></a></li>
-                    <!--osta-->
+                        <?php echo __('Delete'); ?></a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -133,11 +133,10 @@ $showing = $pageNav->showing().' '._N('department', 'departments', $count);
                 ?>
             <tr id="<?php echo $id; ?>">
                 <td align="center">
-		  <!--osta-->
-                  <p class="checkbox"><input type="checkbox" name="ids[]" class="ckb"
+                  <input type="checkbox" class="ckb" name="ids[]"
                   value="<?php echo $id; ?>"
-                  <?php echo $sel? 'checked="checked"' : ''; ?>><label></label></p>
-				  
+                  <?php echo $sel? 'checked="checked"' : ''; ?>
+                  <?php echo $default? 'disabled="disabled"' : ''; ?> >
                 </td>
                 <td>
                   <a href="departments.php?id=<?php echo $id; ?>"><?php
@@ -170,7 +169,7 @@ $showing = $pageNav->showing().' '._N('department', 'departments', $count);
         } ?>
     <tfoot>
      <tr>
-        <td colspan="8"><!--osta-->
+        <td colspan="9">
             <?php
             if ($count) { ?>
             <?php echo __('Select');?>:&nbsp;

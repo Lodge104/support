@@ -67,8 +67,7 @@ $users->order_by($order . $order_column);
             <?php csrf_token(); ?>
             <input type="hidden" name="a" value="search">
             <div class="attached input">
-                <!--osta-->
-                <input type="text" class="basic-search" id="basic-user-search" name="query" placeholder="<?php echo __('Search Users'); ?>"
+                <input type="text" class="basic-search" id="basic-user-search" name="query"
                          size="30" value="<?php echo Format::htmlchars($_REQUEST['query']); ?>"
                         autocomplete="off" autocorrect="off" autocapitalize="off">
             <!-- <td>&nbsp;&nbsp;<a href="" id="advanced-user-search">[advanced]</a></td> -->
@@ -188,7 +187,7 @@ else
                 ?>
                <tr id="<?php echo $U['id']; ?>">
                 <td nowrap align="center">
-                    <!--osta--><p class="checkbox"><input type="checkbox" value="<?php echo $U['id']; ?>" class="ckb mass nowarn"/><label></label></p>
+                    <input type="checkbox" value="<?php echo $U['id']; ?>" class="ckb mass nowarn"/>
                 </td>
                 <td>&nbsp;
                     <a class="preview"
@@ -199,14 +198,12 @@ else
                     <?php
                     if ($U['ticket_count'])
                          echo sprintf('<i class="icon-fixed-width icon-file-text-alt"></i>
-                             <!--osta-->
-                             <div id="ticket-count">%d</div>', $U['ticket_count']);
+                             <small>(%d)</small>', $U['ticket_count']);
                     ?>
                 </td>
                 <td><?php echo $status; ?></td>
                 <td><?php echo Format::date($U['created']); ?></td>
-                <!--osta-->
-                <td><?php echo Format::date($U['updated']); ?>&nbsp;</td>
+                <td><?php echo Format::datetime($U['updated']); ?>&nbsp;</td>
                </tr>
 <?php   } //end of foreach. ?>
     </tbody>
@@ -227,23 +224,11 @@ else
      </tr>
     </tfoot>
 </table>
-<script>
-// osta
-	function myFunction(x) {
-	  if (x.matches) { // If media query matches
-		$( "tbody tr" ).wrapInner( "<label></label>");
-	  } else {
-		;
-	  }
-	}
-	var x = window.matchMedia("(max-width: 760px)")
-	myFunction(x) // Call listener function at run time
-	x.addListener(myFunction) // Attach listener function on state changes	
-</script>
-
 <?php
 if ($total) {
-    echo sprintf('<!--osta--><div id="table-foot-options">&nbsp;'.__('Page').': %s &nbsp; <a class="no-pjax"
+    echo '<div>';
+    echo '<span class="faded pull-right">'.$showing.'</span>';
+    echo sprintf('&nbsp;'.__('Page').': %s &nbsp; <a class="no-pjax"
             href="users.php?a=export&qh=%s">'.__('Export').'</a></div>',
             $pageNav->getPageLinks(),
             $qhash);
@@ -252,10 +237,6 @@ if ($total) {
 </form>
 
 <script type="text/javascript">
-// osta
-if ( ($("#msg_info" ).length) || ($("#msg_notice" ).length) || ($("#msg_warning" ).length) || ($("#msg_error" ).length) ) {
-	$(".attached.input").addClass("move-search"); //move search when msg displayed
-}
 $(function() {
     $('input#basic-user-search').typeahead({
         source: function (typeahead, query) {

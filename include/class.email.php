@@ -1309,14 +1309,14 @@ class SmtpAccount extends EmailAccount {
         if (!isset($this->smtp) || $cred) {
             $this->cred = $cred ?: $this->getFreshCredentials();
             if ($this->cred) {
-            $setting = $this->getAccountSetting();
-            $setting->setCredentials($this->cred);
-            $smtpOptions = new osTicket\Mail\SmtpOptions($setting);
-            $smtp = new osTicket\Mail\Smtp($smtpOptions);
+                $setting = $this->getAccountSetting();
+                $setting->setCredentials($this->cred);
+                $smtpOptions = new osTicket\Mail\SmtpOptions($setting);
+                $smtp = new osTicket\Mail\Smtp($smtpOptions);
                 // Attempt to connect now if credentials are sent in
-            if ($cred) $smtp->connect();
-            $this->smtp = $smtp;
-        }
+                if ($cred) $smtp->connect();
+                $this->smtp = $smtp;
+            }
         }
         return $this->smtp;
     }

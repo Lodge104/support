@@ -111,9 +111,9 @@ else
                     $sel=true;
                 ?>
             <tr id="<?php echo $row['id']; ?>">
-                <td align="center"><!--osta-->
-                  <p class="checkbox"><input type="checkbox" class="ckb" name="ids[]" value="<?php echo $row['id']; ?>"
-                            <?php echo $sel?'checked="checked"':''; ?>><label></label></p>
+                <td align="center">
+                  <input type="checkbox" class="ckb" name="ids[]" value="<?php echo $row['id']; ?>"
+                            <?php echo $sel?'checked="checked"':''; ?>>
                 </td>
                 <td>&nbsp;<a href="filters.php?id=<?php echo $row['id']; ?>"><?php echo Format::htmlchars($row['name']); ?></a>
                   <?php
@@ -194,4 +194,3 @@ endif;
      </p>
     <div class="clear"></div>
 </div>
-

@@ -106,9 +106,8 @@ if ($count) { ?>
         ?>
         <tr id="<?php echo $id; ?>">
             <td align="center" class="nohover">
-                <!--osta-->
-                <p class="checkbox"><input class="ckb" type="checkbox" name="tids[]"
-                value="<?php echo $id; ?>" <?php echo $sel?'checked="checked"':''; ?>><label></label></p>
+                <input class="ckb" type="checkbox" name="tids[]"
+                value="<?php echo $id; ?>" <?php echo $sel?'checked="checked"':''; ?>>
             </td>
             <td align="center" nowrap>
               <a class="Icon no-pjax preview"
@@ -140,7 +139,7 @@ if ($count) { ?>
                 ?>
             </td>
             <td><?php echo Format::truncate($task->dept->getName(), 40); ?></td>
-            <td><!--osta--><?php echo $assigned; ?></td>
+            <td>&nbsp;<?php echo $assigned; ?></td>
         </tr>
    <?php
     }

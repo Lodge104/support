@@ -53,13 +53,11 @@ $emitLevel = function($queues, $level=0) use ($all_queues, &$emitLevel) {
 <?php if ($level) { ?>
         <td colspan="<?php echo max(1, $level); ?>"></td>
 <?php } ?>
-		<!--osta-->
-		<td align="center">
-		  <p class="checkbox"><input type="checkbox" class="mass checkbox" name="qids[]"
-			value="<?php echo $q->id; ?>"
-			<?php echo $sel ? 'checked="checked" ' : ''; ?>
-			<?php echo $default?'disabled="disabled" ':''; ?>><label></label></p>
-		</td>
+        <td>
+          <input type="checkbox" class="mass checkbox"  name="qids[]" value="<?php echo $q->id; ?>" />
+          <input type="hidden" name="qsort[<?php echo $q->id; ?>]"
+            value="<?php echo $q->sort; ?>"/>
+        </td>
         <td width="63%" colspan="<?php echo max(1, 5-$level); ?>"><a
           href="queues.php?id=<?php echo $q->getId(); ?>"><?php
           echo Format::htmlchars($q->getFullName()); ?></a>

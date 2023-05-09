@@ -26,10 +26,7 @@ $action=$upgrader->getNextAction();
             <p><?php echo __('The upgrade wizard will now attempt to upgrade your database and core settings!'); ?>
             <?php echo __('Below is a summary of the database patches to be applied.'); ?>
             </p>
-			<!--osta-->
-            <div id="patch-list">
-				<?php echo $upgrader->getUpgradeSummary(); ?>
-            </div>
+            <?php echo $upgrader->getUpgradeSummary(); ?>
             <div id="bar">
                 <form method="post" action="upgrade.php" id="upgrade">
                     <?php csrf_token(); ?>
@@ -51,12 +48,9 @@ $action=$upgrader->getNextAction();
     </div>
     <div class="clear"></div>
     <div id="upgrading">
-        <div style="display: inline-block;"><!--osta-->
+        <i class="icon-spinner icon-spin icon-3x pull-left icon-light"></i>
+        <div style="display: inline-block; width: 220px">
         <h4 id="action"><?php echo $action; ?></h4>
-		<!--osta-->
-		<div id="spinner-outter">
-			<i class="icon-spinner icon-spin icon-3x pull-left icon-light"></i>
-		</div>
         <?php echo __('Please wait... while we upgrade your osTicket installation!');?>
         <div id="msg" style="font-weight: bold;padding-top:10px;">
             <?php echo sprintf(__('%s - Relax!'), $thisstaff->getFirstName()); ?>

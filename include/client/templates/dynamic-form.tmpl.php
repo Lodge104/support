@@ -6,15 +6,15 @@ if (!$form->hasAnyVisibleFields($thisclient))
 
 $isCreate = (isset($options['mode']) && $options['mode'] == 'create');
 ?>
-    <tr><td colspan="2"><hr />
     <div class="form-header" style="margin-bottom:0.5em">
     <h3><?php echo Format::htmlchars($form->getTitle()); ?></h3>
-    <div><?php echo Format::display($form->getInstructions()); ?></div>
+    <span><?php echo Format::display($form->getInstructions()); ?></span>
     </div>
-    </td></tr>
+        <table width="100%">
     <?php
     // Form fields, each with corresponding errors follows. Fields marked
     // 'private' are not included in the output for clients
+   // global $thisclient;
     foreach ($form->getFields() as $field) {
         try {
             if (!$field->isEnabled())
@@ -31,7 +31,7 @@ $isCreate = (isset($options['mode']) && $options['mode'] == 'create');
             continue;
         }
         ?>
-        <tr>
+            <tr class="form-group">
             <td colspan="2" style="padding-top:10px;">
             <?php if (!$field->isBlockLevel()) { ?>
                 <label for="<?php echo $field->getFormName(); ?>"><span class="<?php
@@ -43,20 +43,20 @@ $isCreate = (isset($options['mode']) && $options['mode'] == 'create');
             <?php }
             ?></span><?php
                 if ($field->get('hint')) { ?>
-                    <br /><em style="color:gray;display:inline-block"><?php
-                        echo Format::viewableImages($field->getLocal('hint')); ?></em>
+                    <em style="color:gray;display:inline-block"><?php
+                        echo Format::viewableImages($field->getLocal('hint')); ?> </em>
                 <?php
                 } ?>
             <br/>
             <?php
             }
             if ($field->isEditableToUsers() || $isCreate) {
-            $field->render(array('client'=>true));
-            ?></label><?php
-            foreach ($field->errors() as $e) { ?>
-                <div class="error"><?php echo $e; ?></div>
-            <?php }
-            $field->renderExtras(array('client'=>true));
+                $field->render(array('client'=>true));
+                ?></label><?php
+                foreach ($field->errors() as $e) { ?>
+                    <div class="error"><?php echo $e; ?></div>
+                <?php }
+                $field->renderExtras(array('client'=>true));
             } else {
                 $val = '';
                 if ($field->value)
@@ -69,6 +69,8 @@ $isCreate = (isset($options['mode']) && $options['mode'] == 'create');
             ?>
             </td>
         </tr>
+
         <?php
     }
 ?>
+    </table>

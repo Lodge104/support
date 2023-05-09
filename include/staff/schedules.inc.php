@@ -61,10 +61,9 @@ $showing=$pageNav->showing().' '._N('schedule', 'schedules', $count);
                 $sel = true; ?>
         <tr>
             <td align="center">
-				<!--osta-->
-                <p class="checkbox"><input width="7" type="checkbox" class="ckb" name="ids[]"
+                <input width="7" type="checkbox" class="ckb" name="ids[]"
                 value="<?php echo $schedule->getId(); ?>"
-                    <?php echo $sel?'checked="checked"':''; ?>><label></label></p>
+                    <?php echo $sel?'checked="checked"':''; ?>>
             </td>
             <td><a href="?id=<?php echo $schedule->getId(); ?>"><?php echo
             $schedule->getName(); ?></a><span class="pull-right"><small

@@ -8,51 +8,20 @@
     margin: 15mm;
     margin-top: 30mm;
     margin-bottom: 22mm;
-        <!--osta-->
-	font-family: "Open Sans", "Segoe UI", Tahoma, sans-serif;
-}
-a, h1, h2, h3, h4, h5, h6, th, td, .header, .thread-event {
-	font-family: "Open Sans", "Segoe UI", Tahoma, sans-serif;
-}
-a {
-	color: #2a6496;
-}	
-h1 {
-    font-size: 26px !important;
-	font-weight: normal;
-    color: #000;
-	margin: 0px;
-}
-h2 {
-    font-size: 22px !important;
-	font-weight: normal;
-    color: #666;
-	margin-top: 0px;
-}
-th {
-	font-weight: normal;
-	color: #000;
-}
-td {
-	color: #666;
 }
 .logo {
-	max-width: 220px;
-	max-height: 71px;
-	width: auto;
-	height: auto;
-	margin: 16px 0 0 0;
-}
-#ticket_thread {
-	margin: 20px 0 0 0;
+  max-width: 220px;
+  max-height: 71px;
+  width: auto;
+  height: auto;
+  margin: 0;
 }
 #ticket_thread .message,
 #ticket_thread .response,
 #ticket_thread .note {
-    margin-top:0px;
+    margin-top:10px;
     border:1px solid #aaa;
     border-bottom:2px solid #aaa;
-	border-radius: 6px;
 }
 #ticket_thread .header {
     text-align:left;
@@ -61,48 +30,21 @@ td {
     width: 100%;
     table-layout: fixed;
 }
-#ticket_thread .message {
-    border:1px solid #CFA173;
-    border-bottom:2px solid #CFA173;
-}
 #ticket_thread .message .header {
-    background:#FFDDBA;
-    color: #4c5156;
-}
-#ticket_thread .response {
-    border:1px solid #76B9C3;
-    border-bottom:2px solid #76B9C3;
+    background:#C3D9FF;
 }
 #ticket_thread .response .header {
-    background:#B2E9F1;
-    color: #4c5156;	
-}
-#ticket_thread .note {
-    border:1px solid #9BBFC3;
-    border-bottom:2px solid #9BBFC3;
+    background:#DDD;
 }
 #ticket_thread .note .header {
-    background:#DAE9EB;
-	color: #DAE9EB;
-}
-.thread-event {
-    margin: 6px 10px 24px 10px;
-    padding: 14px;
-	font-size: 14px;
-	border-radius: 6px;
-    background-color: #F4F4F4;
-	border: 1px solid #D6D6D6;
-}
-.thread-event b,
-.thread-event strong {
-	font-weight: normal;
-	color: #2E2E2E;
+    background:#FFE;
 }
 #ticket_thread .info {
     padding:5px;
     background: snow;
     border-top: 0.3mm solid #ccc;
 }
+
 table.meta-data {
     width: 100%;
 }
@@ -114,7 +56,8 @@ table.custom-data th {
 }
 table.custom-data th,
 table.meta-data th {
-    text-align: left;
+    text-align: right;
+    background-color: #ddd;
     padding: 3px 8px;
 }
 table.meta-data td {
@@ -139,30 +82,17 @@ table.meta-data td {
     direction: ltr;
     unicode-bidi: embed;
 }
-<!--osta-->
 .headline {
-    border-bottom: 0.2mm solid #ddd;
-    font-size: 18px !important;
-    font-weight: normal;
-    color: #666;
+    border-bottom: 2px solid black;
+    font-weight: bold;
 }
 div.hr {
-    border-top: 0.2mm solid #ddd;
+    border-top: 0.2mm solid #bbb;
     margin: 0.5mm 0;
     font-size: 0.0001em;
-    display: none;
 }
 .thread-entry, .thread-body {
     page-break-inside: avoid;
-}
-img.avatar {
-    vertical-align: middle;
-    padding-right: 2px;
-    max-height: 20px;
-    width: auto;
-}
-#print-footer td {
-    font-size: 12px;
 }
 <?php include ROOT_DIR . 'css/thread.css'; ?>
     </style>
@@ -170,26 +100,21 @@ img.avatar {
 <body>
 
 <htmlpageheader name="def" style="display:none">
-<!--osta-->
-<?php
- require_once $_SERVER['DOCUMENT_ROOT'] . ROOT_PATH . "/osta/php/functions.php";
- $custom_logo = pdf_logo(get_config());
- if ( !is_null($custom_logo)) echo $custom_logo;
- else if ($logo = $cfg->getClientLogo()) { ?>
+<?php if ($logo = $cfg->getClientLogo()) { ?>
     <img src="cid:<?php echo $logo->getKey(); ?>" class="logo"/>
 <?php } else { ?>
     <img src="<?php echo INCLUDE_DIR . 'fpdf/print-logo.png'; ?>" class="logo"/>
 <?php } ?>
     <div class="hr">&nbsp;</div>
-    <!--<table><tr>
+    <table><tr>
         <td class="flush-left"><?php echo (string) $ost->company; ?></td>
         <td class="flush-right"><?php echo Format::daydatetime(Misc::gmtime()); ?></td>
-    </tr></table>-->
+    </tr></table>
 </htmlpageheader>
 
 <htmlpagefooter name="def" style="display:none">
     <div class="hr">&nbsp;</div>
-    <table id="print-footer" width="100%"><tr><td class="flush-left">
+    <table width="100%"><tr><td class="flush-left">
         Ticket #<?php echo $ticket->getNumber(); ?> printed by
         <?php echo $thisclient->getName()->getFirst(); ?> on
         <?php echo Format::daydatetime(Misc::gmtime()); ?>
@@ -202,8 +127,6 @@ img.avatar {
 
 <!-- Ticket metadata -->
 <h1>Ticket #<?php echo $ticket->getNumber(); ?></h1>
-<h2><?php echo $ticket->getSubject(); ?></h2>
-<!--osta-->
 <table class="meta-data" cellpadding="0" cellspacing="0">
 <tbody>
 <tr>
@@ -264,16 +187,13 @@ foreach (DynamicFormEntry::forTicket($ticket->getId()) as $form) {
 } ?>
 
 <!-- Ticket Thread -->
-<!--osta-->
+<h2><?php echo $ticket->getSubject(); ?></h2>
 <div id="ticket_thread">
 <?php
 $types = array('M', 'R');
 
 if ($thread = $ticket->getThreadEntries($types)) {
-    $thread = ThreadEntry::sortEntries($thread, $ticket);
     $threadTypes=array('M'=>'message','R'=>'response', 'N'=>'note');
-    // Check for Agent Identity Masking
-    $agentmasking = $cfg->hideStaffName();
     foreach ($thread as $entry) { ?>
         <div class="thread-entry <?php echo $threadTypes[$entry->type]; ?>">
             <table class="header"><tr><td>
@@ -284,9 +204,7 @@ if ($thread = $ticket->getThreadEntries($types)) {
                 </td>
                 <td class="flush-right faded title" style="white-space:no-wrap">
                     <?php
-                        // If Identity Masking is Enabled hide Agent's name
-                        echo ($entry->staff_id && $agentmasking)
-                            ? __('Staff') : Format::htmlchars($entry->getName()); ?></span>
+                        echo Format::htmlchars($entry->getName()); ?></span>
                 </td>
             </tr></table>
             <div class="thread-body">
@@ -304,7 +222,7 @@ if ($thread = $ticket->getThreadEntries($types)) {
 <?php           } ?>
                 </div>
 <?php       } ?>
-        </div><br /><!--osta-->
+        </div>
 <?php }
 } ?>
 </div>

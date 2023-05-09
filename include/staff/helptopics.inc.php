@@ -136,11 +136,10 @@ $order_by = 'sort';
             <tr id="<?php echo $id; ?>">
                 <td align="center">
                   <input type="hidden" name="sort-<?php echo $id; ?>" value="<?php
-                    echo $topic->sort ?: $sort; ?>"/><!--osta-->
-                  <p class="checkbox">
-				   <input type="checkbox" class="ckb" name="ids[]"
-					value="<?php echo $id; ?>" <?php
-					echo $sel ? 'checked="checked"' : ''; ?>><label></label></p>
+                        echo $topic->sort ?: $sort; ?>"/>
+                  <input type="checkbox" class="ckb" name="ids[]"
+                    value="<?php echo $id; ?>" <?php
+                    echo $sel ? 'checked="checked"' : ''; ?>>
                 </td>
                 <td>
                     <?php
@@ -225,6 +224,3 @@ endif;
      </p>
     <div class="clear"></div>
 </div>
-<script><!--osta-->
-$('table.list td:contains("Disabled")').closest('tr').addClass('topic-disabled');
-</script>

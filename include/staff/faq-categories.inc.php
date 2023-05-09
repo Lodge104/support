@@ -9,9 +9,7 @@ if(!defined('OSTSTAFFINC') || !$thisstaff) die('Access Denied');
 
     <div id="basic_search">
         <div class="attached input">
-        <!--osta-->
-            <input id="query" type="text" size="20" name="q"
-                placeholder="<?php echo __('Search FAQs Here'); ?>"
+            <input id="query" type="text" size="20" name="q" autofocus
                 value="<?php echo Format::htmlchars($_REQUEST['q']); ?>">
             <button class="attached button" id="searchSubmit" type="submit">
                 <i class="icon icon-search"></i>
@@ -85,14 +83,14 @@ if (!$thisstaff->hasPerm(Dept::PERM_DEPT))
 foreach ($topics as $T) {
         $active = $_REQUEST['topicId'] == $T->getId();
         if (!$staffTopics || is_null($T->getId()) || ($staffTopics && array_key_exists($T->getId(), $staffTopics))) { ?>
-        <li <?php if ($active) echo 'class="active"'; ?>>
-            <a href="#" data-topic-id="<?php echo $T->getId(); ?>">
-                <i class="icon-fixed-width <?php
-                if ($active) echo 'icon-hand-right'; ?>"></i>
-                <?php echo sprintf('%s (%d)',
-                    Format::htmlchars($T->getFullName()),
-                    $T->faq_count); ?></a>
-        </li> <?php
+            <li <?php if ($active) echo 'class="active"'; ?>>
+                <a href="#" data-topic-id="<?php echo $T->getId(); ?>">
+                    <i class="icon-fixed-width <?php
+                    if ($active) echo 'icon-hand-right'; ?>"></i>
+                    <?php echo sprintf('%s (%d)',
+                        Format::htmlchars($T->getFullName()),
+                        $T->faq_count); ?></a>
+            </li> <?php
         }
 } ?>
             </ul>
@@ -163,7 +161,7 @@ if($_REQUEST['q'] || $_REQUEST['cid'] || $_REQUEST['topicId']) { //Search.
                 $C->getId(),$C->getLocalName(),$C->getNumFAQs(),
                 $C->getVisibilityDescription(),
                 Format::safe_html($C->getLocalDescriptionWithImages())
-            );
+                );
                 if ($C->children) {
                     echo '<p/><div>';
                     foreach ($C->children as $c) {

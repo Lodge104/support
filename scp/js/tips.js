@@ -12,8 +12,7 @@ jQuery(function() {
             var tip_arrow = $('<img>').attr('src', './images/tip_arrow.png').addClass('tip_arrow');
             var tip_box = $('<div>').addClass('tip_box');
             var tip_shadow = $('<div>').addClass('tip_shadow');
-            // osta
-            var tip_content = $('<div>').addClass('tip_content '+elem.attr('href').split('.')[0]).load(url, function() { 
+            var tip_content = $('<div>').addClass('tip_content').load(url, function() {
                 if (elem.is(':visible')) {
                     tip_content.prepend('<a href="#" class="tip_close"><i class="icon-remove-circle"></i></a>').append(tip_arrow);
                     var width = $(window).width(),

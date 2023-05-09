@@ -70,10 +70,8 @@ foreach ($ost->plugins->allInstalled() as $p) {
     if (!$p instanceof Plugin)
         continue; ?>
     <tr>
-        <!--osta-->
-        <td align="center"><p class="checkbox">
-                <input type="checkbox" class="ckb" name="ids[]" value="<?php echo $p->getId(); ?>"
-                <?php echo $sel?'checked="checked"':''; ?>><label></label></p></td>
+        <td align="center"><input type="checkbox" class="ckb" name="ids[]" value="<?php echo $p->getId(); ?>"
+                <?php echo $sel?'checked="checked"':''; ?>></td>
         <td><a href="plugins.php?id=<?php echo $p->getId(); ?>">
         <?php echo sprintf('%s (%d)',
                 $p->getName(),
@@ -117,7 +115,7 @@ if ($count) //Show options..
 
 <div style="display:none;" class="dialog" id="confirm-action">
     <h3><?php echo __('Please Confirm'); ?></h3>
-    <!-- osta --><a class="close" href=""><i class="icon-remove-circle"></i></a>
+    <a class="close" href="">&times;</a>
     <hr/>
     <p class="confirm-action" style="display:none;" id="delete-confirm">
         <font color="red"><strong><?php echo sprintf(
