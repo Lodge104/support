@@ -34,7 +34,7 @@ if ($content) {
                     <input id="username" placeholder="<?php echo __('Email or Username'); ?>" type="text" name="luser" size="30" value="<?php echo $email; ?>" class="form-control nowarn">
                 </div>
                  <div class="form-group">
-                    <input id="passwd" placeholder="<?php echo __('Password'); ?>" type="password" name="lpasswd" size="30" value="<?php echo $passwd; ?>" class="form-control nowarn"></td>
+                    <input id="passwd" placeholder="<?php echo __('Password'); ?>" type="password" name="lpasswd" size="30" maxlength="128" value="<?php echo $passwd; ?>" class="form-control nowarn"></td>
                 </div>
                 <p>
                     <input class="btn btn-primary" type="submit" value="<?php echo __('Sign In'); ?>">

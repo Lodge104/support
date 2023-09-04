@@ -1,82 +1,66 @@
-/*! http://tinynav.viljamis.com v1.2 by @viljamis */
-(function ($, window, i) {
-  $.fn.tinyNav = function (options) {
+function tinyNav(element, options) {
+  var i = 0;
 
-    // Default settings
-    var settings = $.extend({
-      'active' : 'selected', // String: Set the "active" class
-      'header' : '', // String: Specify text for "header" and show header instead of the active item
-      'indent' : '- ', // String: Specify text for indenting sub-items
-      'label'  : '' // String: sets the <label> text for the <select> (if not set, no label will be added)
-    }, options);
+  // Default settings
+  var settings = Object.assign({
+    active: 'selected',
+    header: '',
+    indent: '- ',
+  }, options);
 
-    return this.each(function () {
+  // Used for namespacing
+  i++;
 
-      // Used for namespacing
-      i++;
+  var navElement = document.querySelector(element);
+  if (!navElement) return;
 
-      var $nav = $(this),
-        // Namespacing
-        namespace = 'tinynav',
-        namespace_i = namespace + i,
-        l_namespace_i = '.l_' + namespace_i,
-        $select = $('<select/>').attr("id", namespace_i).addClass(namespace + ' ' + namespace_i );
+  // Namespacing
+  var namespace = 'tinynav';
+  var namespace_i = namespace + i;
+  var l_namespace_i = '.l_' + namespace_i;
 
-      if ($nav.is('ul,ol')) {
+  var selectElement = document.createElement('select');
+  selectElement.id = namespace_i;
+  selectElement.classList.add(namespace, namespace_i);
 
-        if (settings.header !== '') {
-          $select.append(
-            $('<option/>').text(settings.header)
-          );
-        }
+  if (navElement.tagName === 'UL' || navElement.tagName === 'OL') {
+    if (settings.header !== '') {
+      var headerOption = document.createElement('option');
+      headerOption.textContent = settings.header;
+      selectElement.appendChild(headerOption);
+    }
 
-        // Build options
-        var options = '';
+    var optionsHTML = '';
 
-        $nav
-          .addClass('l_' + namespace_i)
-          .find('a')
-          .each(function () {
-            options += '<option value="' + $(this).attr('href') + '">';
-            var j;
-            for (j = 0; j < $(this).parents('ul, ol').length - 1; j++) {
-              options += settings.indent;
-            }
-            options += $(this).text() + '</option>';
-          });
+    var links = navElement.querySelectorAll('a');
+    links.forEach(function (link) {
+      var optionValue = link.getAttribute('href');
+      var optionText = link.textContent;
 
-        // Append options into a select
-        $select.append(options);
-
-        // Select the active item
-        if (!settings.header) {
-          $select
-            .find(':eq(' + $(l_namespace_i + ' li')
-            .index($(l_namespace_i + ' li.' + settings.active)) + ')')
-            .attr('selected', true);
-        }
-
-        // Change window location
-        $select.change(function () {
-          window.location.href = $(this).val();
-        });
-
-        // Inject select
-        $(l_namespace_i).after($select);
-
-        // Inject label
-        if (settings.label) {
-          $select.before(
-            $("<label/>")
-              .attr("for", namespace_i)
-              .addClass(namespace + '_label ' + namespace_i + '_label')
-              .append(settings.label)
-          );
-        }
-
+      var indentation = '';
+      var parentNode = link.parentNode;
+      while (parentNode && parentNode !== navElement) {
+        indentation += settings.indent;
+        parentNode = parentNode.parentNode;
       }
 
+      optionsHTML += '<option value="' + optionValue + '">' + indentation + optionText + '</option>';
     });
 
-  };
-})(jQuery, this, 0);
+    selectElement.innerHTML += optionsHTML;
+
+    if (!settings.header) {
+      var activeIndex = Array.from(navElement.querySelectorAll(l_namespace_i + ' li.' + settings.active)).indexOf(navElement.querySelector(l_namespace_i + ' li.' + settings.active));
+      selectElement.options[activeIndex + (settings.header !== '' ? 1 : 0)].selected = true;
+    }
+
+    selectElement.addEventListener('change', function () {
+      window.location.href = selectElement.value;
+    });
+
+    navElement.classList.add('l_' + namespace_i);
+    navElement.parentNode.insertBefore(selectElement, navElement.nextSibling);
+
+  }
+}
+
