@@ -75,14 +75,14 @@ $info = Format::htmlchars(($errors && $_POST)?$_POST:$info);
             <tr class="form-group">
                 <td colspan="2">
                     <label> <?php echo __('Create a Password'); ?>: </label>
-                    <input class="form-control" type="password" size="18" name="passwd1" value="<?php echo $info['passwd1']; ?>">
+                    <input class="form-control" type="password" size="18" name="passwd1" maxlength="128" value="<?php echo $info['passwd1']; ?>">
                     &nbsp;<span class="error">&nbsp;<?php echo $errors['passwd1']; ?></span>
                 </td>
             </tr>
             <tr class="form-group">
                 <td colspan="2">
                     <label><?php echo __('Confirm New Password'); ?>:</label>
-                    <input class="form-control" type="password" size="18" name="passwd2" value="<?php echo $info['passwd2']; ?>">
+                    <input class="form-control" type="password" size="18" name="passwd2" maxlength="128" value="<?php echo $info['passwd2']; ?>">
                     &nbsp;<span class="error">&nbsp;<?php echo $errors['passwd2']; ?></span>
                 </td>
             </tr>
@@ -102,7 +102,7 @@ $info = Format::htmlchars(($errors && $_POST)?$_POST:$info);
 
 <?php if (!isset($info['timezone'])) { ?>
 <!-- Auto detect client's timezone where possible -->
-<script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jstz.min.js?ca95150"></script>
+<script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jstz.min.js?ea462cb"></script>
 <script type="text/javascript">
 $(function() {
     var zone = jstz.determine();
